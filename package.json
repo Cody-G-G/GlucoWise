@@ -8,7 +8,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "native-base": "^0.5.13",
+    "native-base": "^0.5.22",
     "react": "15.4.1",
     "react-native": "0.38.0",
     "react-native-android-location-services-dialog-box": "^1.1.7",

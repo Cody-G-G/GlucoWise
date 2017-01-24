@@ -14,7 +14,7 @@ import {
     NativeModules
 } from 'react-native';
 const btManagerNative = NativeModules.BluetoothManagerModule;
-import {List, ListItem, Content, Container, Thumbnail, Button, Icon} from 'native-base';
+import {List, ListItem, Button, Icon} from 'native-base';
 import log from './helpers/logger';
 import bleManager from 'react-native-ble';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
@@ -29,8 +29,7 @@ class GlucoWise extends Component {
         super(props);
 
         this.state = {
-            pizza: '\ud83c\udf55',
-            deviceList: [],
+            deviceList: [{advertisement: {localName: 'TEST'}}],
             connectedUUID: ''
         }
     }
@@ -55,16 +54,16 @@ class GlucoWise extends Component {
                 flex: 1,
                 justifyContent: 'space-around',
                 alignItems: 'center'
-            }} refreshing>
+            }}>
 
-                <View style={{flex: 1, paddingTop: 20}} refreshing>
-                    <Button onPress={scanDevices} large rounded style={{backgroundColor: 'cornflowerblue'}}>
-                        <Icon theme={{iconFamily: "MaterialIcons"}} name="bluetooth"/>
+                <View style={{flex: 1, paddingTop: 20}}>
+                    <Button onPress={scanDevices} large style={{backgroundColor: 'cornflowerblue'}}>
+                        <Icon theme={{iconFamily: "MaterialIcons"}} style={{paddingBottom: 10}} name="bluetooth"/>Search Devices
                     </Button>
                 </View>
 
-                <View style={{flex: 4, alignSelf: 'stretch'}} refreshing>
-                    <ListItem itemDivider><Text>Found Devices</Text></ListItem>
+                <View style={{flex: 6, alignSelf: 'stretch'}}>
+                    <ListItem itemDivider><Text style={{fontSize:20, fontWeight:'bold'}}>Found Devices</Text></ListItem>
                     <List
                         dataArray={[...this.state.deviceList]}
                         renderRow={
@@ -73,8 +72,8 @@ class GlucoWise extends Component {
                                           onPress={() => connectToDevice(item)}
                                           style={{backgroundColor: 'cornflowerblue'}} button>
                                     <Text style={{color: 'white'}}>
-                                        {item.advertisement.localName}&nbsp;-&nbsp;
-                                        {item.id}{this.state.connectedUUID === item.id && " - CONNECTED"}
+                                            {item.advertisement.localName}&nbsp;-&nbsp;
+                                            {item.id}{this.state.connectedUUID === item.id && " - CONNECTED"}
                                     </Text>
                                 </ListItem>)
                         }
@@ -105,7 +104,6 @@ async function connectToDevice(peripheral) {
                     log("ERROR: " + error);
                 else {
                     log("CHARACTERISTICS: " + characteristics[0]);
-                    // characteristic.once('notify', (state) => log("STATE: " + state));
                     characteristics[0].subscribe((error) => {
                         log("ERROR ON SUBSCRIPTION: " + error);
                     });
