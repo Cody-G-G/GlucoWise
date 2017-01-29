@@ -1,5 +1,5 @@
 {
-  "name": "GlucoWise",
+  "name": "glucowise",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -8,12 +8,14 @@
     "test": "jest"
   },
   "dependencies": {
-    "native-base": "^0.5.22",
+    "react-native": "0.40.0",
     "react": "15.4.1",
-    "react-native": "0.38.0",
+    "react-native-vector-icons": "4.0.0",
+    "native-base": "0.5.20",
     "react-native-android-location-services-dialog-box": "^1.1.7",
     "react-native-ble": "git://github.com/jacobrosenthal/react-native-ble.git#master",
-    "react-native-root-toast": "^1.0.3"
+    "react-native-root-toast": "^1.0.3",
+    "react-native-spinkit": "^1.0.1"
   },
   "jest": {
     "preset": "jest-react-native"
@@ -23,7 +25,19 @@
     "babel-preset-react-native": "1.9.0",
     "jest": "16.0.2",
     "jest-react-native": "16.0.0",
-    "react-test-renderer": "15.3.2",
+    "react-test-renderer": "15.4.1",
     "whatwg-fetch": "1.0.0"
-  }
+  },
+  "main": "index.android.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cody-G-G/GlucoWise.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Cody-G-G/GlucoWise/issues"
+  },
+  "homepage": "https://github.com/Cody-G-G/GlucoWise#readme",
+  "description": ""
 }
