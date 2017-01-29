@@ -1,14 +1,15 @@
 package com.glucowise;
 
 import android.app.Application;
+
 import com.facebook.react.ReactApplication;
-import com.geniem.rnble.RNBLEPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
+import com.geniem.rnble.RNBLEPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.showlocationservicesdialogbox.LocationServicesDialogBoxPackage;
-import com.glucowise.BuildConfig;
+import com.react.rnspinkit.RNSpinkitPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +29,8 @@ public class MainApplication extends Application implements ReactApplication {
                     new VectorIconsPackage(),
                     new LocationServicesDialogBoxPackage(),
                     new RNBLEPackage(),
-                    new BluetoothManagerPackage()
+                    new BluetoothManagerPackage(),
+                    new RNSpinkitPackage()
             );
         }
     };

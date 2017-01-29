@@ -11,74 +11,170 @@ import {
     StyleSheet,
     PermissionsAndroid,
     NetInfo,
-    NativeModules
+    NativeModules,
+    TouchableOpacity
 } from 'react-native';
 const btManagerNative = NativeModules.BluetoothManagerModule;
-import {List, ListItem, Button, Icon} from 'native-base';
+const Spinner = require('react-native-spinkit');
+import {ListItem, Button, Icon} from 'native-base';
 import log from './helpers/logger';
 import bleManager from 'react-native-ble';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import Toast from 'react-native-root-toast';
-
+const B = (props) => <Text style={{fontWeight: 'bold'}}>{props.children}</Text>;
 
 let scannedDevices = new Set();
 let stateManipulator = {};
+
+const styles = StyleSheet.create({
+    deviceButton: {
+        flex: 2,
+        alignSelf: 'stretch',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 7
+    },
+    deviceButtonText: {
+        color: 'white',
+        fontSize: 20
+    },
+    deviceDescription: {
+        backgroundColor: 'cornflowerblue',
+        color: 'white',
+        flex: 4,
+        fontSize: 20,
+        padding: 7
+    },
+    device: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        flexDirection: 'row',
+        borderColor: 'black',
+        borderWidth: 1
+    },
+    deviceListHeader: {
+        fontSize: 20,
+        fontWeight: 'bold'
+    },
+    buttonPanel: {
+        flex: 1,
+        paddingTop: 20,
+        paddingBottom: 20
+    },
+    devicesPanel: {
+        flex: 6,
+        alignSelf: 'stretch'
+    },
+    spinnerPanel: {
+        flex: 2,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    screenContainer: {
+        flex: 1,
+        justifyContent: 'space-around',
+        alignItems: 'center'
+    }
+
+});
 
 class GlucoWise extends Component {
     constructor(props) {
         super(props);
 
+        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state = {
-            deviceList: [{advertisement: {localName: 'TEST'}}],
-            connectedUUID: ''
-        }
+            deviceList: ds.cloneWithRows([
+                {advertisement: {localName: 'TEST'}, id: 'UUIDTEST'},
+                {advertisement: {localName: 'TEST2'}, id: ''},
+                {advertisement: {localName: 'TEST3'}, id: ''},
+                {advertisement: {localName: 'TEST4'}, id: 'UUIDTEST4'},
+                {advertisement: {localName: 'TEST5'}, id: ''},
+                {advertisement: {localName: 'TEST6'}, id: ''},
+                {advertisement: {localName: 'TEST7'}, id: ''},
+                {advertisement: {localName: 'TEST8'}, id: ''},
+                {advertisement: {localName: 'TEST9'}, id: ''}
+            ]),
+            scanning: false,
+            connectedUUIDs: ['UUIDTEST', 'UUIDTEST4']
+        };
     }
 
     componentWillMount() {
         stateManipulator.updateDeviceList = (devices) => {
             this.setState({
-                deviceList: devices
+                deviceList: ds.cloneWithRows(devices)
             });
         };
 
-        stateManipulator.updateConnectedDevice = (connectedId) => {
+        stateManipulator.addConnectedDevice = (connectedId) => {
+            let connectedUUIDs = this.state.connectedUUIDs.slice();
+            connectedUUIDs.push(connectedId);
             this.setState({
-                connectedUUID: connectedId
+                connectedUUIDs: connectedUUIDs
             });
-        }
+        };
+
+        stateManipulator.removeConnectedDevices = (connectedId) => {
+            let connectedUUIDs = this.state.connectedUUIDs.slice();
+            connectedUUIDs.splice(connectedUUIDs.indexOf(connectedId));
+            this.setState({
+                connectedUUIDs: connectedUUIDs
+            });
+        };
+
+        stateManipulator.updateScanning = (scanning) => {
+            this.setState({scanning: scanning});
+        };
+    }
+
+    toggleScanning() {
+        this.setState({scanning: !(this.state.scanning)})
+    }
+
+    renderSpinnerPanel() {
+        if (this.state.scanning) {
+            return (
+                <View style={styles.spinnerPanel}>
+                    <Spinner isVisible={this.state.scanning} size={100} type={'Wave'} color={'#6495ED'}/>
+                </View>
+            );
+        } else return null;
     }
 
     render() {
         return (
-            <View style={{
-                flex: 1,
-                justifyContent: 'space-around',
-                alignItems: 'center'
-            }}>
-
-                <View style={{flex: 1, paddingTop: 20}}>
-                    <Button onPress={scanDevices} large style={{backgroundColor: 'cornflowerblue'}}>
-                        <Icon theme={{iconFamily: "MaterialIcons"}} style={{paddingBottom: 10}} name="bluetooth"/>Search Devices
+            <View style={styles.screenContainer}>
+                <View style={styles.buttonPanel}>
+                    <Button onPress={this.toggleScanning.bind(this)} large style={{backgroundColor: 'cornflowerblue'}} disabled={this.state.scanning}>
+                        <Icon theme={{iconFamily: "MaterialIcons"}} name="bluetooth"/>Search Devices
                     </Button>
                 </View>
 
-                <View style={{flex: 6, alignSelf: 'stretch'}}>
-                    <ListItem itemDivider><Text style={{fontSize:20, fontWeight:'bold'}}>Found Devices</Text></ListItem>
-                    <List
-                        dataArray={[...this.state.deviceList]}
-                        renderRow={
-                            (item) => (
-                                <ListItem itemDivider
-                                          onPress={() => connectToDevice(item)}
-                                          style={{backgroundColor: 'cornflowerblue'}} button>
-                                    <Text style={{color: 'white'}}>
-                                            {item.advertisement.localName}&nbsp;-&nbsp;
-                                            {item.id}{this.state.connectedUUID === item.id && " - CONNECTED"}
+                <View style={styles.devicesPanel}>
+                    <ListItem itemDivider>
+                        <Text style={styles.deviceListHeader}>Found Devices</Text>
+                    </ListItem>
+                    <ListView dataSource={this.state.deviceList} enableEmptySections={true} renderRow={(rowData) =>
+                                <View style={styles.device}>
+                                    <Text style={styles.deviceDescription}>
+                                            <B>Name:</B> {rowData.advertisement.localName}{"\n"}
+                                            <B>Id:</B> {rowData.id}
                                     </Text>
-                                </ListItem>)
+                                    <TouchableOpacity
+                                        style={StyleSheet.flatten([styles.deviceButton, {backgroundColor: this.state.connectedUUIDs.includes(rowData.id) ? 'firebrick' : 'green'}])}
+                                        onPress={() => connectToDevice(rowData)}>
+                                            <Text style={styles.deviceButtonText}>
+                                                {this.state.connectedUUIDs.includes(rowData.id) ? "Disconnect" : "Connect"}
+                                            </Text>
+                                    </TouchableOpacity>
+                                </View>
                         }
                     />
                 </View>
+
+                {this.renderSpinnerPanel()}
             </View>
         )
     }
@@ -116,18 +212,23 @@ async function connectToDevice(peripheral) {
 
 async function scanDevices() {
     btManagerNative.enable((enabled, error) => {
-        log("BT ENABLED: " + enabled);
-        log("BT ENABLE ERROR: " + error);
-        if (enabled) {
-            requestLocationServices()
-                .then((result) => {
-                    if (result) {
-                        bleManager.state = "poweredOn";
-                        bleManager.emit("stateChange", "poweredOn");
-                        bleManager.startScanning();
-                    }
-                })
-                .catch((error) => log("Location Services Request Rejected with: " + error));
+        if (error) {
+            log("BT ENABLE ERROR: " + error);
+        } else {
+            if (enabled) {
+                log("BT ENABLED: " + enabled);
+                requestLocationServices()
+                    .then((result) => {
+                        if (result) {
+                            bleManager.state = "poweredOn";
+                            bleManager.emit("stateChange", "poweredOn");
+                            bleManager.startScanning();
+                        }
+                    })
+                    .catch((error) => log("Location Services Request Rejected with: " + error));
+            } else {
+                log("BT ENABLE CANCELLED");
+            }
         }
     });
 }
@@ -179,6 +280,7 @@ async function onStateChange() {
 async function onScanStart() {
     bleManager.on('scanStart', () => {
         log("Device scan started");
+        stateManipulator.updateScanning(true);
         setTimeout(function () {
             bleManager.stopScanning();
         }, 10000);
@@ -188,20 +290,21 @@ async function onScanStart() {
 async function onScanStop() {
     bleManager.on('scanStop', () => {
         log("Device scan stopped");
+        stateManipulator.updateScanning(false);
     });
 }
 
 async function onConnection(peripheral) {
     peripheral.on('connect', () => {
         log("Connecting to " + peripheral.advertisement.localName + " - " + peripheral.id);
-        stateManipulator.updateConnectedDevice(peripheral.id)
+        stateManipulator.addConnectedDevice(peripheral.id);
     });
 }
 
 async function onDisconnection(peripheral) {
     peripheral.on('disconnect', () => {
         log("Disconnecting from " + peripheral.advertisement.localName + " - " + peripheral.id);
-        stateManipulator.updateConnectedDevice("");
+        stateManipulator.removeConnectedDevices(peripheral.id);
     });
 }
 
