@@ -234,7 +234,7 @@ function scanDevices() {
     });
 }
 
-function requestLocationCoarsePermission() {
+async function requestLocationCoarsePermission() {
     try {
         const granted = await
             PermissionsAndroid.requestPermission(
@@ -298,7 +298,7 @@ function onDisconnection(peripheral) {
     });
 }
 
-function requestLocationServices() {
+async function requestLocationServices() {
     log("Requesting Location Services");
     return new Promise((resolve, reject) => {
         LocationServicesDialogBox.checkLocationServicesIsEnabled({
