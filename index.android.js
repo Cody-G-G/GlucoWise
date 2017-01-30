@@ -284,7 +284,7 @@ function onScanStart() {
         stateManipulator.updateScanning(true);
         setTimeout(function () {
             bleManager.stopScanning();
-        }, 10000);
+        }, 5000);
     });
 }
 
