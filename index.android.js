@@ -147,7 +147,7 @@ class GlucoWise extends Component {
         return (
             <View style={styles.screenContainer}>
                 <View style={styles.buttonPanel}>
-                    <Button onPress={this.toggleScanning.bind(this)} large style={{backgroundColor: 'cornflowerblue'}} disabled={this.state.scanning}>
+                    <Button onPress={this.toggleScanning.bind(this)} large style={{backgroundColor: 'cornflowerblue'}}>
                         <Icon theme={{iconFamily: "MaterialIcons"}} name="bluetooth"/>Search Devices
                     </Button>
                 </View>
@@ -188,7 +188,7 @@ class GlucoWise extends Component {
     }
 }
 
-async function connectToDevice(peripheral) {
+function connectToDevice(peripheral) {
     const extendedDeviceId = peripheral.advertisement.localName + " - " + peripheral.id;
     peripheral.connect((error) => {
         if (error) {
@@ -210,7 +210,7 @@ async function connectToDevice(peripheral) {
     });
 }
 
-async function scanDevices() {
+function scanDevices() {
     btManagerNative.enable((enabled, error) => {
         if (error) {
             log("BT ENABLE ERROR: " + error);
@@ -222,6 +222,7 @@ async function scanDevices() {
                         if (result) {
                             bleManager.state = "poweredOn";
                             bleManager.emit("stateChange", "poweredOn");
+                            bleManager.stopScanning();
                             bleManager.startScanning();
                         }
                     })
@@ -233,7 +234,7 @@ async function scanDevices() {
     });
 }
 
-async function showToast(message) {
+function showToast(message) {
     Toast.show(message, {
         duration: Toast.durations.LONG,
         position: Toast.positions.CENTER,
@@ -244,7 +245,7 @@ async function showToast(message) {
     });
 }
 
-async function requestLocationCoarsePermission() {
+function requestLocationCoarsePermission() {
     try {
         const granted = await
             PermissionsAndroid.requestPermission(
@@ -260,7 +261,7 @@ async function requestLocationCoarsePermission() {
     }
 }
 
-async function onDiscover() {
+function onDiscover() {
     bleManager.on('discover', (peripheral) => {
             log("Found device: " + peripheral);
             onConnection(peripheral);
@@ -271,13 +272,13 @@ async function onDiscover() {
     );
 }
 
-async function onStateChange() {
+function onStateChange() {
     bleManager.on('stateChange', (state) => {
         log("Noble state changed to: " + state);
     });
 }
 
-async function onScanStart() {
+function onScanStart() {
     bleManager.on('scanStart', () => {
         log("Device scan started");
         stateManipulator.updateScanning(true);
@@ -287,28 +288,28 @@ async function onScanStart() {
     });
 }
 
-async function onScanStop() {
+function onScanStop() {
     bleManager.on('scanStop', () => {
         log("Device scan stopped");
         stateManipulator.updateScanning(false);
     });
 }
 
-async function onConnection(peripheral) {
+function onConnection(peripheral) {
     peripheral.on('connect', () => {
         log("Connecting to " + peripheral.advertisement.localName + " - " + peripheral.id);
         stateManipulator.addConnectedDevice(peripheral.id);
     });
 }
 
-async function onDisconnection(peripheral) {
+function onDisconnection(peripheral) {
     peripheral.on('disconnect', () => {
         log("Disconnecting from " + peripheral.advertisement.localName + " - " + peripheral.id);
         stateManipulator.removeConnectedDevices(peripheral.id);
     });
 }
 
-async function requestLocationServices() {
+function requestLocationServices() {
     log("Requesting Location Services");
     return new Promise((resolve, reject) => {
         LocationServicesDialogBox.checkLocationServicesIsEnabled({
