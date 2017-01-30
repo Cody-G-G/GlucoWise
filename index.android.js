@@ -23,6 +23,7 @@ import LocationServicesDialogBox from "react-native-android-location-services-di
 import Toast from 'react-native-root-toast';
 const B = (props) => <Text style={{fontWeight: 'bold'}}>{props.children}</Text>;
 
+const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 let scannedDevices = new Set();
 let stateManipulator = {};
 
@@ -83,22 +84,27 @@ class GlucoWise extends Component {
     constructor(props) {
         super(props);
 
-        const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        // this.state = {
+        //     deviceList: ds.cloneWithRows([
+        //         {advertisement: {localName: 'TEST'}, id: 'UUIDTEST'},
+        //         {advertisement: {localName: 'TEST2'}, id: ''},
+        //         {advertisement: {localName: 'TEST3'}, id: ''},
+        //         {advertisement: {localName: 'TEST4'}, id: 'UUIDTEST4'},
+        //         {advertisement: {localName: 'TEST5'}, id: ''},
+        //         {advertisement: {localName: 'TEST6'}, id: ''},
+        //         {advertisement: {localName: 'TEST7'}, id: ''},
+        //         {advertisement: {localName: 'TEST8'}, id: ''},
+        //         {advertisement: {localName: 'TEST9'}, id: ''}
+        //     ]),
+        //     scanning: false,
+        //     connectedUUIDs: ['UUIDTEST', 'UUIDTEST4']
+        // };
+
         this.state = {
-            deviceList: ds.cloneWithRows([
-                {advertisement: {localName: 'TEST'}, id: 'UUIDTEST'},
-                {advertisement: {localName: 'TEST2'}, id: ''},
-                {advertisement: {localName: 'TEST3'}, id: ''},
-                {advertisement: {localName: 'TEST4'}, id: 'UUIDTEST4'},
-                {advertisement: {localName: 'TEST5'}, id: ''},
-                {advertisement: {localName: 'TEST6'}, id: ''},
-                {advertisement: {localName: 'TEST7'}, id: ''},
-                {advertisement: {localName: 'TEST8'}, id: ''},
-                {advertisement: {localName: 'TEST9'}, id: ''}
-            ]),
+            deviceList: ds.cloneWithRows([]),
             scanning: false,
-            connectedUUIDs: ['UUIDTEST', 'UUIDTEST4']
-        };
+            connectedUUIDs: []
+        }
     }
 
     componentWillMount() {
@@ -129,10 +135,6 @@ class GlucoWise extends Component {
         };
     }
 
-    toggleScanning() {
-        this.setState({scanning: !(this.state.scanning)})
-    }
-
     renderSpinnerPanel() {
         if (this.state.scanning) {
             return (
@@ -147,7 +149,7 @@ class GlucoWise extends Component {
         return (
             <View style={styles.screenContainer}>
                 <View style={styles.buttonPanel}>
-                    <Button onPress={this.toggleScanning.bind(this)} large style={{backgroundColor: 'cornflowerblue'}}>
+                    <Button onPress={scanDevices} large style={{backgroundColor: 'cornflowerblue'}} disabled={this.state.scanning}>
                         <Icon theme={{iconFamily: "MaterialIcons"}} name="bluetooth"/>Search Devices
                     </Button>
                 </View>
@@ -164,7 +166,7 @@ class GlucoWise extends Component {
                                     </Text>
                                     <TouchableOpacity
                                         style={StyleSheet.flatten([styles.deviceButton, {backgroundColor: this.state.connectedUUIDs.includes(rowData.id) ? 'firebrick' : 'green'}])}
-                                        onPress={() => connectToDevice(rowData)}>
+                                        onPress={() => toggleDeviceConnection(rowData)}>
                                             <Text style={styles.deviceButtonText}>
                                                 {this.state.connectedUUIDs.includes(rowData.id) ? "Disconnect" : "Connect"}
                                             </Text>
@@ -188,13 +190,23 @@ class GlucoWise extends Component {
     }
 }
 
-function connectToDevice(peripheral) {
+function toggleDeviceConnection(peripheral) {
     const extendedDeviceId = peripheral.advertisement.localName + " - " + peripheral.id;
+    log("Toggling connection with peripheral: " + extendedDeviceId);
+
+    if (peripheral.state === "disconnected") {
+        connectPeripheral(peripheral, extendedDeviceId)
+    } else if (peripheral.state === 'connected') {
+        disconnectPeripheral(peripheral, extendedDeviceId);
+    }
+}
+
+function connectPeripheral(peripheral, extendedDeviceId) {
     peripheral.connect((error) => {
         if (error) {
             log("ERROR on connection with " + extendedDeviceId + ": " + error);
         } else {
-            log("CONNECTED");
+            log("CONNECTED " + extendedDeviceId);
             peripheral.discoverSomeServicesAndCharacteristics(null, ["0000ffe400001000800000805f9b34fb"], (error, services, characteristics) => {
                 if (error)
                     log("ERROR: " + error);
@@ -206,6 +218,16 @@ function connectToDevice(peripheral) {
                     characteristics[0].on('data', (data, isNotification) => log("DATA: " + data));
                 }
             });
+        }
+    });
+}
+
+function disconnectPeripheral(peripheral, extendedDeviceId) {
+    peripheral.disconnect((error) => {
+        if(error) {
+            log("ERROR on disconnection with " + extendedDeviceId + ": " + error);
+        } else {
+            log("DISCONNECTED " + extendedDeviceId)
         }
     });
 }
@@ -222,7 +244,6 @@ function scanDevices() {
                         if (result) {
                             bleManager.state = "poweredOn";
                             bleManager.emit("stateChange", "poweredOn");
-                            bleManager.stopScanning();
                             bleManager.startScanning();
                         }
                     })
@@ -273,7 +294,7 @@ function onScanStart() {
         stateManipulator.updateScanning(true);
         setTimeout(function () {
             bleManager.stopScanning();
-        }, 5000);
+        }, 10000);
     });
 }
 
