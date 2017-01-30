@@ -234,17 +234,6 @@ function scanDevices() {
     });
 }
 
-function showToast(message) {
-    Toast.show(message, {
-        duration: Toast.durations.LONG,
-        position: Toast.positions.CENTER,
-        shadow: true,
-        animation: true,
-        hideOnPress: true,
-        delay: 0
-    });
-}
-
 function requestLocationCoarsePermission() {
     try {
         const granted = await
