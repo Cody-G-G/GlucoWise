@@ -20,7 +20,6 @@ import {ListItem, Button, Icon} from 'native-base';
 import log from './helpers/logger';
 import bleManager from 'react-native-ble';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
-import Toast from 'react-native-root-toast';
 const B = (props) => <Text style={{fontWeight: 'bold'}}>{props.children}</Text>;
 
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -191,8 +190,8 @@ class GlucoWise extends Component {
 }
 
 function toggleDeviceConnection(peripheral) {
-    const extendedDeviceId = peripheral.advertisement.localName + " - " + peripheral.id;
-    log("Toggling connection with peripheral: " + extendedDeviceId);
+    const extendedDeviceId = peripheral.advertisement.localName + " - " + peripheral.id + " - " + peripheral.state ;
+    log("Toggling connection with peripheral: <" + extendedDeviceId + ">");
 
     if (peripheral.state === "disconnected") {
         connectPeripheral(peripheral, extendedDeviceId)
