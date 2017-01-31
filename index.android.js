@@ -12,18 +12,21 @@ import {
     PermissionsAndroid,
     NetInfo,
     NativeModules,
-    TouchableOpacity
+    TouchableOpacity,
+    NativeAppEventEmitter
 } from 'react-native';
 const btManagerNative = NativeModules.BluetoothManagerModule;
 const Spinner = require('react-native-spinkit');
 import {ListItem, Button, Icon} from 'native-base';
 import log from './helpers/logger';
-import bleManager from 'react-native-ble';
+// import bleManager from 'react-native-ble';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 const B = (props) => <Text style={{fontWeight: 'bold'}}>{props.children}</Text>;
+import BleManager from 'react-native-ble-manager';
 
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-let scannedDevices = new Set();
+let pressedScan = false;
+let scannedDevices = [];
 let stateManipulator = {};
 
 const styles = StyleSheet.create({
@@ -160,14 +163,14 @@ class GlucoWise extends Component {
                     <ListView dataSource={this.state.deviceList} enableEmptySections={true} renderRow={(rowData) =>
                                 <View style={styles.device}>
                                     <Text style={styles.deviceDescription}>
-                                            <B>Name:</B> {rowData.advertisement.localName}{"\n"}
-                                            <B>Id:</B> {rowData.id}
+                                            <B>Name:</B> {JSON.parse(rowData).name}{"\n"}
+                                            <B>Id:</B> {JSON.parse(rowData).id}
                                     </Text>
                                     <TouchableOpacity
-                                        style={StyleSheet.flatten([styles.deviceButton, {backgroundColor: this.state.connectedUUIDs.includes(rowData.id) ? 'firebrick' : 'green'}])}
+                                        style={StyleSheet.flatten([styles.deviceButton, {backgroundColor: this.state.connectedUUIDs.includes(JSON.parse(rowData).id) ? 'firebrick' : 'green'}])}
                                         onPress={() => toggleDeviceConnection(rowData)}>
                                             <Text style={styles.deviceButtonText}>
-                                                {this.state.connectedUUIDs.includes(rowData.id) ? "Disconnect" : "Connect"}
+                                                {this.state.connectedUUIDs.includes(JSON.parse(rowData).id) ? "Disconnect" : "Connect"}
                                             </Text>
                                     </TouchableOpacity>
                                 </View>
@@ -182,15 +185,25 @@ class GlucoWise extends Component {
 
     componentDidMount() {
         requestLocationCoarsePermission();
-        onDiscover();
-        onStateChange();
-        onScanStart();
+
+        BleManager
+            .start()
+            .then(() => {
+                log('Module initialized');
+            });
+
+        onDeviceDiscovered();
         onScanStop();
+        onBluetoothStateChange()
+        // onDiscover();
+        // onStateChange();
+        // onScanStart();
+        // onScanStop();
     }
 }
 
 function toggleDeviceConnection(peripheral) {
-    const extendedDeviceId = peripheral.advertisement.localName + " - " + peripheral.id + " - " + peripheral.state ;
+    const extendedDeviceId = peripheral.advertisement.localName + " - " + peripheral.id + " - " + peripheral.state;
     log("Toggling connection with peripheral: <" + extendedDeviceId + ">");
 
     if (peripheral.state === "disconnected") {
@@ -200,58 +213,115 @@ function toggleDeviceConnection(peripheral) {
     }
 }
 
-function connectPeripheral(peripheral, extendedDeviceId) {
-    peripheral.connect((error) => {
-        if (error) {
-            log("ERROR on connection with " + extendedDeviceId + ": " + error);
-        } else {
-            log("CONNECTED " + extendedDeviceId);
-            peripheral.discoverSomeServicesAndCharacteristics(null, ["0000ffe400001000800000805f9b34fb"], (error, services, characteristics) => {
-                if (error)
-                    log("ERROR: " + error);
-                else {
-                    log("CHARACTERISTICS: " + characteristics[0]);
-                    characteristics[0].subscribe((error) => {
-                        log("ERROR ON SUBSCRIPTION: " + error);
-                    });
-                    characteristics[0].on('data', (data, isNotification) => log("DATA: " + data));
-                }
-            });
-        }
-    });
+// function connectPeripheral(peripheral, extendedDeviceId) {
+//     peripheral.connect((error) => {
+//         if (error) {
+//             log("ERROR on connection with " + extendedDeviceId + ": " + error);
+//         } else {
+//             log("CONNECTED " + extendedDeviceId);
+//             peripheral.discoverSomeServicesAndCharacteristics(null, ["0000ffe400001000800000805f9b34fb"], (error, services, characteristics) => {
+//                 if (error)
+//                     log("ERROR: " + error);
+//                 else {
+//                     log("CHARACTERISTICS: " + characteristics[0]);
+//                     characteristics[0].subscribe((error) => {
+//                         log("ERROR ON SUBSCRIPTION: " + error);
+//                     });
+//                     characteristics[0].on('data', (data, isNotification) => log("DATA: " + data));
+//                 }
+//             });
+//         }
+//     });
+// }
+//
+// function disconnectPeripheral(peripheral, extendedDeviceId) {
+//     peripheral.disconnect((error) => {
+//         if(error) {
+//             log("ERROR on disconnection with " + extendedDeviceId + ": " + error);
+//         } else {
+//             log("DISCONNECTED " + extendedDeviceId)
+//         }
+//     });
+// }
+
+// function scanDevices() {
+//     btManagerNative.enable((enabled, error) => {
+//         if (error) {
+//             log("BT ENABLE ERROR: " + error);
+//         } else {
+//             if (enabled) {
+//                 log("BT ENABLED: " + enabled);
+//                 requestLocationServices()
+//                     .then((result) => {
+//                         if (result) {
+//                             bleManager.state = "poweredOn";
+//                             bleManager.emit("stateChange", "poweredOn");
+//                             bleManager.startScanning();
+//                         }
+//                     })
+//                     .catch((error) => log("Location Services Request Rejected with: " + error));
+//             } else {
+//                 log("BT ENABLE CANCELLED");
+//             }
+//         }
+//     });
+// }
+
+async function scanDevices() {
+    requestLocationServices()
+        .then((result) => {
+            if (result) {
+                BleManager.checkState();
+                pressedScan = true;
+            }
+        })
+        .catch((error) => {
+            log("ERROR: " + error);
+        });
 }
 
-function disconnectPeripheral(peripheral, extendedDeviceId) {
-    peripheral.disconnect((error) => {
-        if(error) {
-            log("ERROR on disconnection with " + extendedDeviceId + ": " + error);
-        } else {
-            log("DISCONNECTED " + extendedDeviceId)
-        }
-    });
-}
-
-function scanDevices() {
-    btManagerNative.enable((enabled, error) => {
-        if (error) {
-            log("BT ENABLE ERROR: " + error);
-        } else {
-            if (enabled) {
-                log("BT ENABLED: " + enabled);
-                requestLocationServices()
-                    .then((result) => {
-                        if (result) {
-                            bleManager.state = "poweredOn";
-                            bleManager.emit("stateChange", "poweredOn");
-                            bleManager.startScanning();
-                        }
-                    })
-                    .catch((error) => log("Location Services Request Rejected with: " + error));
-            } else {
-                log("BT ENABLE CANCELLED");
+function onDeviceDiscovered() {
+    NativeAppEventEmitter.addListener('BleManagerDiscoverPeripheral',
+        (simpleDeviceObj) => {
+            simpleDeviceObj.rssi = undefined;
+            let strDeviceObject = JSON.stringify(simpleDeviceObj);
+            log("Found device: " + strDeviceObject);
+            if (!scannedDevices.includes(strDeviceObject)) {
+                scannedDevices.push(strDeviceObject);
+                stateManipulator.updateDeviceList([...scannedDevices]);
             }
         }
-    });
+    );
+}
+
+function onScanStop() {
+    NativeAppEventEmitter.addListener('BleManagerStopScan', () => log("Scan stopped"));
+}
+
+function onBluetoothStateChange() {
+    NativeAppEventEmitter.addListener(
+        'BleManagerDidUpdateState',
+        (args) => {
+            log("Bluetooth state changed to " + args.state);
+            if (args.state === "off") {
+                BleManager.enableBluetooth()
+                    .then(() => {
+                        log("Bluetooth enabled");
+
+                        if (pressedScan) {
+                            BleManager.scan([], 10)
+                                .then(() => {
+                                    log('Scan started');
+                                });
+                        }
+
+                    })
+                    .catch((error) => {
+                        log("Enabling bluetooth failed: " + error);
+                    })
+            }
+        }
+    );
 }
 
 async function requestLocationCoarsePermission() {
@@ -270,53 +340,53 @@ async function requestLocationCoarsePermission() {
     }
 }
 
-function onDiscover() {
-    bleManager.on('discover', (peripheral) => {
-            log("Found device: " + peripheral);
-            onConnection(peripheral);
-            onDisconnection(peripheral);
-            scannedDevices.add(peripheral);
-            stateManipulator.updateDeviceList([...scannedDevices]);
-        }
-    );
-}
-
-function onStateChange() {
-    bleManager.on('stateChange', (state) => {
-        log("Noble state changed to: " + state);
-    });
-}
-
-function onScanStart() {
-    bleManager.on('scanStart', () => {
-        log("Device scan started");
-        stateManipulator.updateScanning(true);
-        setTimeout(function () {
-            bleManager.stopScanning();
-        }, 10000);
-    });
-}
-
-function onScanStop() {
-    bleManager.on('scanStop', () => {
-        log("Device scan stopped");
-        stateManipulator.updateScanning(false);
-    });
-}
-
-function onConnection(peripheral) {
-    peripheral.on('connect', () => {
-        log("Connecting to " + peripheral.advertisement.localName + " - " + peripheral.id);
-        stateManipulator.addConnectedDevice(peripheral.id);
-    });
-}
-
-function onDisconnection(peripheral) {
-    peripheral.on('disconnect', () => {
-        log("Disconnecting from " + peripheral.advertisement.localName + " - " + peripheral.id);
-        stateManipulator.removeConnectedDevices(peripheral.id);
-    });
-}
+// function onDiscover() {
+//     bleManager.on('discover', (peripheral) => {
+//             log("Found device: " + peripheral);
+//             onConnection(peripheral);
+//             onDisconnection(peripheral);
+//             scannedDevices.add(peripheral);
+//             stateManipulator.updateDeviceList([...scannedDevices]);
+//         }
+//     );
+// }
+//
+// function onStateChange() {
+//     bleManager.on('stateChange', (state) => {
+//         log("Noble state changed to: " + state);
+//     });
+// }
+//
+// function onScanStart() {
+//     bleManager.on('scanStart', () => {
+//         log("Device scan started");
+//         stateManipulator.updateScanning(true);
+//         setTimeout(function () {
+//             bleManager.stopScanning();
+//         }, 10000);
+//     });
+// }
+//
+// function onScanStop() {
+//     bleManager.on('scanStop', () => {
+//         log("Device scan stopped");
+//         stateManipulator.updateScanning(false);
+//     });
+// }
+//
+// function onConnection(peripheral) {
+//     peripheral.on('connect', () => {
+//         log("Connecting to " + peripheral.advertisement.localName + " - " + peripheral.id);
+//         stateManipulator.addConnectedDevice(peripheral.id);
+//     });
+// }
+//
+// function onDisconnection(peripheral) {
+//     peripheral.on('disconnect', () => {
+//         log("Disconnecting from " + peripheral.advertisement.localName + " - " + peripheral.id);
+//         stateManipulator.removeConnectedDevices(peripheral.id);
+//     });
+// }
 
 async function requestLocationServices() {
     log("Requesting Location Services");
