@@ -8,8 +8,9 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.geniem.rnble.RNBLEPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
-import com.showlocationservicesdialogbox.LocationServicesDialogBoxPackage;
 import com.react.rnspinkit.RNSpinkitPackage;
+import com.showlocationservicesdialogbox.LocationServicesDialogBoxPackage;
+import com.polidea.reactnativeble.BlePackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,7 +31,8 @@ public class MainApplication extends Application implements ReactApplication {
                     new LocationServicesDialogBoxPackage(),
                     new RNBLEPackage(),
                     new BluetoothManagerPackage(),
-                    new RNSpinkitPackage()
+                    new RNSpinkitPackage(),
+                    new BlePackage()
             );
         }
     };
