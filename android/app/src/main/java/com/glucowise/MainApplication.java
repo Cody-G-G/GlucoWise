@@ -10,6 +10,7 @@ import com.geniem.rnble.RNBLEPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.showlocationservicesdialogbox.LocationServicesDialogBoxPackage;
 import com.react.rnspinkit.RNSpinkitPackage;
+import it.innove.BleManagerPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,7 +31,8 @@ public class MainApplication extends Application implements ReactApplication {
                     new LocationServicesDialogBoxPackage(),
                     new RNBLEPackage(),
                     new BluetoothManagerPackage(),
-                    new RNSpinkitPackage()
+                    new RNSpinkitPackage(),
+                    new BleManagerPackage()
             );
         }
     };
