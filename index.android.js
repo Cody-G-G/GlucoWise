@@ -194,7 +194,7 @@ class GlucoWise extends Component {
 
         onDeviceDiscovered();
         onScanStop();
-        onBluetoothStateChange()
+        onBluetoothStateChange();
         // onDiscover();
         // onStateChange();
         // onScanStart();
@@ -268,16 +268,9 @@ function toggleDeviceConnection(peripheral) {
 // }
 
 async function scanDevices() {
-    requestLocationServices()
-        .then((result) => {
-            if (result) {
-                BleManager.checkState();
-                pressedScan = true;
-            }
-        })
-        .catch((error) => {
-            log("ERROR: " + error);
-        });
+    BleManager.checkState();
+    pressedScan = true;
+
 }
 
 function onDeviceDiscovered() {
@@ -298,30 +291,27 @@ function onScanStop() {
     NativeAppEventEmitter.addListener('BleManagerStopScan', () => log("Scan stopped"));
 }
 
-function onBluetoothStateChange() {
-    NativeAppEventEmitter.addListener(
-        'BleManagerDidUpdateState',
+async function onBluetoothStateChange() {
+    NativeAppEventEmitter.addListener('BleManagerDidUpdateState',
         (args) => {
-            log("Bluetooth state changed to " + args.state);
-            if (args.state === "off") {
+            log("Bluetooth state is " + args.state);
+            if (pressedScan) {
                 BleManager.enableBluetooth()
                     .then(() => {
                         log("Bluetooth enabled");
-
-                        if (pressedScan) {
+                        requestLocationServices().then(() => {
                             BleManager.scan([], 10)
                                 .then(() => {
                                     log('Scan started');
                                 });
-                        }
-
+                        });
                     })
                     .catch((error) => {
                         log("Enabling bluetooth failed: " + error);
-                    })
+                    });
+                pressedScan = false;
             }
-        }
-    );
+        });
 }
 
 async function requestLocationCoarsePermission() {
@@ -398,11 +388,11 @@ async function requestLocationServices() {
         })
             .then((success) => {
                 log("Location Service Request Success: " + success);
-                resolve(true)
+                resolve(success)
             })
             .catch((error) => {
                 log("Location Service Request ERROR: " + error.message);
-                reject(false);
+                reject(error);
             });
     });
 }
