@@ -167,7 +167,7 @@ class GlucoWise extends Component {
                                     </Text>
                                     <TouchableOpacity
                                         style={StyleSheet.flatten([styles.deviceButton, {backgroundColor: this.state.connectedUUIDs.includes(JSON.parse(rowData).id) ? 'firebrick' : 'green'}])}
-                                        onPress={() => toggleDeviceConnection(rowData)}>
+                                        onPress={() => toggleDeviceConnection(JSON.parse(rowData))}>
                                             <Text style={styles.deviceButtonText}>
                                                 {this.state.connectedUUIDs.includes(JSON.parse(rowData).id) ? "Disconnect" : "Connect"}
                                             </Text>
@@ -194,22 +194,45 @@ class GlucoWise extends Component {
         onDeviceDiscovered();
         onScanStop();
         onBluetoothStateChange();
-        // onDiscover();
-        // onStateChange();
-        // onScanStart();
-        // onScanStop();
+        onDeviceConnected();
+        onDeviceDisconnected();
     }
 }
 
 function toggleDeviceConnection(peripheral) {
-    const extendedDeviceId = peripheral.advertisement.localName + " - " + peripheral.id + " - " + peripheral.state;
+    const extendedDeviceId = peripheral.name + " - " + peripheral.id;
     log("Toggling connection with peripheral: <" + extendedDeviceId + ">");
 
-    if (peripheral.state === "disconnected") {
-        connectPeripheral(peripheral, extendedDeviceId)
-    } else if (peripheral.state === 'connected') {
-        disconnectPeripheral(peripheral, extendedDeviceId);
-    }
+    BleManager.isPeripheralConnected(peripheral.id, [])
+        .then((isConnected) => {
+            if (isConnected)
+                disconnectPeripheral(peripheral, extendedDeviceId);
+            else
+                connectPeripheral(peripheral, extendedDeviceId);
+        })
+        .catch((error) => log("Checking connection to " + extendedDeviceId + " failed: " + error));
+}
+
+function connectPeripheral(peripheral, extendedDeviceId) {
+    log("Connecting to " + extendedDeviceId);
+    BleManager.connect(peripheral.id)
+        .then((peripheralInfo) => {
+            log("Connected to " + peripheralInfo);
+        })
+        .catch((error) => {
+            log("Connection to " + extendedDeviceId + " failed: " + error);
+        });
+}
+
+function disconnectPeripheral(peripheral, extendedDeviceId) {
+    log("Disconnecting from " + extendedDeviceId);
+    BleManager.disconnect(peripheral.id)
+        .then(() => {
+            log("Disconnected from " + extendedDeviceId);
+        })
+        .catch((error) => {
+            log("Disconnecting from " + extendedDeviceId + " failed: " + error);
+        });
 }
 
 // function connectPeripheral(peripheral, extendedDeviceId) {
@@ -271,6 +294,17 @@ async function triggerStateCheckForScan() {
     BleManager.checkState();
 }
 
+function startScan() {
+    BleManager.scan([], 10)
+        .then(() => {
+            log("Scan started");
+            stateManipulator.updateScanning(true);
+        })
+        .catch((error) => {
+            log("Scan failed with error: " + error);
+        })
+}
+
 function onDeviceDiscovered() {
     NativeAppEventEmitter.addListener('BleManagerDiscoverPeripheral',
         (simpleDeviceObj) => {
@@ -287,12 +321,26 @@ function onDeviceDiscovered() {
 
 function onScanStop() {
     NativeAppEventEmitter.addListener('BleManagerStopScan', () => {
-            log("Scan stopped");
-            stateManipulator.updateScanning(false)
-        });
+        log("Scan stopped");
+        stateManipulator.updateScanning(false)
+    });
 }
 
-async function onBluetoothStateChange() {
+function onDeviceConnected() {
+    NativeAppEventEmitter.addListener('BleManagerConnectPeripheral', (id) => {
+        log("Connected to device: " + id);
+        stateManipulator.addConnectedDevice(id);
+    });
+}
+
+function onDeviceDisconnected() {
+    NativeAppEventEmitter.addListener('BleManagerDisconnectPeripheral', (id) => {
+        log("Disconnected device: " + id);
+        stateManipulator.removeConnectedDevices(id);
+    });
+}
+
+function onBluetoothStateChange() {
     NativeAppEventEmitter.addListener('BleManagerDidUpdateState', (args) => {
         log("Bluetooth state is " + args.state);
         if (pressedScan && args.state != "turning_off" && args.state != "turning_on") {
@@ -307,33 +355,6 @@ async function onBluetoothStateChange() {
                 });
         }
     });
-}
-
-function startScan() {
-    BleManager.scan([], 10)
-        .then(() => {
-            log("Scan started");
-            stateManipulator.updateScanning(true);
-        })
-        .catch((error) => {
-            log("Scan failed with error: " + error);
-        })
-}
-
-async function requestLocationCoarsePermission() {
-    try {
-        const granted = await
-            PermissionsAndroid.requestPermission(
-                PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
-                {
-                    'title': 'Location permission',
-                    'message': 'In order to use bluetooth, the app needs Location permissions.'
-                }
-            );
-        log("Permission LOCATION_COARSE granted: " + granted);
-    } catch (err) {
-        log("ERROR on requesting LOCATION_COARSE_LOCATION permission: " + err);
-    }
 }
 
 // function onDiscover() {
@@ -384,7 +405,22 @@ async function requestLocationCoarsePermission() {
 //     });
 // }
 
-async function requestLocationServices(callback) {
+function requestLocationCoarsePermission() {
+    try {
+        const granted = PermissionsAndroid.requestPermission(
+            PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+            {
+                'title': 'Location permission',
+                'message': 'In order to use bluetooth, the app needs Location permissions.'
+            }
+        );
+        log("Permission LOCATION_COARSE granted: " + granted);
+    } catch (err) {
+        log("ERROR on requesting LOCATION_COARSE_LOCATION permission: " + err);
+    }
+}
+
+function requestLocationServices(callback) {
     log("Requesting Location Services");
     LocationServicesDialogBox.checkLocationServicesIsEnabled({
         message: "<h2>Use Location ?</h2>This app wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/><a href='#'>Learn more</a>",
