@@ -15,7 +15,6 @@ import {
     TouchableOpacity,
     NativeAppEventEmitter
 } from 'react-native';
-const btManagerNative = NativeModules.BluetoothManagerModule;
 const Spinner = require('react-native-spinkit');
 import {ListItem, Button, Icon} from 'native-base';
 import log from './helpers/logger';
@@ -151,7 +150,7 @@ class GlucoWise extends Component {
         return (
             <View style={styles.screenContainer}>
                 <View style={styles.buttonPanel}>
-                    <Button onPress={scanDevices} large style={{backgroundColor: 'cornflowerblue'}} disabled={this.state.scanning}>
+                    <Button onPress={triggerStateCheckForScan} large style={{backgroundColor: 'cornflowerblue'}} disabled={this.state.scanning}>
                         <Icon theme={{iconFamily: "MaterialIcons"}} name="bluetooth"/>Search Devices
                     </Button>
                 </View>
@@ -267,10 +266,9 @@ function toggleDeviceConnection(peripheral) {
 //     });
 // }
 
-async function scanDevices() {
-    BleManager.checkState();
+async function triggerStateCheckForScan() {
     pressedScan = true;
-
+    BleManager.checkState();
 }
 
 function onDeviceDiscovered() {
@@ -292,26 +290,30 @@ function onScanStop() {
 }
 
 async function onBluetoothStateChange() {
-    NativeAppEventEmitter.addListener('BleManagerDidUpdateState',
-        (args) => {
-            log("Bluetooth state is " + args.state);
-            if (pressedScan) {
-                BleManager.enableBluetooth()
-                    .then(() => {
-                        log("Bluetooth enabled");
-                        requestLocationServices().then(() => {
-                            BleManager.scan([], 10)
-                                .then(() => {
-                                    log('Scan started');
-                                });
-                        });
-                    })
-                    .catch((error) => {
-                        log("Enabling bluetooth failed: " + error);
-                    });
-                pressedScan = false;
-            }
-        });
+    NativeAppEventEmitter.addListener('BleManagerDidUpdateState', (args) => {
+        log("Bluetooth state is " + args.state);
+        if (pressedScan && args.state != "turning_off" && args.state != "turning_on") {
+            pressedScan = false;
+            BleManager.enableBluetooth()
+                .then(() => {
+                    log("Bluetooth enabled");
+                    requestLocationServices(startScan);
+                })
+                .catch((error) => {
+                    log("Enabling bluetooth failed: " + error);
+                });
+        }
+    });
+}
+
+function startScan() {
+    BleManager.scan([], 10)
+        .then(() => {
+            log("Scan started");
+        })
+        .catch((error) => {
+            log("Scan failed with error: " + error);
+        })
 }
 
 async function requestLocationCoarsePermission() {
@@ -378,23 +380,20 @@ async function requestLocationCoarsePermission() {
 //     });
 // }
 
-async function requestLocationServices() {
+async function requestLocationServices(callback) {
     log("Requesting Location Services");
-    return new Promise((resolve, reject) => {
-        LocationServicesDialogBox.checkLocationServicesIsEnabled({
-            message: "<h2>Use Location ?</h2>This app wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/><a href='#'>Learn more</a>",
-            ok: "YES",
-            cancel: "NO"
+    LocationServicesDialogBox.checkLocationServicesIsEnabled({
+        message: "<h2>Use Location ?</h2>This app wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/><a href='#'>Learn more</a>",
+        ok: "YES",
+        cancel: "NO"
+    })
+        .then((success) => {
+            log("Location Service Request Success: " + success);
+            callback();
         })
-            .then((success) => {
-                log("Location Service Request Success: " + success);
-                resolve(success)
-            })
-            .catch((error) => {
-                log("Location Service Request ERROR: " + error.message);
-                reject(error);
-            });
-    });
+        .catch((error) => {
+            log("Location Service Request ERROR: " + error.message);
+        });
 }
 
 AppRegistry.registerComponent('GlucoWise', () => GlucoWise);
