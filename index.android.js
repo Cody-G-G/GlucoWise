@@ -102,7 +102,8 @@ class GlucoWise extends Component {
         // };
 
         this.state = {
-            deviceList: ds.cloneWithRows([]),
+            scannedDevices: ds.cloneWithRows([]),
+            devicesTogglingConnection: [],
             scanning: false,
             connectedUUIDs: []
         }
@@ -111,7 +112,7 @@ class GlucoWise extends Component {
     componentWillMount() {
         stateManipulator.updateDeviceList = (devices) => {
             this.setState({
-                deviceList: ds.cloneWithRows(devices)
+                scannedDevices: ds.cloneWithRows(devices)
             });
         };
 
@@ -128,6 +129,22 @@ class GlucoWise extends Component {
             connectedUUIDs.splice(connectedUUIDs.indexOf(connectedId));
             this.setState({
                 connectedUUIDs: connectedUUIDs
+            });
+        };
+
+        stateManipulator.addDeviceTogglingConnection = (deviceId) => {
+            let devicesTogglingConnection = this.state.devicesTogglingConnection.slice();
+            devicesTogglingConnection.push(deviceId);
+            this.setState({
+                devicesTogglingConnection: devicesTogglingConnection
+            });
+        };
+
+        stateManipulator.removeDeviceTogglingConnection = (deviceId) => {
+            let devicesTogglingConnection = this.state.devicesTogglingConnection.slice();
+            devicesTogglingConnection.splice(devicesTogglingConnection.indexOf(deviceId));
+            this.setState({
+                devicesTogglingConnection: devicesTogglingConnection
             });
         };
 
@@ -159,7 +176,7 @@ class GlucoWise extends Component {
                     <ListItem itemDivider>
                         <Text style={styles.deviceListHeader}>Found Devices</Text>
                     </ListItem>
-                    <ListView dataSource={this.state.deviceList} enableEmptySections={true} renderRow={(rowData) =>
+                    <ListView dataSource={this.state.scannedDevices} enableEmptySections={true} renderRow={(rowData) =>
                                 <View style={styles.device}>
                                     <Text style={styles.deviceDescription}>
                                             <B>Name:</B> {JSON.parse(rowData).name}{"\n"}
@@ -167,13 +184,13 @@ class GlucoWise extends Component {
                                     </Text>
                                     <TouchableOpacity
                                         style={StyleSheet.flatten([styles.deviceButton, {backgroundColor: this.state.connectedUUIDs.includes(JSON.parse(rowData).id) ? 'firebrick' : 'green'}])}
-                                        onPress={() => toggleDeviceConnection(JSON.parse(rowData))}>
+                                        onPress={() => toggleDeviceConnection(JSON.parse(rowData))} disabled={this.state.devicesTogglingConnection.includes(JSON.parse(rowData).id)}>
                                             <Text style={styles.deviceButtonText}>
                                                 {this.state.connectedUUIDs.includes(JSON.parse(rowData).id) ? "Disconnect" : "Connect"}
                                             </Text>
                                     </TouchableOpacity>
                                 </View>
-                        }
+                            }
                     />
                 </View>
 
@@ -202,6 +219,7 @@ class GlucoWise extends Component {
 function toggleDeviceConnection(peripheral) {
     const extendedDeviceId = peripheral.name + " - " + peripheral.id;
     log("Toggling connection with peripheral: <" + extendedDeviceId + ">");
+    stateManipulator.addDeviceTogglingConnection(peripheral.id);
 
     BleManager.isPeripheralConnected(peripheral.id, [])
         .then((isConnected) => {
@@ -210,14 +228,17 @@ function toggleDeviceConnection(peripheral) {
             else
                 connectPeripheral(peripheral, extendedDeviceId);
         })
-        .catch((error) => log("Checking connection to " + extendedDeviceId + " failed: " + error));
+        .catch((error) => {
+            stateManipulator.removeDeviceTogglingConnection(peripheral.id);
+            log("Checking connection to " + extendedDeviceId + " failed: " + error);
+        });
 }
 
 function connectPeripheral(peripheral, extendedDeviceId) {
     log("Connecting to " + extendedDeviceId);
     BleManager.connect(peripheral.id)
         .then((peripheralInfo) => {
-            log("Connected to " + peripheralInfo);
+            log("Connected and found information for device: " + JSON.stringify(peripheralInfo));
         })
         .catch((error) => {
             log("Connection to " + extendedDeviceId + " failed: " + error);
@@ -327,16 +348,18 @@ function onScanStop() {
 }
 
 function onDeviceConnected() {
-    NativeAppEventEmitter.addListener('BleManagerConnectPeripheral', (id) => {
-        log("Connected to device: " + id);
-        stateManipulator.addConnectedDevice(id);
+    NativeAppEventEmitter.addListener('BleManagerConnectPeripheral', (args) => {
+        stateManipulator.removeDeviceTogglingConnection(args.peripheral);
+        stateManipulator.addConnectedDevice(args.peripheral);
+        log("Connected to device: " + args.peripheral);
     });
 }
 
 function onDeviceDisconnected() {
-    NativeAppEventEmitter.addListener('BleManagerDisconnectPeripheral', (id) => {
-        log("Disconnected device: " + id);
-        stateManipulator.removeConnectedDevices(id);
+    NativeAppEventEmitter.addListener('BleManagerDisconnectPeripheral', (args) => {
+        stateManipulator.removeDeviceTogglingConnection(args.peripheral);
+        stateManipulator.removeConnectedDevices(args.peripheral);
+        log("Disconnected device: " + args.peripheral);
     });
 }
 
