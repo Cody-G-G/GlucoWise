@@ -8,12 +8,13 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.geniem.rnble.RNBLEPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
-import com.showlocationservicesdialogbox.LocationServicesDialogBoxPackage;
 import com.react.rnspinkit.RNSpinkitPackage;
-import it.innove.BleManagerPackage;
+import com.showlocationservicesdialogbox.LocationServicesDialogBoxPackage;
 
 import java.util.Arrays;
 import java.util.List;
+
+import it.innove.BleManagerPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -30,7 +31,6 @@ public class MainApplication extends Application implements ReactApplication {
                     new VectorIconsPackage(),
                     new LocationServicesDialogBoxPackage(),
                     new RNBLEPackage(),
-                    new BluetoothManagerPackage(),
                     new RNSpinkitPackage(),
                     new BleManagerPackage()
             );
