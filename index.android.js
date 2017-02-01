@@ -286,7 +286,10 @@ function onDeviceDiscovered() {
 }
 
 function onScanStop() {
-    NativeAppEventEmitter.addListener('BleManagerStopScan', () => log("Scan stopped"));
+    NativeAppEventEmitter.addListener('BleManagerStopScan', () => {
+            log("Scan stopped");
+            stateManipulator.updateScanning(false)
+        });
 }
 
 async function onBluetoothStateChange() {
@@ -310,6 +313,7 @@ function startScan() {
     BleManager.scan([], 10)
         .then(() => {
             log("Scan started");
+            stateManipulator.updateScanning(true);
         })
         .catch((error) => {
             log("Scan failed with error: " + error);
