@@ -254,7 +254,7 @@ function scanDevices() {
     });
 }
 
-async function requestLocationCoarsePermission() {
+function requestLocationCoarsePermission() {
     try {
         const granted = await
             PermissionsAndroid.requestPermission(
