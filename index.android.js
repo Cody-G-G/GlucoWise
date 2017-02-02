@@ -12,18 +12,19 @@ import {
     PermissionsAndroid,
     NetInfo,
     NativeModules,
-    TouchableOpacity
+    TouchableOpacity,
+    NativeAppEventEmitter
 } from 'react-native';
-const btManagerNative = NativeModules.BluetoothManagerModule;
 const Spinner = require('react-native-spinkit');
 import {ListItem, Button, Icon} from 'native-base';
 import log from './helpers/logger';
-import bleManager from 'react-native-ble';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 const B = (props) => <Text style={{fontWeight: 'bold'}}>{props.children}</Text>;
+import BleManager from 'react-native-ble-manager';
 
 const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-let scannedDevices = new Set();
+let pressedScan = false;
+let scannedDevices = [];
 let stateManipulator = {};
 
 const styles = StyleSheet.create({
@@ -100,7 +101,8 @@ class GlucoWise extends Component {
         // };
 
         this.state = {
-            deviceList: ds.cloneWithRows([]),
+            scannedDevices: ds.cloneWithRows([]),
+            devicesTogglingConnection: [],
             scanning: false,
             connectedUUIDs: []
         }
@@ -109,7 +111,7 @@ class GlucoWise extends Component {
     componentWillMount() {
         stateManipulator.updateDeviceList = (devices) => {
             this.setState({
-                deviceList: ds.cloneWithRows(devices)
+                scannedDevices: ds.cloneWithRows(devices)
             });
         };
 
@@ -126,6 +128,22 @@ class GlucoWise extends Component {
             connectedUUIDs.splice(connectedUUIDs.indexOf(connectedId));
             this.setState({
                 connectedUUIDs: connectedUUIDs
+            });
+        };
+
+        stateManipulator.addDeviceTogglingConnection = (deviceId) => {
+            let devicesTogglingConnection = this.state.devicesTogglingConnection.slice();
+            devicesTogglingConnection.push(deviceId);
+            this.setState({
+                devicesTogglingConnection: devicesTogglingConnection
+            });
+        };
+
+        stateManipulator.removeDeviceTogglingConnection = (deviceId) => {
+            let devicesTogglingConnection = this.state.devicesTogglingConnection.slice();
+            devicesTogglingConnection.splice(devicesTogglingConnection.indexOf(deviceId));
+            this.setState({
+                devicesTogglingConnection: devicesTogglingConnection
             });
         };
 
@@ -148,7 +166,7 @@ class GlucoWise extends Component {
         return (
             <View style={styles.screenContainer}>
                 <View style={styles.buttonPanel}>
-                    <Button onPress={scanDevices} large style={{backgroundColor: 'cornflowerblue'}} disabled={this.state.scanning}>
+                    <Button onPress={triggerStateCheckForScan} large style={{backgroundColor: 'cornflowerblue'}} disabled={this.state.scanning}>
                         <Icon theme={{iconFamily: "MaterialIcons"}} name="bluetooth"/>Search Devices
                     </Button>
                 </View>
@@ -157,21 +175,21 @@ class GlucoWise extends Component {
                     <ListItem itemDivider>
                         <Text style={styles.deviceListHeader}>Found Devices</Text>
                     </ListItem>
-                    <ListView dataSource={this.state.deviceList} enableEmptySections={true} renderRow={(rowData) =>
+                    <ListView dataSource={this.state.scannedDevices} enableEmptySections={true} renderRow={(rowData) =>
                                 <View style={styles.device}>
                                     <Text style={styles.deviceDescription}>
-                                            <B>Name:</B> {rowData.advertisement.localName}{"\n"}
-                                            <B>Id:</B> {rowData.id}
+                                            <B>Name:</B> {JSON.parse(rowData).name}{"\n"}
+                                            <B>Id:</B> {JSON.parse(rowData).id}
                                     </Text>
                                     <TouchableOpacity
-                                        style={StyleSheet.flatten([styles.deviceButton, {backgroundColor: this.state.connectedUUIDs.includes(rowData.id) ? 'firebrick' : 'green'}])}
-                                        onPress={() => toggleDeviceConnection(rowData)}>
+                                        style={StyleSheet.flatten([styles.deviceButton, {backgroundColor: this.state.connectedUUIDs.includes(JSON.parse(rowData).id) ? 'firebrick' : 'green'}])}
+                                        onPress={() => toggleDeviceConnection(JSON.parse(rowData))} disabled={this.state.devicesTogglingConnection.includes(JSON.parse(rowData).id)}>
                                             <Text style={styles.deviceButtonText}>
-                                                {this.state.connectedUUIDs.includes(rowData.id) ? "Disconnect" : "Connect"}
+                                                {this.state.connectedUUIDs.includes(JSON.parse(rowData).id) ? "Disconnect" : "Connect"}
                                             </Text>
                                     </TouchableOpacity>
                                 </View>
-                        }
+                            }
                     />
                 </View>
 
@@ -182,159 +200,187 @@ class GlucoWise extends Component {
 
     componentDidMount() {
         requestLocationCoarsePermission();
-        onDiscover();
-        onStateChange();
-        onScanStart();
+        initializeBleManager();
         onScanStop();
+        onBluetoothStateChange();
+        onDeviceDiscovered();
+        onDeviceConnected();
+        onDeviceDisconnected();
+        onCharacteristicUpdate();
     }
+}
+
+function initializeBleManager() {
+    BleManager
+        .start()
+        .then(() => {
+            log('BLE Manager initialized');
+        })
+        .catch((error) => {
+            log("BLE Manager intialization failed: " + error);
+        });
 }
 
 function toggleDeviceConnection(peripheral) {
-    const extendedDeviceId = peripheral.advertisement.localName + " - " + peripheral.id + " - " + peripheral.state ;
+    const extendedDeviceId = peripheral.name + " - " + peripheral.id;
     log("Toggling connection with peripheral: <" + extendedDeviceId + ">");
+    stateManipulator.addDeviceTogglingConnection(peripheral.id);
 
-    if (peripheral.state === "disconnected") {
-        connectPeripheral(peripheral, extendedDeviceId)
-    } else if (peripheral.state === 'connected') {
-        disconnectPeripheral(peripheral, extendedDeviceId);
-    }
+    BleManager.isPeripheralConnected(peripheral.id, [])
+        .then((isConnected) => {
+            if (isConnected)
+                disconnectPeripheral(peripheral, extendedDeviceId);
+            else
+                connectPeripheral(peripheral, extendedDeviceId);
+        })
+        .catch((error) => {
+            stateManipulator.removeDeviceTogglingConnection(peripheral.id);
+            log("Checking connection to " + extendedDeviceId + " failed: " + error);
+        });
 }
 
 function connectPeripheral(peripheral, extendedDeviceId) {
-    peripheral.connect((error) => {
-        if (error) {
-            log("ERROR on connection with " + extendedDeviceId + ": " + error);
-        } else {
-            log("CONNECTED " + extendedDeviceId);
-            peripheral.discoverSomeServicesAndCharacteristics(null, ["0000ffe400001000800000805f9b34fb"], (error, services, characteristics) => {
-                if (error)
-                    log("ERROR: " + error);
-                else {
-                    log("CHARACTERISTICS: " + characteristics[0]);
-                    characteristics[0].subscribe((error) => {
-                        log("ERROR ON SUBSCRIPTION: " + error);
-                    });
-                    characteristics[0].on('data', (data, isNotification) => log("DATA: " + data));
-                }
-            });
-        }
-    });
+    log("Connecting to " + extendedDeviceId);
+    BleManager.connect(peripheral.id)
+        .then((peripheralInfo) => {
+            log("Connected and found information for device: " + JSON.stringify(peripheralInfo));
+            enableCharacteristicNotifications(peripheral.id, extendedDeviceId, "ffe0", "ffe4");
+        })
+        .catch((error) => {
+            log("Connection to " + extendedDeviceId + " failed: " + error);
+        });
+}
+
+function enableCharacteristicNotifications(deviceId, extendedDeviceId, serviceUUID, characteristicUUID) {
+    BleManager.startNotification(deviceId, serviceUUID, characteristicUUID)
+        .then(() => log("Notification started for peripheral " + extendedDeviceId + ", service: " + serviceUUID + ", characteristic " + characteristicUUID))
+        .catch((error) => log("Error starting notification for peripheral " + extendedDeviceId + ", service: " + serviceUUID + ", characteristic " + characteristicUUID))
 }
 
 function disconnectPeripheral(peripheral, extendedDeviceId) {
-    peripheral.disconnect((error) => {
-        if(error) {
-            log("ERROR on disconnection with " + extendedDeviceId + ": " + error);
-        } else {
-            log("DISCONNECTED " + extendedDeviceId)
-        }
+    log("Disconnecting from " + extendedDeviceId);
+    BleManager.disconnect(peripheral.id)
+        .then(() => {
+            log("Disconnected from " + extendedDeviceId);
+        })
+        .catch((error) => {
+            log("Disconnecting from " + extendedDeviceId + " failed: " + error);
+        });
+}
+
+function triggerStateCheckForScan() {
+    pressedScan = true;
+    BleManager.checkState();
+}
+
+function startScan() {
+    BleManager.scan([], 10)
+        .then(() => {
+            log("Scan started");
+            stateManipulator.updateScanning(true);
+        })
+        .catch((error) => {
+            log("Scan failed with error: " + error);
+        })
+}
+
+function onCharacteristicUpdate() {
+    NativeAppEventEmitter.addListener("BleManagerDidUpdateValueForCharacteristic", (args) => {
+        log("Peripheral " + args.peripheral + " characteristic " + args.characteristic + " was updated to " + hexToAscii(args.value));
     });
 }
 
-function scanDevices() {
-    btManagerNative.enable((enabled, error) => {
-        if (error) {
-            log("BT ENABLE ERROR: " + error);
-        } else {
-            if (enabled) {
-                log("BT ENABLED: " + enabled);
-                requestLocationServices()
-                    .then((result) => {
-                        if (result) {
-                            bleManager.state = "poweredOn";
-                            bleManager.emit("stateChange", "poweredOn");
-                            bleManager.startScanning();
-                        }
-                    })
-                    .catch((error) => log("Location Services Request Rejected with: " + error));
-            } else {
-                log("BT ENABLE CANCELLED");
+function onDeviceDiscovered() {
+    NativeAppEventEmitter.addListener('BleManagerDiscoverPeripheral',
+        (simpleDeviceObj) => {
+            simpleDeviceObj.rssi = undefined;
+            let strDeviceObject = JSON.stringify(simpleDeviceObj);
+            log("Found device: " + strDeviceObject);
+            if (!scannedDevices.includes(strDeviceObject)) {
+                scannedDevices.push(strDeviceObject);
+                stateManipulator.updateDeviceList([...scannedDevices]);
             }
         }
+    );
+}
+
+function onScanStop() {
+    NativeAppEventEmitter.addListener('BleManagerStopScan', () => {
+        log("Scan stopped");
+        stateManipulator.updateScanning(false)
     });
 }
 
-async function requestLocationCoarsePermission() {
+function onDeviceConnected() {
+    NativeAppEventEmitter.addListener('BleManagerConnectPeripheral', (args) => {
+        stateManipulator.removeDeviceTogglingConnection(args.peripheral);
+        stateManipulator.addConnectedDevice(args.peripheral);
+        log("Connected to device: " + args.peripheral);
+    });
+}
+
+function onDeviceDisconnected() {
+    NativeAppEventEmitter.addListener('BleManagerDisconnectPeripheral', (args) => {
+        stateManipulator.removeDeviceTogglingConnection(args.peripheral);
+        stateManipulator.removeConnectedDevices(args.peripheral);
+        log("Disconnected device: " + args.peripheral);
+    });
+}
+
+function onBluetoothStateChange() {
+    NativeAppEventEmitter.addListener('BleManagerDidUpdateState', (args) => {
+        log("Bluetooth state is " + args.state);
+        if (pressedScan && args.state != "turning_off" && args.state != "turning_on") {
+            pressedScan = false;
+            BleManager.enableBluetooth()
+                .then(() => {
+                    log("Bluetooth enabled");
+                    requestLocationServices(startScan);
+                })
+                .catch((error) => {
+                    log("Enabling bluetooth failed: " + error);
+                });
+        }
+    });
+}
+
+function requestLocationCoarsePermission() {
     try {
-        const granted = await
-            PermissionsAndroid.requestPermission(
-                PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
-                {
-                    'title': 'Location permission',
-                    'message': 'In order to use bluetooth, the app needs Location permissions.'
-                }
-            );
+        const granted = PermissionsAndroid.requestPermission(
+            PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+            {
+                'title': 'Location permission',
+                'message': 'In order to use bluetooth, the app needs Location permissions.'
+            }
+        );
         log("Permission LOCATION_COARSE granted: " + granted);
     } catch (err) {
         log("ERROR on requesting LOCATION_COARSE_LOCATION permission: " + err);
     }
 }
 
-function onDiscover() {
-    bleManager.on('discover', (peripheral) => {
-            log("Found device: " + peripheral);
-            onConnection(peripheral);
-            onDisconnection(peripheral);
-            scannedDevices.add(peripheral);
-            stateManipulator.updateDeviceList([...scannedDevices]);
-        }
-    );
-}
-
-function onStateChange() {
-    bleManager.on('stateChange', (state) => {
-        log("Noble state changed to: " + state);
-    });
-}
-
-function onScanStart() {
-    bleManager.on('scanStart', () => {
-        log("Device scan started");
-        stateManipulator.updateScanning(true);
-        setTimeout(function () {
-            bleManager.stopScanning();
-        }, 10000);
-    });
-}
-
-function onScanStop() {
-    bleManager.on('scanStop', () => {
-        log("Device scan stopped");
-        stateManipulator.updateScanning(false);
-    });
-}
-
-function onConnection(peripheral) {
-    peripheral.on('connect', () => {
-        log("Connecting to " + peripheral.advertisement.localName + " - " + peripheral.id);
-        stateManipulator.addConnectedDevice(peripheral.id);
-    });
-}
-
-function onDisconnection(peripheral) {
-    peripheral.on('disconnect', () => {
-        log("Disconnecting from " + peripheral.advertisement.localName + " - " + peripheral.id);
-        stateManipulator.removeConnectedDevices(peripheral.id);
-    });
-}
-
-async function requestLocationServices() {
+function requestLocationServices(callback) {
     log("Requesting Location Services");
-    return new Promise((resolve, reject) => {
-        LocationServicesDialogBox.checkLocationServicesIsEnabled({
-            message: "<h2>Use Location ?</h2>This app wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/><a href='#'>Learn more</a>",
-            ok: "YES",
-            cancel: "NO"
+    LocationServicesDialogBox.checkLocationServicesIsEnabled({
+        message: "<h2>Use Location ?</h2>This app wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/><a href='#'>Learn more</a>",
+        ok: "YES",
+        cancel: "NO"
+    })
+        .then((success) => {
+            log("Location Service Request Success: " + success);
+            callback();
         })
-            .then((success) => {
-                log("Location Service Request Success: " + success);
-                resolve(true)
-            })
-            .catch((error) => {
-                log("Location Service Request ERROR: " + error.message);
-                reject(false);
-            });
-    });
+        .catch((error) => {
+            log("Location Service Request ERROR: " + error.message);
+        });
+}
+
+function hexToAscii(hexArg) {
+    const hex = hexArg.toString();
+    let str = '';
+    for (let i = 0; i < hex.length; i += 2)
+        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+    return str;
 }
 
 AppRegistry.registerComponent('GlucoWise', () => GlucoWise);
