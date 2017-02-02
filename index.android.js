@@ -268,61 +268,7 @@ function disconnectPeripheral(peripheral, extendedDeviceId) {
         });
 }
 
-// function connectPeripheral(peripheral, extendedDeviceId) {
-//     peripheral.connect((error) => {
-//         if (error) {
-//             log("ERROR on connection with " + extendedDeviceId + ": " + error);
-//         } else {
-//             log("CONNECTED " + extendedDeviceId);
-//             peripheral.discoverSomeServicesAndCharacteristics(null, ["0000ffe400001000800000805f9b34fb"], (error, services, characteristics) => {
-//                 if (error)
-//                     log("ERROR: " + error);
-//                 else {
-//                     log("CHARACTERISTICS: " + characteristics[0]);
-//                     characteristics[0].subscribe((error) => {
-//                         log("ERROR ON SUBSCRIPTION: " + error);
-//                     });
-//                     characteristics[0].on('data', (data, isNotification) => log("DATA: " + data));
-//                 }
-//             });
-//         }
-//     });
-// }
-//
-// function disconnectPeripheral(peripheral, extendedDeviceId) {
-//     peripheral.disconnect((error) => {
-//         if(error) {
-//             log("ERROR on disconnection with " + extendedDeviceId + ": " + error);
-//         } else {
-//             log("DISCONNECTED " + extendedDeviceId)
-//         }
-//     });
-// }
-
-// function scanDevices() {
-//     btManagerNative.enable((enabled, error) => {
-//         if (error) {
-//             log("BT ENABLE ERROR: " + error);
-//         } else {
-//             if (enabled) {
-//                 log("BT ENABLED: " + enabled);
-//                 requestLocationServices()
-//                     .then((result) => {
-//                         if (result) {
-//                             bleManager.state = "poweredOn";
-//                             bleManager.emit("stateChange", "poweredOn");
-//                             bleManager.startScanning();
-//                         }
-//                     })
-//                     .catch((error) => log("Location Services Request Rejected with: " + error));
-//             } else {
-//                 log("BT ENABLE CANCELLED");
-//             }
-//         }
-//     });
-// }
-
-async function triggerStateCheckForScan() {
+function triggerStateCheckForScan() {
     pressedScan = true;
     BleManager.checkState();
 }
@@ -397,54 +343,6 @@ function onBluetoothStateChange() {
         }
     });
 }
-
-// function onDiscover() {
-//     bleManager.on('discover', (peripheral) => {
-//             log("Found device: " + peripheral);
-//             onConnection(peripheral);
-//             onDisconnection(peripheral);
-//             scannedDevices.add(peripheral);
-//             stateManipulator.updateDeviceList([...scannedDevices]);
-//         }
-//     );
-// }
-//
-// function onStateChange() {
-//     bleManager.on('stateChange', (state) => {
-//         log("Noble state changed to: " + state);
-//     });
-// }
-//
-// function onScanStart() {
-//     bleManager.on('scanStart', () => {
-//         log("Device scan started");
-//         stateManipulator.updateScanning(true);
-//         setTimeout(function () {
-//             bleManager.stopScanning();
-//         }, 10000);
-//     });
-// }
-//
-// function onScanStop() {
-//     bleManager.on('scanStop', () => {
-//         log("Device scan stopped");
-//         stateManipulator.updateScanning(false);
-//     });
-// }
-//
-// function onConnection(peripheral) {
-//     peripheral.on('connect', () => {
-//         log("Connecting to " + peripheral.advertisement.localName + " - " + peripheral.id);
-//         stateManipulator.addConnectedDevice(peripheral.id);
-//     });
-// }
-//
-// function onDisconnection(peripheral) {
-//     peripheral.on('disconnect', () => {
-//         log("Disconnecting from " + peripheral.advertisement.localName + " - " + peripheral.id);
-//         stateManipulator.removeConnectedDevices(peripheral.id);
-//     });
-// }
 
 function requestLocationCoarsePermission() {
     try {
