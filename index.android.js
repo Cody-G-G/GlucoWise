@@ -340,7 +340,7 @@ function startScan() {
 
 function onCharacteristicUpdate() {
     NativeAppEventEmitter.addListener("BleManagerDidUpdateValueForCharacteristic", (args) => {
-        log("Peripheral " + args.peripheral + " characteristic " + args.characteristic + " was updated to " + args.value);
+        log("Peripheral " + args.peripheral + " characteristic " + args.characteristic + " was updated to " + hexToAscii(args.value));
     });
 }
 
@@ -475,6 +475,14 @@ function requestLocationServices(callback) {
         .catch((error) => {
             log("Location Service Request ERROR: " + error.message);
         });
+}
+
+function hexToAscii(hex) {
+    const hex = hex.toString();
+    let str = '';
+    for (let i = 0; i < hex.length; i += 2)
+        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+    return str;
 }
 
 AppRegistry.registerComponent('GlucoWise', () => GlucoWise);
