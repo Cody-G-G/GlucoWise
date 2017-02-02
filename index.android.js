@@ -152,16 +152,6 @@ class GlucoWise extends Component {
         };
     }
 
-    renderSpinnerPanel() {
-        if (this.state.scanning) {
-            return (
-                <View style={styles.spinnerPanel}>
-                    <Spinner isVisible={this.state.scanning} size={100} type={'Wave'} color={'#6495ED'}/>
-                </View>
-            );
-        } else return null;
-    }
-
     render() {
         return (
             <View style={styles.screenContainer}>
@@ -193,7 +183,10 @@ class GlucoWise extends Component {
                     />
                 </View>
 
-                {this.renderSpinnerPanel()}
+                {this.state.scanning &&
+                <View style={styles.spinnerPanel}>
+                    <Spinner isVisible={this.state.scanning} size={100} type={'Wave'} color={'#6495ED'}/>
+                </View>}
             </View>
         )
     }
