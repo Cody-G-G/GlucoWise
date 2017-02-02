@@ -18,7 +18,6 @@ import {
 const Spinner = require('react-native-spinkit');
 import {ListItem, Button, Icon} from 'native-base';
 import log from './helpers/logger';
-// import bleManager from 'react-native-ble';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 const B = (props) => <Text style={{fontWeight: 'bold'}}>{props.children}</Text>;
 import BleManager from 'react-native-ble-manager';
@@ -201,19 +200,25 @@ class GlucoWise extends Component {
 
     componentDidMount() {
         requestLocationCoarsePermission();
-
-        BleManager
-            .start()
-            .then(() => {
-                log('Module initialized');
-            });
-
-        onDeviceDiscovered();
+        initializeBleManager();
         onScanStop();
         onBluetoothStateChange();
+        onDeviceDiscovered();
         onDeviceConnected();
         onDeviceDisconnected();
+        onCharacteristicUpdate();
     }
+}
+
+function initializeBleManager() {
+    BleManager
+        .start()
+        .then(() => {
+            log('BLE Manager initialized');
+        })
+        .catch((error) => {
+            log("BLE Manager intialization failed: " + error);
+        });
 }
 
 function toggleDeviceConnection(peripheral) {
@@ -239,10 +244,17 @@ function connectPeripheral(peripheral, extendedDeviceId) {
     BleManager.connect(peripheral.id)
         .then((peripheralInfo) => {
             log("Connected and found information for device: " + JSON.stringify(peripheralInfo));
+            enableCharacteristicNotifications(peripheral.id, extendedDeviceId, "ffe0", "ffe4");
         })
         .catch((error) => {
             log("Connection to " + extendedDeviceId + " failed: " + error);
         });
+}
+
+function enableCharacteristicNotifications(deviceId, extendedDeviceId, serviceUUID, characteristicUUID) {
+    BleManager.startNotification(deviceId, serviceUUID, characteristicUUID)
+        .then(() => log("Notification started for peripheral " + extendedDeviceId + ", service: " + serviceUUID + ", characteristic " + characteristicUUID))
+        .catch((error) => log("Error starting notification for peripheral " + extendedDeviceId + ", service: " + serviceUUID + ", characteristic " + characteristicUUID))
 }
 
 function disconnectPeripheral(peripheral, extendedDeviceId) {
@@ -324,6 +336,12 @@ function startScan() {
         .catch((error) => {
             log("Scan failed with error: " + error);
         })
+}
+
+function onCharacteristicUpdate() {
+    NativeAppEventEmitter.addListener("BleManagerDidUpdateValueForCharacteristic", (args) => {
+        log("Peripheral " + args.peripheral + " characteristic " + args.characteristic + " was updated to " + args.value);
+    });
 }
 
 function onDeviceDiscovered() {
