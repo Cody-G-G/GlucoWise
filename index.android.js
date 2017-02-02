@@ -477,8 +477,8 @@ function requestLocationServices(callback) {
         });
 }
 
-function hexToAscii(hex) {
-    const hex = hex.toString();
+function hexToAscii(hexArg) {
+    const hex = hexArg.toString();
     let str = '';
     for (let i = 0; i < hex.length; i += 2)
         str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
