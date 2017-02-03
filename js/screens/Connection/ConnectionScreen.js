@@ -1,25 +1,19 @@
 'use strict';
 import React, {Component} from 'react';
 import {
-    Navigator,
     View,
-    Text,
-    ListView,
-    ScrollView,
-    NativeModules,
-    TouchableOpacity,
     StyleSheet,
+    ListView,
     NativeAppEventEmitter
 } from 'react-native';
 import styles from "./styles";
 import hexToAscii from "./../../helpers/h2a";
 import permissions from "./../../helpers/permissions";
-import {ListItem, Button, Icon} from 'native-base';
 import log from './../../helpers/logger';
 import BleManager from 'react-native-ble-manager';
 import SearchButtonPanel from "./SearchButtonPanel";
+import DevicesPanel from "./DevicesPanel";
 const Spinner = require('react-native-spinkit');
-const B = (props) => <Text style={{fontWeight: 'bold'}}>{props.children}</Text>;
 
 class ConnectionScreen extends Component {
     constructor(props) {
@@ -31,36 +25,20 @@ class ConnectionScreen extends Component {
             scannedDevices: this.ds.cloneWithRows([]),
             devicesTogglingConnection: [],
             scanning: false,
-            connectedUUIDs: []
+            connectedDevices: []
         };
     }
 
     render() {
         return (
             <View style={styles.screenContainer}>
-                <SearchButtonPanel onPress={this.triggerStateCheckForScan.bind(this)} scanning={this.state.scanning}/>
+                <SearchButtonPanel onPress={this.triggerStateCheckForScan.bind(this)}
+                                   scanning={this.state.scanning}/>
 
-                <View style={styles.devicesPanel}>
-                    <ListItem itemDivider>
-                        <Text style={styles.deviceListHeader}>Found Devices</Text>
-                    </ListItem>
-                    <ListView dataSource={this.state.scannedDevices} enableEmptySections={true} renderRow={(rowData) =>
-                                <View style={styles.device}>
-                                    <Text style={styles.deviceDescription}>
-                                            <B>Name:</B> {JSON.parse(rowData).name}{"\n"}
-                                            <B>Id:</B> {JSON.parse(rowData).id}
-                                    </Text>
-                                    <TouchableOpacity
-                                        style={StyleSheet.flatten([styles.deviceButton, {backgroundColor: this.state.connectedUUIDs.includes(JSON.parse(rowData).id) ? 'firebrick' : 'green'}])}
-                                        onPress={() => this.toggleDeviceConnection(JSON.parse(rowData))} disabled={this.state.devicesTogglingConnection.includes(JSON.parse(rowData).id)}>
-                                            <Text style={styles.deviceButtonText}>
-                                                {this.state.connectedUUIDs.includes(JSON.parse(rowData).id) ? "Disconnect" : "Connect"}
-                                            </Text>
-                                    </TouchableOpacity>
-                                </View>
-                            }
-                    />
-                </View>
+                <DevicesPanel onPress={this.toggleDeviceConnection.bind(this)}
+                              scannedDevices={this.state.scannedDevices}
+                              devicesTogglingConnection={this.state.devicesTogglingConnection}
+                              connectedDevices={this.state.connectedDevices}/>
 
                 {this.state.scanning &&
                 <View style={styles.spinnerPanel}>
@@ -222,18 +200,18 @@ class ConnectionScreen extends Component {
     }
 
     addConnectedDevice(connectedId) {
-        let connectedUUIDs = this.state.connectedUUIDs.slice();
+        let connectedUUIDs = this.state.connectedDevices.slice();
         connectedUUIDs.push(connectedId);
         this.setState({
-            connectedUUIDs: connectedUUIDs
+            connectedDevices: connectedUUIDs
         });
     }
 
     removeConnectedDevices(connectedId) {
-        let connectedUUIDs = this.state.connectedUUIDs.slice();
+        let connectedUUIDs = this.state.connectedDevices.slice();
         connectedUUIDs.splice(connectedUUIDs.indexOf(connectedId));
         this.setState({
-            connectedUUIDs: connectedUUIDs
+            connectedDevices: connectedUUIDs
         });
     }
 
