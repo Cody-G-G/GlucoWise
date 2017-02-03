@@ -11,12 +11,13 @@ import {
     StyleSheet,
     NativeAppEventEmitter
 } from 'react-native';
-import styles from "./../../styles";
+import styles from "./styles";
 import hexToAscii from "./../../helpers/h2a";
 import permissions from "./../../helpers/permissions";
 import {ListItem, Button, Icon} from 'native-base';
 import log from './../../helpers/logger';
 import BleManager from 'react-native-ble-manager';
+import SearchButtonPanel from "./SearchButtonPanel";
 const Spinner = require('react-native-spinkit');
 const B = (props) => <Text style={{fontWeight: 'bold'}}>{props.children}</Text>;
 
@@ -37,11 +38,7 @@ class ConnectionScreen extends Component {
     render() {
         return (
             <View style={styles.screenContainer}>
-                <View style={styles.buttonPanel}>
-                    <Button onPress={this.triggerStateCheckForScan.bind(this)} large style={{backgroundColor: 'cornflowerblue'}} disabled={this.state.scanning}>
-                        <Icon theme={{iconFamily: "MaterialIcons"}} name="bluetooth"/>Search Devices
-                    </Button>
-                </View>
+                <SearchButtonPanel onPress={this.triggerStateCheckForScan.bind(this)} scanning={this.state.scanning}/>
 
                 <View style={styles.devicesPanel}>
                     <ListItem itemDivider>

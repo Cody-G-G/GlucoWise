@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold'
     },
-    buttonPanel: {
+    searchButtonPanel: {
         flex: 1,
         paddingTop: 20,
         paddingBottom: 20
