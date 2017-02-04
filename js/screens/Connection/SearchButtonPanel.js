@@ -1,7 +1,7 @@
 'use strict';
-import React, {Component} from 'react';
-import {Button, Icon} from 'native-base';
-import {View} from 'react-native';
+import React, { Component } from 'react';
+import { Button, Icon } from 'native-base';
+import { View } from 'react-native';
 import styles from "./styles";
 
 class SearchButtonPanel extends Component {

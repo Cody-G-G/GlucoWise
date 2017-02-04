@@ -10,9 +10,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Created by iHack1337 on 12/1/2016.
- */
 class BluetoothManagerPackage implements ReactPackage {
 
     @Override

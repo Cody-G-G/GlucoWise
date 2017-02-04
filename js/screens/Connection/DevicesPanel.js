@@ -1,7 +1,7 @@
 'use strict';
-import React, {Component} from 'react';
-import {ListItem} from 'native-base';
-import {View, StyleSheet, ListView, Text, TouchableOpacity} from 'react-native';
+import React, { Component } from 'react';
+import { ListItem } from 'native-base';
+import { View, StyleSheet, ListView, Text, TouchableOpacity } from 'react-native';
 import styles from "./styles";
 const B = (props) => <Text style={{fontWeight: 'bold'}}>{props.children}</Text>;
 
