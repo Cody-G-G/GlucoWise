@@ -1,5 +1,5 @@
 'use strict';
-import GlucoWise from './js/App';
+import App from './js/App';
 import {AppRegistry} from 'react-native';
 
-AppRegistry.registerComponent('GlucoWise', () => GlucoWise);
+AppRegistry.registerComponent('GlucoWise', () => App);

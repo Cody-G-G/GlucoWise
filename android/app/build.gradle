@@ -149,7 +149,6 @@ dependencies {
     compile project(':./native-base/node_modules/react-native-vector-icons')
     //noinspection GradleDynamicVersion
     compile project(':react-native-android-location-services-dialog-box')
-    compile project(':react-native-navigation')
 }
 
 // Run this once to be able to run the application with BUCK

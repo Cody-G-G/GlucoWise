@@ -49,7 +49,8 @@ const styles = StyleSheet.create({
     screenContainer: {
         flex: 1,
         justifyContent: 'space-around',
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor: 'aliceblue'
     }
 });
 
