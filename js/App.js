@@ -1,45 +1,41 @@
 'use strict';
 import React, {Component} from 'react';
+import {Router, Scene} from 'react-native-router-flux';
+import NavigationDrawer from './glue/NavigationDrawer';
 import ConnectionScreen from './screens/Connection/ConnectionScreen';
-import Drawer from 'react-native-drawer';
-import DrawerPanel from "./glue/DrawerPanel";
+import {Navigator} from 'react-native';
 
 class App extends Component {
-    closeDrawer = () => {
-        this._drawer.close()
-    };
-    openDrawer = () => {
-        this._drawer.open()
-    };
 
     render() {
         return (
-            <Drawer
-                type="overlay"
-                ref={(_drawer) => this._drawer = _drawer}
-                content={<DrawerPanel/>}
-                onOpen={this.openDrawer.bind(this)}
-                onClose={this.closeDrawer.bind(this)}
-                tapToClose={true}
-                openDrawerOffset={0.55}
-                panCloseMask={0.7}
-                panOpenMask={0.3}
-                closedDrawerOffset={-3}
-                panThreshold={0.05}
-                styles={{main: {
-                    opacity: 1
-                }}}
-                tweenHandler={(ratio) => ({
-                    main: {opacity: (2 - ratio) / 2}
-                })}
-                side={"right"}
-                negotiatePan={true}
-                tweenDuration={75}
-            >
-                <ConnectionScreen />
-            </Drawer>
+            <Router getSceneStyle={getSceneStyle}>
+                <Scene key="drawer" component={NavigationDrawer}>
+                    <Scene key="test"
+                           hideTabBar
+                           tabBarStyle={{
+                               borderTopWidth: .5,
+                               borderColor: '#b7b7b7',
+                               backgroundColor: 'white',
+                               opacity: 1
+                           }}>
+                        <Scene key="tabConnection" title="Connection" initial component={ConnectionScreen}/>
+                    </Scene>
+                </Scene>
+            </Router>
         )
     }
 }
+
+const getSceneStyle = (props, computedProps) => {
+    const style = {
+        backgroundColor:'black'
+    };
+    if (computedProps.isActive) {
+        style.marginTop = computedProps.hideNavBar ? 0 : 53;
+        style.marginBottom = computedProps.hideTabBar ? 0 : 50;
+    }
+    return style;
+};
 
 export default App;

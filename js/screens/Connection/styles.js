@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     },
     searchButtonPanel: {
         flex: 1,
-        paddingTop: 20,
+        paddingTop: 10,
         paddingBottom: 20
     },
     devicesPanel: {
