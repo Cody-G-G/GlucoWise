@@ -5,7 +5,7 @@ import { View, StyleSheet, ListView, Text, TouchableOpacity } from 'react-native
 import styles from "./styles";
 const B = (props) => <Text style={{fontWeight: 'bold'}}>{props.children}</Text>;
 
-class DevicesPanel extends Component {
+export default class DevicesPanel extends Component {
     constructor(props) {
         super(props);
     }
@@ -48,5 +48,3 @@ class DevicesPanel extends Component {
         return this.props.connectedDevices.includes(JSON.parse(rowData).id) ? "Disconnect" : "Connect";
     }
 }
-
-export default DevicesPanel;

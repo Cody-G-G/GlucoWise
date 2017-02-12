@@ -1,6 +1,4 @@
 'use strict';
-function log(string) {
+export default (string) => {
     console.log(string);
 }
-
-export default log;

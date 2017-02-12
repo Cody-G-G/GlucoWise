@@ -4,7 +4,7 @@ import Drawer from 'react-native-drawer';
 import DrawerPanel from "./DrawerPanel";
 import {DefaultRenderer, Actions} from 'react-native-router-flux';
 
-export default class App extends Component {
+export default class NavigationDrawer extends Component {
 
     render() {
         const state = this.props.navigationState;
@@ -36,6 +36,6 @@ export default class App extends Component {
     }
 }
 
-App.childContextTypes = {
+NavigationDrawer.childContextTypes = {
     drawer: React.PropTypes.object
 };

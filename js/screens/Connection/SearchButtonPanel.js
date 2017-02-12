@@ -4,7 +4,7 @@ import { Button, Icon } from 'native-base';
 import { View } from 'react-native';
 import styles from "./styles";
 
-class SearchButtonPanel extends Component {
+export default class SearchButtonPanel extends Component {
     constructor(props) {
         super(props);
     }
@@ -19,5 +19,3 @@ class SearchButtonPanel extends Component {
         );
     }
 }
-
-export default SearchButtonPanel;

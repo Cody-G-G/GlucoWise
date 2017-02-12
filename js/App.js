@@ -1,29 +1,26 @@
 'use strict';
 import React, {Component} from 'react';
-import {Router, Scene} from 'react-native-router-flux';
+import {Router, Scene, Reducer} from 'react-native-router-flux';
 import NavigationDrawer from './glue/NavigationDrawer';
 import ConnectionScreen from './screens/Connection/ConnectionScreen';
 import {Navigator} from 'react-native';
+import GraphScreen from './screens/GraphData/GraphScreen';
+import log from './helpers/logger';
 
-class App extends Component {
+export default class App extends Component {
 
     render() {
         return (
             <Router getSceneStyle={getSceneStyle}>
                 <Scene key="drawer" component={NavigationDrawer}>
-                    <Scene key="test"
-                           hideTabBar
-                           tabBarStyle={{
-                               borderTopWidth: .5,
-                               borderColor: '#b7b7b7',
-                               backgroundColor: 'white',
-                               opacity: 1
-                           }}>
-                        <Scene key="tabConnection" title="Connection" initial component={ConnectionScreen}/>
+                    <Scene key="main"
+                           tabs>
+                        <Scene key="screenConnection" title="Connection" initial hideTabBar component={ConnectionScreen}/>
+                        <Scene key="screenGraph" title="Graph" hideTabBar component={GraphScreen}/>
                     </Scene>
                 </Scene>
             </Router>
-        )
+        );
     }
 }
 
@@ -37,5 +34,3 @@ const getSceneStyle = (props, computedProps) => {
     }
     return style;
 };
-
-export default App;

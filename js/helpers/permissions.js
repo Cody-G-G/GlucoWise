@@ -3,7 +3,7 @@ import log from "./logger";
 import {PermissionsAndroid} from 'react-native';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 
-const permissions = {
+export default {
     requestLocationServices: function (callback) {
         log("Requesting Location Services");
         LocationServicesDialogBox.checkLocationServicesIsEnabled({
@@ -22,7 +22,7 @@ const permissions = {
 
     requestLocationCoarsePermission: function () {
         try {
-            const granted = PermissionsAndroid.requestPermission(
+            const granted = PermissionsAndroid.request(
                 PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION, {
                     'title': 'Location permission',
                     'message': 'In order to use bluetooth, the app needs Location permissions.'
@@ -34,5 +34,3 @@ const permissions = {
         }
     }
 };
-
-export default permissions;

@@ -1,7 +1,7 @@
 'use strict';
 import { StyleSheet } from "react-native";
 
-const styles = StyleSheet.create({
+export default StyleSheet.create({
     deviceButton: {
         flex: 2,
         alignSelf: 'stretch',
@@ -53,5 +53,3 @@ const styles = StyleSheet.create({
         backgroundColor: 'aliceblue'
     }
 });
-
-export default styles;

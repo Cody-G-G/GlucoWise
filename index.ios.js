@@ -50,4 +50,4 @@ const styles = StyleSheet.create({
   },
 });
 
-AppRegistry.registerComponent('App', () => GlucoWise);
+AppRegistry.registerComponent('NavigationDrawer', () => GlucoWise);
