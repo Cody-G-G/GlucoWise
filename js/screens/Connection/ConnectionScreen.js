@@ -15,7 +15,7 @@ import SearchButtonPanel from "./SearchButtonPanel";
 import DevicesPanel from "./DevicesPanel";
 const Spinner = require('react-native-spinkit');
 
-class ConnectionScreen extends Component {
+export default class ConnectionScreen extends Component {
     constructor(props) {
         super(props);
         this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -239,5 +239,3 @@ class ConnectionScreen extends Component {
         this.pressedScan = pressedScan;
     }
 }
-
-export default ConnectionScreen;

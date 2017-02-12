@@ -1,11 +1,10 @@
 'use strict';
 import React, {Component} from 'react';
-import {Router, Scene, Reducer} from 'react-native-router-flux';
+import {Router, Scene} from 'react-native-router-flux';
 import NavigationDrawer from './glue/NavigationDrawer';
 import ConnectionScreen from './screens/Connection/ConnectionScreen';
 import {Navigator} from 'react-native';
 import GraphScreen from './screens/GraphData/GraphScreen';
-import log from './helpers/logger';
 
 export default class App extends Component {
 
