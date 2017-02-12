@@ -35,12 +35,12 @@ export default class GraphPanel extends Component {
 
         const options = {
             width: 315,
-            height: 300,
+            height: 265,
             color: '#2980B9',
             margin: {
                 top: 20,
                 left: 35,
-                bottom: 20,
+                bottom: 25,
                 right: 10
             },
             animate: {

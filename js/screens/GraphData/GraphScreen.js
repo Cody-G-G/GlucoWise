@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import {View, Text} from 'react-native';
 import styles from './styles';
 import GraphPanel from './GraphPanel';
+import ReadingsPanel from './ReadingsPanel';
 
 export default class GraphScreen extends Component {
     constructor(props) {
@@ -13,9 +14,7 @@ export default class GraphScreen extends Component {
         return (
             <View style={styles.screenContainer}>
                 <GraphPanel/>
-                <View style={styles.readingsPanel}>
-                    <Text>TEST</Text>
-                </View>
+                <ReadingsPanel/>
             </View>
         );
     }

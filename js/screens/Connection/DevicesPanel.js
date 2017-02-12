@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { ListItem } from 'native-base';
 import { View, StyleSheet, ListView, Text, TouchableOpacity } from 'react-native';
 import styles from "./styles";
-const B = (props) => <Text style={{fontWeight: 'bold'}}>{props.children}</Text>;
+import TextBold from "../../helpers/components/TextBold";
 
 export default class DevicesPanel extends Component {
     constructor(props) {
@@ -21,8 +21,8 @@ export default class DevicesPanel extends Component {
                 <ListView dataSource={this.props.scannedDevices} enableEmptySections={true} renderRow={(rowData) =>
                                 <View style={styles.device}>
                                     <Text style={styles.deviceDescription}>
-                                            <B>Name:</B> {JSON.parse(rowData).name}{"\n"}
-                                            <B>Id:</B> {JSON.parse(rowData).id}
+                                            <TextBold>Name:</TextBold> {JSON.parse(rowData).name}{"\n"}
+                                            <TextBold>Id:</TextBold> {JSON.parse(rowData).id}
                                     </Text>
 
                                     <TouchableOpacity

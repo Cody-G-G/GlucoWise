@@ -7,9 +7,9 @@ import {
     NativeAppEventEmitter
 } from 'react-native';
 import styles from "./styles";
-import hexToAscii from "./../../helpers/h2a";
-import permissions from "./../../helpers/permissions";
-import log from './../../helpers/logger';
+import hexToAscii from "../../helpers/util/h2a";
+import permissions from "../../helpers/util/permissions";
+import log from '../../helpers/util/logger';
 import BleManager from 'react-native-ble-manager';
 import SearchButtonPanel from "./SearchButtonPanel";
 import DevicesPanel from "./DevicesPanel";
