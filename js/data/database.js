@@ -12,6 +12,16 @@ let realm = new Realm({
 });
 
 const database = {
+
+    init() {
+        const initBGLSafeRange = realm.objects('BGLSafeRange').length === 0;
+        const initBGLStandard = realm.objects('BGLStandard').length === 0;
+        realm.write(() => {
+            initBGLStandard && realm.create('BGLStandard', {standard: 'mmol/L'});
+            initBGLSafeRange && realm.create('BGLSafeRange', {minValue: 70, maxValue: 130});
+        });
+    },
+
     saveBGLReading(value, date){
         log("Saving BGLReading: " + value + " " + date);
         realm.write(() => {
@@ -21,21 +31,34 @@ const database = {
 
     updateBGLSafeRange(minValue, maxValue) {
         log("Updating BGLSafeRange: " + minValue + " " + maxValue);
+        let savedBGLSafeRanges = realm.objects('BGLSafeRange');
         realm.write(() => {
-            realm.create('BGLSafeRange', {minValue: minValue, maxValue: maxValue});
+            savedBGLSafeRanges[0].minValue = minValue;
+            savedBGLSafeRanges[0].maxValue = maxValue;
         });
     },
 
     updateBGLStandard(standard) {
         log("Updating BGLStandard: " + standard);
+        let savedBGLStandards = realm.objects('BGLStandard');
         realm.write(() => {
-            realm.create('BGLStandard', {standard: standard});
+            savedBGLStandards[0].standard = standard;
         });
     },
 
     getBGLReadings() {
         log("Getting all BGLReadings");
         return realm.objects('BGLReading');
+    },
+
+    getBGLSafeRange() {
+        log("Getting BGLSafeRange");
+        return realm.objects('BGLSafeRange')[0];
+    },
+
+    getBGLStandard() {
+        log("Getting BGLStandard");
+        return realm.objects('BGLStandard')[0];
     }
 };
 

@@ -5,8 +5,14 @@ import NavigationDrawer from './glue/NavigationDrawer';
 import ConnectionScreen from './screens/Connection/ConnectionScreen';
 import {Navigator} from 'react-native';
 import GraphScreen from './screens/GraphData/GraphScreen';
+import db from "./data/database";
+
 
 export default class App extends Component {
+    constructor(props) {
+        super(props);
+        db.init();
+    }
 
     render() {
         return (
