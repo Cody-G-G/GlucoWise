@@ -10,6 +10,7 @@ import com.oblador.vectoricons.VectorIconsPackage;
 import com.react.rnspinkit.RNSpinkitPackage;
 import com.showlocationservicesdialogbox.LocationServicesDialogBoxPackage;
 import com.horcrux.svg.RNSvgPackage;
+import io.realm.react.RealmReactPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +33,8 @@ public class MainApplication extends Application implements ReactApplication {
                     new LocationServicesDialogBoxPackage(),
                     new RNSpinkitPackage(),
                     new BleManagerPackage(),
-                    new RNSvgPackage()
+                    new RNSvgPackage(),
+                    new RealmReactPackage()
             );
         }
     };

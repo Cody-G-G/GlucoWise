@@ -12,10 +12,10 @@ export default class ReadingsPanel extends Component {
         this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state = {
             readings: this.ds.cloneWithRows([
-                {value: 82, date: Date.now()},
-                {value: 152, date: Date.now()},
-                {value: 70, date: Date.now()},
-                {value: 102, date: Date.now()}
+                {value: 82, date: new Date()},
+                {value: 152, date: new Date()},
+                {value: 70, date: new Date()},
+                {value: 102, date: new Date()}
             ])
         }
     }
@@ -24,14 +24,14 @@ export default class ReadingsPanel extends Component {
         return (
             <View style={styles.readingsPanel}>
                 <ListItem itemDivider>
-                    <Text style={styles.readingsListHeader}>Readings</Text>
+                    <Text style={styles.readingsListHeader}>Readings on {(new Date()).toLocaleDateString()}</Text>
                 </ListItem>
 
                 <ListView dataSource={this.state.readings} enableEmptySections={true} renderRow={(rowData) =>
                     <View style={styles.reading}>
                         <Text style={styles.readingText}>
                             <TextBold>Value:</TextBold> {rowData.value + " mg/dl"}{"\n"}
-                            <TextBold>Date:</TextBold> {(new Date(rowData.date)).toLocaleString()}
+                            <TextBold>Date:</TextBold> {rowData.date.toLocaleString()}
                         </Text>
                         <TouchableOpacity
                             style={styles.trashButton}
