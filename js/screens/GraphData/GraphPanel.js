@@ -6,21 +6,6 @@ import styles from './styles';
 export default class GraphPanel extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            data: [[
-                {"x": 0, "y": 82.5},
-                {"x": 8, "y": 70},
-                {"x": 13, "y": 70},
-                {"x": 15, "y": 80},
-                {"x": 18, "y": 90},
-                {"x": 15, "y": 150},
-                {"x": 15, "y": 50},
-                {"x": 15, "y": 70},
-                {"x": 17, "y": 70},
-                {"x": 21, "y": 70},
-                {"x": 24, "y": 70}
-            ]]
-        };
     }
 
     render() {
@@ -89,7 +74,7 @@ export default class GraphPanel extends Component {
 
         return (
             <View style={styles.graphPanel}>
-                <StockLine data={this.state.data}
+                <StockLine data={this.props.readings}
                            options={options}
                            regions={regions}
                            regionStyling={regionStyling}

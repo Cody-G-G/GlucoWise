@@ -4,16 +4,10 @@ import { ListItem } from 'native-base';
 import { View, StyleSheet, ListView, Text, TouchableOpacity } from 'react-native';
 import styles from "./styles";
 import TextBold from "../../helpers/components/TextBold";
-import log from "../../helpers/util/logger";
-import db from "../../data/database";
 
 export default class DevicesPanel extends Component {
     constructor(props) {
         super(props);
-        // db.saveBGLReading(180, new Date());
-        // db.saveBGLReading(180, new Date());
-        // let readings = db.getBGLReadings();
-        // log("READINGS: " + readings.length + " " + readings[0].value);
     }
 
     render() {

@@ -4,34 +4,27 @@ import {ListItem, Icon} from 'native-base';
 import {Text, TouchableOpacity, View, ListView} from 'react-native';
 import styles from "./styles";
 import log from "../../helpers/util/logger";
+import date from "../../helpers/util/date";
 import TextBold from "../../helpers/components/TextBold";
 
 export default class ReadingsPanel extends Component {
     constructor(props) {
         super(props);
         this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        this.state = {
-            readings: this.ds.cloneWithRows([
-                {value: 82, date: new Date()},
-                {value: 152, date: new Date()},
-                {value: 70, date: new Date()},
-                {value: 102, date: new Date()}
-            ])
-        }
     }
 
     render() {
         return (
             <View style={styles.readingsPanel}>
                 <ListItem itemDivider>
-                    <Text style={styles.readingsListHeader}>Readings on {(new Date()).toLocaleDateString()}</Text>
+                    <Text style={styles.readingsListHeader}>Readings on {date.getTodayString()}</Text>
                 </ListItem>
 
-                <ListView dataSource={this.state.readings} enableEmptySections={true} renderRow={(rowData) =>
+                <ListView dataSource={this.ds.cloneWithRows(this.props.readings)} enableEmptySections={true} renderRow={(rowData) =>
                     <View style={styles.reading}>
                         <Text style={styles.readingText}>
                             <TextBold>Value:</TextBold> {rowData.value + " mg/dl"}{"\n"}
-                            <TextBold>Date:</TextBold> {rowData.date.toLocaleString()}
+                            <TextBold>Date:</TextBold> {date.toDateTimeString(rowData.date)}
                         </Text>
                         <TouchableOpacity
                             style={styles.trashButton}

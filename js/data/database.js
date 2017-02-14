@@ -1,19 +1,40 @@
 'use strict';
 import log from "../helpers/util/logger";
+import date from "../helpers/util/date";
 const Realm = require('realm');
 
 const key = new Int8Array(64);
 let realm = new Realm({
     schema: [
-        {name: 'BGLReading', properties: {value: 'double', date: 'date'}},
-        {name: 'BGLSafeRange', properties: {minValue: 'double', maxValue: 'double'}},
+        {name: 'BGLReading', properties: {value: 'string', date: 'date'}},
+        {name: 'BGLSafeRange', properties: {minValue: 'string', maxValue: 'string'}},
         {name: 'BGLStandard', properties: {standard: 'string'}}
-    ], encryptionKey: key
+    ],
+    schemaVersion: 2,
+    migration: (oldRealm, newRealm) => {
+        if (oldRealm.schemaVersion < 2) {
+            let oldReadings = oldRealm.objects('BGLReading');
+            let oldRanges = oldRealm.objects('BGLSafeRange');
+            let newReadings = newRealm.objects('BGLReading');
+            let newRanges = newRealm.objects('BGLSafeRange');
+
+            for (let i = 0; i < oldRanges.length; i++) {
+                newRanges[i].minValue = oldRanges[i].minValue + "";
+                newRanges[i].maxValue = oldRanges[i].maxValue + "";
+            }
+            for (let i = 0; i < oldReadings.length; i++) {
+                newReadings[i].value = oldReadings[i].value + "";
+                newReadings[i].date = oldReadings[i].date;
+            }
+        }
+    },
+    encryptionKey: key
 });
 
 const database = {
 
     init() {
+        log("Initiating database");
         const initBGLSafeRange = realm.objects('BGLSafeRange').length === 0;
         const initBGLStandard = realm.objects('BGLStandard').length === 0;
         realm.write(() => {
@@ -22,13 +43,21 @@ const database = {
         });
     },
 
-    saveBGLReading(value, date){
+    /**
+     * @param value
+     * @param date
+     */
+    saveBGLReading(value, date) {
         log("Saving BGLReading: " + value + " " + date);
         realm.write(() => {
             realm.create('BGLReading', {value: value, date: date});
         });
     },
 
+    /**
+     * @param minValue
+     * @param maxValue
+     */
     updateBGLSafeRange(minValue, maxValue) {
         log("Updating BGLSafeRange: " + minValue + " " + maxValue);
         let savedBGLSafeRanges = realm.objects('BGLSafeRange');
@@ -38,6 +67,9 @@ const database = {
         });
     },
 
+    /**
+     * @param standard
+     */
     updateBGLStandard(standard) {
         log("Updating BGLStandard: " + standard);
         let savedBGLStandards = realm.objects('BGLStandard');
@@ -51,6 +83,14 @@ const database = {
         return realm.objects('BGLReading');
     },
 
+    getTodayBGLReadings() {
+        const today = date.getTodayString();
+        log("Getting BGLReadings for today: " + today);
+        let filteredReadings = [];
+        realm.objects('BGLReading').forEach((reading) => date.toDateString(reading.date) === today && filteredReadings.push(reading));
+        return filteredReadings;
+    },
+
     getBGLSafeRange() {
         log("Getting BGLSafeRange");
         return realm.objects('BGLSafeRange')[0];
@@ -59,6 +99,15 @@ const database = {
     getBGLStandard() {
         log("Getting BGLStandard");
         return realm.objects('BGLStandard')[0];
+    },
+
+    /**
+     * @param callback
+     */
+    initBGLReadingListener(callback) {
+        realm.objects('BGLReading').addListener((readings, changes) => {
+            callback();
+        });
     }
 };
 

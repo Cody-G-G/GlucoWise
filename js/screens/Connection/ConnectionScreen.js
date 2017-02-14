@@ -13,6 +13,7 @@ import log from '../../helpers/util/logger';
 import BleManager from 'react-native-ble-manager';
 import SearchButtonPanel from "./SearchButtonPanel";
 import DevicesPanel from "./DevicesPanel";
+import db from "../../data/database";
 const Spinner = require('react-native-spinkit');
 
 export default class ConnectionScreen extends Component {
@@ -50,16 +51,16 @@ export default class ConnectionScreen extends Component {
 
     componentDidMount() {
         permissions.requestLocationCoarsePermission();
-        this.initializeBleManager();
-        this.onScanStop();
-        this.onBluetoothStateChange();
-        this.onDeviceDiscovered();
-        this.onDeviceConnected();
-        this.onDeviceDisconnected();
-        this.onCharacteristicUpdate();
+        this.initBleManager();
+        this.initScanStopListener();
+        this.initBluetoothStateChangeListener();
+        this.initDeviceDiscoveredListener();
+        this.initDeviceConnectedListener();
+        this.initDeviceDisconnectedListener();
+        this.initReadingCharacteristicUpdate();
     }
 
-    initializeBleManager() {
+    initBleManager() {
         BleManager
             .start()
             .then(() => {
@@ -133,13 +134,15 @@ export default class ConnectionScreen extends Component {
             })
     }
 
-    onCharacteristicUpdate() {
+    initReadingCharacteristicUpdate() {
         NativeAppEventEmitter.addListener("BleManagerDidUpdateValueForCharacteristic", (args) => {
-            log("Peripheral " + args.peripheral + " characteristic " + args.characteristic + " was updated to " + hexToAscii(args.value));
+            const reading = hexToAscii(args.value).slice(0,5);
+            log("Peripheral " + args.peripheral + " characteristic " + args.characteristic + " was updated to " + reading);
+            db.saveBGLReading(reading, new Date());
         });
     }
 
-    onDeviceDiscovered() {
+    initDeviceDiscoveredListener() {
         NativeAppEventEmitter.addListener('BleManagerDiscoverPeripheral',
             (simpleDeviceObj) => {
                 simpleDeviceObj.rssi = undefined;
@@ -147,20 +150,20 @@ export default class ConnectionScreen extends Component {
                 log("Found device: " + strDeviceObject);
                 if (!this.scannedDevices.includes(strDeviceObject)) {
                     this.scannedDevices.push(strDeviceObject);
-                    this.updateScannedDevices([...this.scannedDevices]);
+                    this.setScannedDevices([...this.scannedDevices]);
                 }
             }
         );
     }
 
-    onScanStop() {
+    initScanStopListener() {
         NativeAppEventEmitter.addListener('BleManagerStopScan', () => {
             log("Scan stopped");
             this.updateScanning(false)
         });
     }
 
-    onDeviceConnected() {
+    initDeviceConnectedListener() {
         NativeAppEventEmitter.addListener('BleManagerConnectPeripheral', (args) => {
             this.removeDeviceTogglingConnection(args.peripheral);
             this.addConnectedDevice(args.peripheral);
@@ -168,7 +171,7 @@ export default class ConnectionScreen extends Component {
         });
     }
 
-    onDeviceDisconnected() {
+    initDeviceDisconnectedListener() {
         NativeAppEventEmitter.addListener('BleManagerDisconnectPeripheral', (args) => {
             this.removeDeviceTogglingConnection(args.peripheral);
             this.removeConnectedDevices(args.peripheral);
@@ -176,7 +179,7 @@ export default class ConnectionScreen extends Component {
         });
     }
 
-    onBluetoothStateChange() {
+    initBluetoothStateChangeListener() {
         NativeAppEventEmitter.addListener('BleManagerDidUpdateState', (args) => {
             log("Bluetooth state is " + args.state);
             if (args.state !== "turning-off" && args.state !== "turning-on" && this.pressedScan) {
@@ -193,7 +196,7 @@ export default class ConnectionScreen extends Component {
         });
     }
 
-    updateScannedDevices(devices) {
+    setScannedDevices(devices) {
         this.setState({
             scannedDevices: this.ds.cloneWithRows(devices)
         });
