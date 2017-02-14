@@ -89,7 +89,6 @@ const database = {
         realm.objects('BGLReading').forEach((reading) => {
             dateUtil.isWithin24Hours(reading.date) && filteredReadings.push(reading);
         });
-        log("SIZE: " + filteredReadings.length);
         return filteredReadings;
     },
 

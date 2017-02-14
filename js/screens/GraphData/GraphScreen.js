@@ -30,11 +30,12 @@ export default class GraphScreen extends Component {
 
     getGraphReadings() {
         let graphReadings = [];
-        db.get24hBGLReadings().forEach((reading) =>
-            graphReadings.push({
-                x: reading.date.getHours(),
-                y: reading.value
-            })
+        db.get24hBGLReadings().forEach((reading) => {
+                graphReadings.push({
+                    x: reading.date.getHours() + "." + (reading.date.getMinutes() / 60 * 100).slice(0, 4),
+                    y: reading.value
+                })
+            }
         );
         return [graphReadings];
     }
