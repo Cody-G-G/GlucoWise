@@ -1,6 +1,6 @@
 'use strict';
 import log from "../helpers/util/logger";
-import date from "../helpers/util/date";
+import dateUtil from "../helpers/util/date";
 const Realm = require('realm');
 
 const key = new Int8Array(64);
@@ -83,11 +83,13 @@ const database = {
         return realm.objects('BGLReading');
     },
 
-    getTodayBGLReadings() {
-        const today = date.getTodayString();
-        log("Getting BGLReadings for today: " + today);
+    get24hBGLReadings() {
+        log("Getting BGLReadings for last 24h");
         let filteredReadings = [];
-        realm.objects('BGLReading').forEach((reading) => date.toDateString(reading.date) === today && filteredReadings.push(reading));
+        realm.objects('BGLReading').forEach((reading) => {
+            dateUtil.isWithin24Hours(reading.date) && filteredReadings.push(reading);
+        });
+        log("SIZE: " + filteredReadings.length);
         return filteredReadings;
     },
 

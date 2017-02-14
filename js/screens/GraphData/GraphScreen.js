@@ -10,7 +10,7 @@ export default class GraphScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            readings: db.getTodayBGLReadings(),
+            readings: db.get24hBGLReadings(),
             graphReadings: this.getGraphReadings()
         }
     }
@@ -30,7 +30,7 @@ export default class GraphScreen extends Component {
 
     getGraphReadings() {
         let graphReadings = [];
-        db.getTodayBGLReadings().forEach((reading) =>
+        db.get24hBGLReadings().forEach((reading) =>
             graphReadings.push({
                 x: reading.date.getHours(),
                 y: reading.value
@@ -41,7 +41,7 @@ export default class GraphScreen extends Component {
 
     setReadings() {
         this.setState({
-            readings: db.getTodayBGLReadings(),
+            readings: db.get24hBGLReadings(),
             graphReadings: this.getGraphReadings()
         })
     }

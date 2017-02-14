@@ -9,16 +9,16 @@ export default StyleSheet.create({
         backgroundColor: 'aliceblue'
     },
     graphPanel: {
-        flex: 3,
+        flex: 9,
         justifyContent: 'center',
         alignItems: 'center'
     },
     readingsPanel: {
-        flex: 2,
+        flex: 5,
         alignSelf: 'stretch'
     },
     readingsListHeader: {
-        fontSize: 20,
+        fontSize: 15,
         fontWeight: 'bold'
     },
     reading: {

@@ -4,7 +4,7 @@ import {ListItem, Icon} from 'native-base';
 import {Text, TouchableOpacity, View, ListView} from 'react-native';
 import styles from "./styles";
 import log from "../../helpers/util/logger";
-import date from "../../helpers/util/date";
+import dateUtil from "../../helpers/util/date";
 import TextBold from "../../helpers/components/TextBold";
 
 export default class ReadingsPanel extends Component {
@@ -17,14 +17,14 @@ export default class ReadingsPanel extends Component {
         return (
             <View style={styles.readingsPanel}>
                 <ListItem itemDivider>
-                    <Text style={styles.readingsListHeader}>Readings on {date.getTodayString()}</Text>
+                    <Text style={styles.readingsListHeader}>Readings last 24h</Text>
                 </ListItem>
 
                 <ListView dataSource={this.ds.cloneWithRows(this.props.readings)} enableEmptySections={true} renderRow={(rowData) =>
                     <View style={styles.reading}>
                         <Text style={styles.readingText}>
                             <TextBold>Value:</TextBold> {rowData.value + " mg/dl"}{"\n"}
-                            <TextBold>Date:</TextBold> {date.toDateTimeString(rowData.date)}
+                            <TextBold>Date:</TextBold> {dateUtil.toDateTimeString(rowData.date)}
                         </Text>
                         <TouchableOpacity
                             style={styles.trashButton}

@@ -14,6 +14,10 @@ export default {
     },
 
     toDateTimeString(date) {
-        return this.toDateString(date) + "  " + this.padDate(date.getHours()) + ":" + date.getMinutes();
+        return this.toDateString(date) + "  " + this.padDate(date.getHours()) + ":" + this.padDate(date.getMinutes());
+    },
+
+    isWithin24Hours(date) {
+        return (Math.abs((Date.now()) - date) / (360000)) <= 24;
     }
 };

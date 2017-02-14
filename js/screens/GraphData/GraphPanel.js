@@ -26,7 +26,7 @@ export default class GraphPanel extends Component {
 
         const options = {
             width: 315,
-            height: 265,
+            height: 280,
             color: '#2980B9',
             margin: {
                 top: 20,
