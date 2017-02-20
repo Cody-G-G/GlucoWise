@@ -5,6 +5,7 @@ import styles from './styles';
 import GraphPanel from './GraphPanel';
 import ReadingsPanel from './ReadingsPanel';
 import db from "../../data/database";
+import dateUtil from "../../helpers/util/date";
 
 export default class GraphScreen extends Component {
     constructor(props) {
@@ -32,7 +33,7 @@ export default class GraphScreen extends Component {
         let graphReadings = [];
         db.get24hBGLReadings().forEach((reading) => {
                 graphReadings.push({
-                    x: (reading.date.getHours() + "." + (reading.date.getMinutes() / 60 * 100)).slice(0, 4),
+                    x: dateUtil.hoursFromPresent(reading.date),
                     y: reading.value
                 })
             }

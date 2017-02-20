@@ -40,6 +40,7 @@ const database = {
         realm.write(() => {
             initBGLStandard && realm.create('BGLStandard', {standard: 'mmol/L'});
             initBGLSafeRange && realm.create('BGLSafeRange', {minValue: 70, maxValue: 130});
+            // realm.delete(realm.objects('BGLReading'));
         });
     },
 

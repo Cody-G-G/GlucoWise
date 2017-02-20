@@ -18,6 +18,11 @@ export default {
     },
 
     isWithin24Hours(date) {
-        return (Math.abs((Date.now()) - date) / (360000)) <= 24;
+        return (Math.abs((Date.now()) - date) / 360000) <= 24;
+    },
+
+    hoursFromPresent(date) {
+        let hours = Math.abs((Date.now()) - date) / 360000;
+        return hours;
     }
 };
