@@ -9,15 +9,6 @@ export default class GraphPanel extends Component {
     }
 
     render() {
-        let readings = [[
-            {x: 24, y: 70},
-            {x: 20, y: 130},
-            {x: 15, y: 110},
-            {x: 13, y: 90},
-            {x: 9.66, y: 65},
-            {x: 8, y: 150}
-        ]];
-        this.props.readings[0] = this.props.readings[0].concat(readings[0]);
         const regions = [{
             label: '',
             from: 70,
@@ -54,21 +45,9 @@ export default class GraphPanel extends Component {
                 showTicks: true,
                 zeroAxis: false,
                 orient: 'bottom',
-                tickValues: [
-                    {value: 0},
-                    {value: 2},
-                    {value: 4},
-                    {value: 6},
-                    {value: 8},
-                    {value: 10},
-                    {value: 12},
-                    {value: 14},
-                    {value: 16},
-                    {value: 18},
-                    {value: 20},
-                    {value: 22},
-                    {value: 24}
-                ],
+                labelFunction: (v) => {
+                    return Math.floor((v + 0.00001) * 10) / 10;
+                },
                 label: {
                     fontFamily: 'Arial',
                     fontSize: 14,

@@ -6,21 +6,33 @@ import GraphPanel from './GraphPanel';
 import ReadingsPanel from './ReadingsPanel';
 import db from "../../data/database";
 import dateUtil from "../../helpers/util/date";
+import log from "../../helpers/util/logger";
 
 export default class GraphScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            readings: db.get24hBGLReadings(),
-            graphReadings: this.getGraphReadings()
+            hourRange: 1,
+            readings: null,
+            graphReadings: null
         }
     }
 
+    componentWillMount() {
+        this.setReadings();
+    }
+
     render() {
+        let timeRangeButtonText = this.state.hourRange === 24 ? "60m" : "24h";
+        let currentTimeRange = this.state.hourRange === 24 ? "24h" : "60m";
         return (
             <View style={styles.screenContainer}>
-                <GraphPanel readings={this.state.graphReadings}/>
-                <ReadingsPanel readings={this.state.readings}/>
+                <GraphPanel readings={this.state.graphReadings}
+                            hourRange={this.state.hourRange}/>
+                <ReadingsPanel readings={this.state.readings}
+                               toggleTimeRange={this.toggleTimeRange.bind(this)}
+                               timeRangeButtonText={timeRangeButtonText}
+                               currentTimeRange={currentTimeRange}/>
             </View>
         );
     }
@@ -29,11 +41,12 @@ export default class GraphScreen extends Component {
         db.initBGLReadingListener(this.setReadings.bind(this));
     }
 
-    getGraphReadings() {
+    getGraphReadings(readings) {
         let graphReadings = [];
-        db.get24hBGLReadings().forEach((reading) => {
+        let timeUnitsFromPresent = this.state.hourRange === 24 ? dateUtil.hoursFromPresent : dateUtil.minutesFromPresent;
+        readings.forEach((reading) => {
                 graphReadings.push({
-                    x: dateUtil.hoursFromPresent(reading.date),
+                    x: timeUnitsFromPresent(reading.date),
                     y: reading.value
                 })
             }
@@ -41,10 +54,19 @@ export default class GraphScreen extends Component {
         return [graphReadings];
     }
 
-    setReadings() {
+    toggleTimeRange() {
+        log("Toggled time range");
         this.setState({
-            readings: db.get24hBGLReadings(),
-            graphReadings: this.getGraphReadings()
-        })
+            hourRange: this.state.hourRange === 24 ? 1 : 24
+        }, () => this.setReadings());
+    }
+
+    setReadings() {
+        let readings = this.state.hourRange === 24 ? db.get24hBGLReadings() : db.get60mBGLReadings();
+        let graphReadings = this.getGraphReadings(readings);
+        this.setState({
+            readings: readings,
+            graphReadings: graphReadings
+        });
     }
 }

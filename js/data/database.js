@@ -40,8 +40,20 @@ const database = {
         realm.write(() => {
             initBGLStandard && realm.create('BGLStandard', {standard: 'mmol/L'});
             initBGLSafeRange && realm.create('BGLSafeRange', {minValue: 70, maxValue: 130});
-            // realm.delete(realm.objects('BGLReading'));
+            this.addMockData();
         });
+    },
+
+    addMockData() {
+        realm.delete(realm.objects('BGLReading'));
+        realm.create('BGLReading', {value: '155', date: (new Date(Date.now() - 65 * 60000))});
+        realm.create('BGLReading', {value: '70', date: (new Date(Date.now() - 62 * 60000))});
+        realm.create('BGLReading', {value: '135', date: (new Date(Date.now() - 55 * 60000))});
+        realm.create('BGLReading', {value: '110', date: (new Date(Date.now() - 20 * 60000))});
+        realm.create('BGLReading', {value: '90', date: (new Date(Date.now() - 15 * 60000))});
+        realm.create('BGLReading', {value: '65', date: (new Date(Date.now() - 13 * 60000))});
+        realm.create('BGLReading', {value: '80', date: (new Date(Date.now() - 9.66 * 60000))});
+        realm.create('BGLReading', {value: '200', date: (new Date(Date.now() - 8 * 60000))});
     },
 
     /**
@@ -89,6 +101,15 @@ const database = {
         let filteredReadings = [];
         realm.objects('BGLReading').forEach((reading) => {
             dateUtil.isWithin24Hours(reading.date) && filteredReadings.push(reading);
+        });
+        return filteredReadings;
+    },
+
+    get60mBGLReadings() {
+        log("Getting BGLReadings for last 60m");
+        let filteredReadings = [];
+        realm.objects('BGLReading').forEach((reading) => {
+            dateUtil.isWithin60Minutes(reading.date) && filteredReadings.push(reading);
         });
         return filteredReadings;
     },

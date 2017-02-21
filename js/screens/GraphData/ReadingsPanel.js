@@ -6,6 +6,7 @@ import styles from "./styles";
 import log from "../../helpers/util/logger";
 import dateUtil from "../../helpers/util/date";
 import TextBold from "../../helpers/components/TextBold";
+import TimeRangeButton from "./TimeRangeButton";
 
 export default class ReadingsPanel extends Component {
     constructor(props) {
@@ -16,10 +17,12 @@ export default class ReadingsPanel extends Component {
     render() {
         return (
             <View style={styles.readingsPanel}>
-                <ListItem itemDivider>
-                    <Text style={styles.readingsListHeader}>Readings last 24h</Text>
-                </ListItem>
-
+                <View style={{flexDirection: 'row'}}>
+                    <ListItem style={{flex: 4}} itemDivider>
+                        <Text style={styles.readingsListHeaderText}>Readings last {this.props.currentTimeRange}</Text>
+                    </ListItem>
+                    <TimeRangeButton toggleTimeRange={this.props.toggleTimeRange} timeRangeToggleText={this.props.timeRangeButtonText}/>
+                </View>
                 <ListView dataSource={this.ds.cloneWithRows(this.props.readings)} enableEmptySections={true} renderRow={(rowData) =>
                     <View style={styles.reading}>
                         <Text style={styles.readingText}>

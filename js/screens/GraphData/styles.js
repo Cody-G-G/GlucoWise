@@ -17,7 +17,7 @@ export default StyleSheet.create({
         flex: 5,
         alignSelf: 'stretch'
     },
-    readingsListHeader: {
+    readingsListHeaderText: {
         fontSize: 15,
         fontWeight: 'bold'
     },
@@ -35,6 +35,18 @@ export default StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'firebrick'
+    },
+    timeRangeButton: {
+        flex: 2,
+        alignSelf: 'stretch',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'darkgrey',
+    },
+    timeRangeButtonText: {
+        color: 'white',
+        fontSize: 20,
+        fontWeight: 'bold'
     },
     readingText: {
         flex: 6,
