@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {ListItem, Icon} from 'native-base';
 import {Text, TouchableOpacity, View, ListView} from 'react-native';
 import styles from "./styles";
-import log from "../../helpers/util/logger";
+import db from "../../data/database";
 import dateUtil from "../../helpers/util/date";
 import TextBold from "../../helpers/components/TextBold";
 import TimeRangeButton from "./TimeRangeButton";
@@ -32,7 +32,7 @@ export default class ReadingsPanel extends Component {
                         </Text>
                         <TouchableOpacity
                             style={styles.trashButton}
-                            onPress={() => log("Pressed trash")}>
+                            onPress={() => db.deleteReading(rowData)}>
                                 <Icon style={{color:'white', fontSize:30}} theme={{iconFamily: "MaterialIcons"}} name="delete-forever"/>
                         </TouchableOpacity>
                     </View>

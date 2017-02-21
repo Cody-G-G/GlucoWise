@@ -131,6 +131,13 @@ const database = {
         realm.objects('BGLReading').addListener((readings, changes) => {
             callback();
         });
+    },
+
+    deleteReading(reading) {
+        log("Deleting reading " + reading);
+        realm.write(() => {
+            realm.delete(reading);
+        });
     }
 };
 
