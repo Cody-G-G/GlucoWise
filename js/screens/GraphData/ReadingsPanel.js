@@ -21,7 +21,8 @@ export default class ReadingsPanel extends Component {
                     <ListItem style={{flex: 4}} itemDivider>
                         <Text style={styles.readingsListHeaderText}>Readings last {this.props.currentTimeRange}</Text>
                     </ListItem>
-                    <TimeRangeButton toggleTimeRange={this.props.toggleTimeRange} timeRangeToggleText={this.props.timeRangeButtonText}/>
+                    <TimeRangeButton toggleTimeRange={this.props.toggleTimeRange}
+                                     timeRangeButtonText={this.props.timeRangeButtonText}/>
                 </View>
                 <ListView dataSource={this.ds.cloneWithRows(this.props.readings)} enableEmptySections={true} renderRow={(rowData) =>
                     <View style={styles.reading}>
