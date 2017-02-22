@@ -3,10 +3,10 @@ import React, {Component} from 'react';
 import {Router, Scene} from 'react-native-router-flux';
 import NavigationDrawer from './glue/NavigationDrawer';
 import ConnectionScreen from './screens/Connection/ConnectionScreen';
-import {Navigator} from 'react-native';
+import ReadingsScreen from './screens/Readings/ReadingsScreen';
 import GraphScreen from './screens/GraphData/GraphScreen';
+import {Navigator} from 'react-native';
 import db from "./data/database";
-
 
 export default class App extends Component {
     constructor(props) {
@@ -22,6 +22,7 @@ export default class App extends Component {
                            tabs>
                         <Scene key="screenConnection" title="Connection" initial hideTabBar component={ConnectionScreen}/>
                         <Scene key="screenGraph" title="Graph" hideTabBar component={GraphScreen}/>
+                        <Scene key="screenReadings" title="Readings" hideTabBar component={ReadingsScreen}/>
                     </Scene>
                 </Scene>
             </Router>
@@ -31,7 +32,7 @@ export default class App extends Component {
 
 const getSceneStyle = (props, computedProps) => {
     const style = {
-        backgroundColor:'black'
+        backgroundColor: 'black'
     };
     if (computedProps.isActive) {
         style.marginTop = computedProps.hideNavBar ? 0 : 53;

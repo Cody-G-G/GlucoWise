@@ -21,21 +21,6 @@ export default StyleSheet.create({
         fontSize: 15,
         fontWeight: 'bold'
     },
-    reading: {
-        flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        flexDirection: 'row',
-        borderColor: 'black',
-        borderWidth: 1
-    },
-    trashButton: {
-        flex: 1,
-        alignSelf: 'stretch',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'firebrick'
-    },
     timeRangeButton: {
         flex: 2,
         alignSelf: 'stretch',
@@ -47,13 +32,5 @@ export default StyleSheet.create({
         color: 'white',
         fontSize: 20,
         fontWeight: 'bold'
-    },
-    readingText: {
-        flex: 6,
-        alignItems: 'center',
-        backgroundColor: 'cornflowerblue',
-        color: 'white',
-        fontSize: 18,
-        padding: 7
     }
 });

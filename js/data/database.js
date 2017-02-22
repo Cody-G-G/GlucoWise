@@ -134,7 +134,7 @@ const database = {
     },
 
     deleteReading(reading) {
-        log("Deleting reading " + reading);
+        log("Deleting reading " + JSON.stringify(reading));
         realm.write(() => {
             realm.delete(reading);
         });

@@ -10,7 +10,7 @@ export default {
     },
 
     toDateString(date) {
-        return this.padDate(date.getDate()) + "/" + this.padDate(date.getMonth() + 1) + "/" + date.getFullYear();
+        return this.padDate(date.getDate()) + "-" + this.padDate(date.getMonth() + 1) + "-" + date.getFullYear();
     },
 
     toDateTimeString(date) {

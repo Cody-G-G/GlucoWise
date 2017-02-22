@@ -31,11 +31,11 @@ export default class DrawerPanel extends Component {
                 <Button onPress={() => {drawer.close(); Actions.screenGraph();}} large style={styles.tabButton} textStyle={styles.tabText} bordered>
                     <Icon theme={{iconFamily: "MaterialIcons"}} style={styles.icon} name="insert-chart"/>Chart
                 </Button>
-                <Button onPress={() => {drawer.close()}} large style={styles.tabButton} textStyle={styles.tabText} bordered>
-                    <Icon theme={{iconFamily: "MaterialIcons"}} style={styles.icon} name="settings"/>Settings
+                <Button onPress={() => {drawer.close(); Actions.screenReadings();}} large style={styles.tabButton} textStyle={styles.tabText} bordered>
+                    <Icon theme={{iconFamily: "MaterialIcons"}} style={styles.icon} name="history"/>Readings
                 </Button>
                 <Button onPress={() => {drawer.close()}} large style={styles.tabButton} textStyle={styles.tabText} bordered>
-                    <Icon theme={{iconFamily: "MaterialIcons"}} style={styles.icon} name="history"/>Readings
+                    <Icon theme={{iconFamily: "MaterialIcons"}} style={styles.icon} name="settings"/>Settings
                 </Button>
                 <Button onPress={() => {drawer.close()}} large style={styles.tabButton} textStyle={styles.tabText} bordered>
                     <Icon theme={{iconFamily: "MaterialIcons"}} style={styles.icon} name="info"/>About

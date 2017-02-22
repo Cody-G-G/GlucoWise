@@ -88,9 +88,10 @@ export default class GraphPanel extends Component {
             strokeWidth: 3
         };
 
+        let readings = typeof this.props.readings[0][0] != 'undefined' ? this.props.readings : [[{x: 0, y: 0}]];
         return (
             <View style={styles.graphPanel}>
-                <StockLine data={this.props.readings}
+                <StockLine data={readings}
                            options={options}
                            regions={regions}
                            regionStyling={regionStyling}
