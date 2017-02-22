@@ -46,14 +46,15 @@ const database = {
 
     addMockData() {
         realm.delete(realm.objects('BGLReading'));
-        realm.create('BGLReading', {value: '155', date: (new Date(Date.now() - 65 * 60000))});
-        realm.create('BGLReading', {value: '70', date: (new Date(Date.now() - 62 * 60000))});
-        realm.create('BGLReading', {value: '135', date: (new Date(Date.now() - 55 * 60000))});
-        realm.create('BGLReading', {value: '110', date: (new Date(Date.now() - 20 * 60000))});
-        realm.create('BGLReading', {value: '90', date: (new Date(Date.now() - 15 * 60000))});
-        realm.create('BGLReading', {value: '65', date: (new Date(Date.now() - 13 * 60000))});
-        realm.create('BGLReading', {value: '80', date: (new Date(Date.now() - 9.66 * 60000))});
-        realm.create('BGLReading', {value: '200', date: (new Date(Date.now() - 8 * 60000))});
+        realm.create('BGLReading', {value: '155', date: (new Date(Date.now() - 65 * 6e4))});
+        realm.create('BGLReading', {value: '70', date: (new Date(Date.now() - 62 * 6e4))});
+        realm.create('BGLReading', {value: '135', date: (new Date(Date.now() - 55 * 6e4))});
+        realm.create('BGLReading', {value: '110', date: (new Date(Date.now() - 20 * 6e4))});
+        realm.create('BGLReading', {value: '90', date: (new Date(Date.now() - 15 * 6e4))});
+        realm.create('BGLReading', {value: '65', date: (new Date(Date.now() - 13 * 6e4))});
+        realm.create('BGLReading', {value: '80', date: (new Date(Date.now() - 9.66 * 6e4))});
+        realm.create('BGLReading', {value: '200', date: (new Date(Date.now() - 8 * 6e4))});
+        realm.create('BGLReading', {value: '50', date: (new Date(Date.now() - 3 * 864e5))});
     },
 
     /**
@@ -94,6 +95,13 @@ const database = {
     getBGLReadings() {
         log("Getting all BGLReadings");
         return realm.objects('BGLReading');
+    },
+
+    getBGLReadingsInDateRange(startDate, endDate) {
+        log("Getting BGLReadings between " + startDate + " and " + endDate);
+        return realm.objects('BGLReading').filtered('date < $0 AND date > $1',
+            dateUtil.toDateFromString(endDate, 23, 59, 59, 999),
+            dateUtil.toDateFromString(startDate, 0, 0, 0, 0));
     },
 
     get24hBGLReadings() {

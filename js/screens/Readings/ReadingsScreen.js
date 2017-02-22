@@ -13,7 +13,7 @@ export default class ReadingsScreen extends Component {
         super(props);
         this.today = date.getTodayString();
         this.state = {
-            readings: db.getBGLReadings(),
+            readings: db.getBGLReadingsInDateRange(this.today, this.today),
             startDate: this.today,
             endDate: this.today
         }
@@ -23,11 +23,11 @@ export default class ReadingsScreen extends Component {
         return (
             <View style={{backgroundColor: 'white'}}>
                 <View style={{flexDirection:'row'}}>
-                    <ReadingsDatePicker today={this.today} date={this.state.startDate} handleDateChange={this.updateStartDate.bind(this)}/>
+                    <ReadingsDatePicker minDate={"31-08-1994"} maxDate={this.state.endDate} date={this.state.startDate} handleDateChange={this.updateStartDate.bind(this)}/>
                     <TextBold style={styles.dateRangeSeparatorText}> to </TextBold>
-                    <ReadingsDatePicker today={this.today} date={this.state.endDate} handleDateChange={this.updateEndDate.bind(this)}/>
+                    <ReadingsDatePicker minDate={this.state.startDate} maxDate={this.today} date={this.state.endDate} handleDateChange={this.updateEndDate.bind(this)}/>
                 </View>
-                <ReadingsList readings={db.getBGLReadings()}/>
+                <ReadingsList readings={this.state.readings}/>
             </View>
         );
     }
@@ -38,15 +38,17 @@ export default class ReadingsScreen extends Component {
 
     setReadings() {
         this.setState({
-            readings: db.getBGLReadings(),
+            readings: db.getBGLReadingsInDateRange(this.state.startDate, this.state.endDate),
         });
     }
 
     updateStartDate(date) {
-        this.setState({startDate: date})
+        this.setState({startDate: date});
+        this.setReadings();
     }
 
     updateEndDate(date) {
-        this.setState({endDate: date})
+        this.setState({endDate: date});
+        this.setReadings();
     }
 }

@@ -1,4 +1,5 @@
 'use strict';
+import moment from "moment";
 
 export default {
     padDate(datePortion) {
@@ -31,5 +32,9 @@ export default {
 
     minutesFromPresent(date) {
         return Math.floor((Date.now()) - date) / 6e4;
+    },
+
+    toDateFromString(dateString, hour, minute, second, millisecond) {
+        return new Date(moment(dateString, "DD-MM-YYYY").hour(hour).minute(minute).second(second).millisecond(millisecond));
     }
 };

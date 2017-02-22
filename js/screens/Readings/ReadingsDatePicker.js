@@ -16,8 +16,8 @@ export default class ReadingsDatePicker extends Component {
                 date={this.props.date}
                 mode="date"
                 format="DD-MM-YYYY"
-                minDate="31-08-1994"
-                maxDate={this.props.today}
+                minDate={this.props.minDate}
+                maxDate={this.props.maxDate}
                 confirmBtnText="Confirm"
                 cancelBtnText="Cancel"
                 showIcon={true}
