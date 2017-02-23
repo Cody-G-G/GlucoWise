@@ -3,12 +3,13 @@ import {StyleSheet} from "react-native";
 
 export default StyleSheet.create({
     dateText: {
-        fontSize: 17,
+        fontSize: 20,
         fontWeight: 'bold',
         color: 'white'
     },
     dateTouchBody: {
-        backgroundColor: "darkgrey"
+        backgroundColor: "darkgrey",
+        flex: 1
     },
     dateRangeSeparatorText: {
         textAlignVertical: 'center',

@@ -21,13 +21,15 @@ export default class ReadingsScreen extends Component {
 
     render() {
         return (
-            <View style={{backgroundColor: 'white'}}>
-                <View style={{flexDirection:'row'}}>
+            <View style={{flex:1, backgroundColor: 'white'}}>
+                <View style={{flex: 1, flexDirection:'row'}}>
                     <ReadingsDatePicker minDate={"31-08-1994"} maxDate={this.state.endDate} date={this.state.startDate} handleDateChange={this.updateStartDate.bind(this)}/>
                     <TextBold style={styles.dateRangeSeparatorText}> to </TextBold>
                     <ReadingsDatePicker minDate={this.state.startDate} maxDate={this.today} date={this.state.endDate} handleDateChange={this.updateEndDate.bind(this)}/>
                 </View>
-                <ReadingsList readings={this.state.readings}/>
+                <View style={{flex: 8, alignSelf:'stretch'}}>
+                    <ReadingsList readings={this.state.readings}/>
+                </View>
             </View>
         );
     }
