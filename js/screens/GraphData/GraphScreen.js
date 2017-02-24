@@ -42,9 +42,9 @@ export default class GraphScreen extends Component {
         db.initBGLReadingListener(this.setReadings.bind(this));
     }
 
-    getGraphReadings(readings) {
+    getGraphReadings(readings, hourRange) {
         let graphReadings = [];
-        let timeUnitsFromPresent = this.state.hourRange === 24 ? dateUtil.hoursFromPresent : dateUtil.minutesFromPresent;
+        let timeUnitsFromPresent = hourRange === 24 ? dateUtil.hoursFromPresent : dateUtil.minutesFromPresent;
         readings.forEach((reading) => {
                 graphReadings.push({
                     x: timeUnitsFromPresent(reading.date),
@@ -59,7 +59,7 @@ export default class GraphScreen extends Component {
         log("Toggled time range");
         let newHourRange = this.state.hourRange === 24 ? 1 : 24;
         let readings = newHourRange === 24 ? db.get24hBGLReadings() : db.get60mBGLReadings();
-        let graphReadings = this.getGraphReadings(readings);
+        let graphReadings = this.getGraphReadings(readings, newHourRange);
         this.setState({
             hourRange: newHourRange,
             readings: readings,
@@ -69,7 +69,7 @@ export default class GraphScreen extends Component {
 
     setReadings() {
         let readings = this.state.hourRange === 24 ? db.get24hBGLReadings() : db.get60mBGLReadings();
-        let graphReadings = this.getGraphReadings(readings);
+        let graphReadings = this.getGraphReadings(readings, this.state.hourRange);
         this.setState({
             readings: readings,
             graphReadings: graphReadings
