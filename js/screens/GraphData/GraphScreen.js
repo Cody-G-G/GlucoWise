@@ -23,6 +23,7 @@ export default class GraphScreen extends Component {
     }
 
     render() {
+        log("Rendering GraphScreen");
         let timeRangeButtonText = this.state.hourRange === 24 ? "60m" : "24h";
         let currentTimeRange = this.state.hourRange === 24 ? "24h" : "60m";
         return (
@@ -56,9 +57,14 @@ export default class GraphScreen extends Component {
 
     toggleTimeRange() {
         log("Toggled time range");
+        let newHourRange = this.state.hourRange === 24 ? 1 : 24;
+        let readings = newHourRange === 24 ? db.get24hBGLReadings() : db.get60mBGLReadings();
+        let graphReadings = this.getGraphReadings(readings);
         this.setState({
-            hourRange: this.state.hourRange === 24 ? 1 : 24
-        }, () => this.setReadings());
+            hourRange: newHourRange,
+            readings: readings,
+            graphReadings: graphReadings
+        });
     }
 
     setReadings() {

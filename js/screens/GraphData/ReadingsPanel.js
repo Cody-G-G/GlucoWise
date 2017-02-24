@@ -10,7 +10,6 @@ export default class ReadingsPanel extends Component {
     constructor(props) {
         super(props);
     }
-
     render() {
         return (
             <View style={styles.readingsPanel}>

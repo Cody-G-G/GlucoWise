@@ -31,6 +31,7 @@ export default class ConnectionScreen extends Component {
     }
 
     render() {
+        log("Rendering ConnectionScreen");
         return (
             <View style={styles.screenContainer}>
                 <SearchButtonPanel onPress={this.triggerStateCheckForScan.bind(this)}

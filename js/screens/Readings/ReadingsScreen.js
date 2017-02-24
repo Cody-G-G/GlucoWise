@@ -7,6 +7,7 @@ import date from "../../helpers/util/date";
 import TextBold from "../../helpers/components/TextBold";
 import ReadingsDatePicker from "./ReadingsDatePicker";
 import styles from "./styles";
+import log from "../../helpers/util/logger";
 
 export default class ReadingsScreen extends Component {
     constructor(props) {
@@ -20,6 +21,7 @@ export default class ReadingsScreen extends Component {
     }
 
     render() {
+        log("Rendering ReadingsScreen");
         return (
             <View style={{flex:1, backgroundColor: 'white'}}>
                 <View style={{flex: 1, flexDirection:'row'}}>
@@ -44,13 +46,23 @@ export default class ReadingsScreen extends Component {
         });
     }
 
-    updateStartDate(date) {
-        this.setState({startDate: date});
-        this.setReadings();
+    /**
+     * @param startDate
+     */
+    updateStartDate(startDate) {
+        this.setState({
+            startDate: startDate,
+            readings: db.getBGLReadingsInDateRange(startDate, this.state.endDate)
+        });
     }
 
-    updateEndDate(date) {
-        this.setState({endDate: date});
-        this.setReadings();
+    /**
+     * @param endDate
+     */
+    updateEndDate(endDate) {
+        this.setState({
+            endDate: endDate,
+            readings: db.getBGLReadingsInDateRange(this.state.startDate, endDate)
+        });
     }
 }
