@@ -46,7 +46,7 @@ export default class GraphPanel extends Component {
                 zeroAxis: false,
                 orient: 'bottom',
                 labelFunction: (v) => {
-                    return Math.floor((v + 0.00001) * 10) / 10;
+                    return parseFloat(v.toFixed(1));
                 },
                 label: {
                     fontFamily: 'Arial',

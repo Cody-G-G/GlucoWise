@@ -27,11 +27,11 @@ export default {
     },
 
     hoursFromPresent(date) {
-        return Math.abs((Date.now()) - date) / 36e5;
+        return parseFloat((Math.abs((Date.now()) - date) / 36e5).toFixed(1));
     },
 
     minutesFromPresent(date) {
-        return Math.floor((Date.now()) - date) / 6e4;
+        return parseFloat((Math.floor((Date.now()) - date) / 6e4).toFixed(1));
     },
 
     toDateFromString(dateString, hour, minute, second, millisecond) {
