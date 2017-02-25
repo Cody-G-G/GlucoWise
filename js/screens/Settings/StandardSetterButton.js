@@ -1,6 +1,7 @@
 'use strict';
 import React, {Component} from 'react';
 import {StyleSheet, TouchableOpacity, Text} from 'react-native';
+import styles from "./styles";
 
 export default class StandardSetterButton extends Component {
     constructor(props) {
@@ -11,7 +12,7 @@ export default class StandardSetterButton extends Component {
         return (
             <TouchableOpacity style={StyleSheet.flatten([{flex:1}, {backgroundColor: this.props.buttonColor}])}
                               onPress={() => this.props.setStandard()}>
-                <Text style={{fontSize:35, color:'white', fontWeight:'bold', padding:5, textAlign:'center', borderWidth:1}}>
+                <Text style={styles.standardSetterButton}>
                     {this.props.buttonText}
                 </Text>
             </TouchableOpacity>

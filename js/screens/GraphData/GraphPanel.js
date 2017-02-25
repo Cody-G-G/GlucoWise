@@ -11,8 +11,8 @@ export default class GraphPanel extends Component {
     render() {
         const regions = [{
             label: '',
-            from: 70,
-            to: 130,
+            from: this.props.safeRangeMin,
+            to: this.props.safeRangeMax,
             fill: '#18c947'
         }];
 

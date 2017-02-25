@@ -55,8 +55,6 @@ const database = {
         realm.create('BGLReading', {value: '80', date: (new Date(Date.now() - 9.66 * 6e4))});
         realm.create('BGLReading', {value: '200', date: (new Date(Date.now() - 8 * 6e4))});
         realm.create('BGLReading', {value: '50', date: (new Date(Date.now() - 3 * 864e5))});
-
-        log(JSON.stringify(realm.objects('BGLStandard')));
     },
 
     /**
@@ -148,6 +146,15 @@ const database = {
      */
     initBGLReadingListener(callback) {
         realm.objects('BGLReading').addListener((readings, changes) => {
+            callback();
+        });
+    },
+
+    /**
+     * @param callback
+     */
+    initBGLSafeRangeListener(callback) {
+        realm.objects('BGLSafeRange').addListener((readings, changes) => {
             callback();
         });
     },

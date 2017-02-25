@@ -14,12 +14,15 @@ export default class GraphScreen extends Component {
         this.state = {
             hourRange: 1,
             readings: null,
-            graphReadings: null
+            graphReadings: null,
+            safeRangeMin: null,
+            safeRangeMax: null
         }
     }
 
     componentWillMount() {
-        this.setReadings();
+        this.updateReadings();
+        this.updateSafeRange();
     }
 
     render() {
@@ -29,7 +32,9 @@ export default class GraphScreen extends Component {
         return (
             <View style={styles.screenContainer}>
                 <GraphPanel readings={this.state.graphReadings}
-                            hourRange={this.state.hourRange}/>
+                            hourRange={this.state.hourRange}
+                            safeRangeMin={this.state.safeRangeMin}
+                            safeRangeMax={this.state.safeRangeMax}/>
                 <ReadingsPanel readings={this.state.readings}
                                toggleTimeRange={this.toggleTimeRange.bind(this)}
                                timeRangeButtonText={timeRangeButtonText}
@@ -39,7 +44,8 @@ export default class GraphScreen extends Component {
     }
 
     componentDidMount() {
-        db.initBGLReadingListener(this.setReadings.bind(this));
+        db.initBGLReadingListener(this.updateReadings.bind(this));
+        db.initBGLSafeRangeListener(this.updateSafeRange.bind(this));
     }
 
     getGraphReadings(readings, hourRange) {
@@ -67,12 +73,20 @@ export default class GraphScreen extends Component {
         });
     }
 
-    setReadings() {
+    updateReadings() {
         let readings = this.state.hourRange === 24 ? db.get24hBGLReadings() : db.get60mBGLReadings();
         let graphReadings = this.getGraphReadings(readings, this.state.hourRange);
         this.setState({
             readings: readings,
             graphReadings: graphReadings
         });
+    }
+
+    updateSafeRange() {
+        let safeRange = db.getBGLSafeRange();
+        this.setState({
+            safeRangeMin: safeRange.minValue,
+            safeRangeMax: safeRange.maxValue
+        })
     }
 }

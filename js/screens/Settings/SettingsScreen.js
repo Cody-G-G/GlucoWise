@@ -100,7 +100,7 @@ export default class SettingsScreen extends Component {
     }
 
     saveSafeRangeMax() {
-        db.updateBGLSafeRangeMin(this.state.safeRangeMax);
+        db.updateBGLSafeRangeMax(this.state.safeRangeMax);
     }
 
     saveStandard() {
