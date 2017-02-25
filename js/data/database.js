@@ -38,7 +38,7 @@ const database = {
         const initBGLSafeRange = realm.objects('BGLSafeRange').length === 0;
         const initBGLStandard = realm.objects('BGLStandard').length === 0;
         realm.write(() => {
-            initBGLStandard && realm.create('BGLStandard', {standard: 'mmol/L'});
+            initBGLStandard && realm.create('BGLStandard', {standard: 'mg/dL'});
             initBGLSafeRange && realm.create('BGLSafeRange', {minValue: 70, maxValue: 130});
             this.addMockData();
         });
@@ -56,10 +56,7 @@ const database = {
         realm.create('BGLReading', {value: '200', date: (new Date(Date.now() - 8 * 6e4))});
         realm.create('BGLReading', {value: '50', date: (new Date(Date.now() - 3 * 864e5))});
 
-        // realm.create('BGLReading', {value: '135', date: (new Date(Date.now() - 8 * 6e4))});
-        // realm.create('BGLReading', {value: '110', date: (new Date(Date.now() - 7 * 6e4))});
-        // realm.create('BGLReading', {value: '110', date: (new Date(Date.now() - 9 * 6e4))});
-        // realm.create('BGLReading', {value: '50', date: (new Date(Date.now() - 10 * 6e4))});
+        log(JSON.stringify(realm.objects('BGLStandard')));
     },
 
     /**
@@ -75,13 +72,22 @@ const database = {
 
     /**
      * @param minValue
-     * @param maxValue
      */
-    updateBGLSafeRange(minValue, maxValue) {
-        log("Updating BGLSafeRange: " + minValue + " " + maxValue);
+    updateBGLSafeRangeMin(minValue) {
+        log("Updating BGLSafeRange min: " + minValue);
         let savedBGLSafeRanges = realm.objects('BGLSafeRange');
         realm.write(() => {
             savedBGLSafeRanges[0].minValue = minValue;
+        });
+    },
+
+    /**
+     * @param maxValue
+     */
+    updateBGLSafeRangeMax(maxValue) {
+        log("Updating BGLSafeRange max: " + maxValue);
+        let savedBGLSafeRanges = realm.objects('BGLSafeRange');
+        realm.write(() => {
             savedBGLSafeRanges[0].maxValue = maxValue;
         });
     },

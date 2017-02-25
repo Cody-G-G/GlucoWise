@@ -5,6 +5,7 @@ import NavigationDrawer from './glue/NavigationDrawer';
 import ConnectionScreen from './screens/Connection/ConnectionScreen';
 import ReadingsScreen from './screens/Readings/ReadingsScreen';
 import GraphScreen from './screens/GraphData/GraphScreen';
+import SettingsScreen from './screens/Settings/SettingsScreen';
 import {Navigator} from 'react-native';
 import db from "./data/database";
 
@@ -23,6 +24,7 @@ export default class App extends Component {
                         <Scene key="screenConnection" title="Connection" initial hideTabBar component={ConnectionScreen}/>
                         <Scene key="screenGraph" title="Graph" hideTabBar component={GraphScreen}/>
                         <Scene key="screenReadings" title="Readings" hideTabBar component={ReadingsScreen}/>
+                        <Scene key="screenSettings" title="Settings" hideTabBar component={SettingsScreen}/>
                     </Scene>
                 </Scene>
             </Router>

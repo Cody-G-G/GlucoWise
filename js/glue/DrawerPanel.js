@@ -37,7 +37,7 @@ export default class DrawerPanel extends Component {
                     <Icon theme={{iconFamily: "MaterialIcons"}} style={styles.icon} name="history"/>
                     <Text style={styles.tabText}>Readings</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => {drawer.close()}} style={styles.tabButton}>
+                <TouchableOpacity onPress={() => {drawer.close(); Actions.screenSettings();}} style={styles.tabButton}>
                     <Icon theme={{iconFamily: "MaterialIcons"}} style={styles.icon} name="settings"/>
                     <Text style={styles.tabText}>Settings</Text>
                 </TouchableOpacity>
