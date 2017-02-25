@@ -17,7 +17,7 @@ export default class NavigationDrawer extends Component {
                 onClose={() => Actions.refresh({ key: state.key, open: false })}
                 tapToClose
                 openDrawerOffset={0.55}
-                panCloseMask={0.7}
+                panCloseMask={0.5}
                 panOpenMask={0.3}
                 closedDrawerOffset={-3}
                 panThreshold={0.05}
