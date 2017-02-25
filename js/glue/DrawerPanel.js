@@ -25,21 +25,26 @@ export default class DrawerPanel extends Component {
         const drawer = this.context.drawer;
         return (
             <View style={styles.container}>
-                <Button onPress={() => {drawer.close(); Actions.screenConnection();}} large style={styles.tabButton} textStyle={styles.tabText} bordered>
-                    <Icon theme={{iconFamily: "MaterialIcons"}} style={styles.icon} name="bluetooth"/>Connect
-                </Button>
-                <Button onPress={() => {drawer.close(); Actions.screenGraph();}} large style={styles.tabButton} textStyle={styles.tabText} bordered>
-                    <Icon theme={{iconFamily: "MaterialIcons"}} style={styles.icon} name="insert-chart"/>Chart
-                </Button>
-                <Button onPress={() => {drawer.close(); Actions.screenReadings();}} large style={styles.tabButton} textStyle={styles.tabText} bordered>
-                    <Icon theme={{iconFamily: "MaterialIcons"}} style={styles.icon} name="history"/>Readings
-                </Button>
-                <Button onPress={() => {drawer.close()}} large style={styles.tabButton} textStyle={styles.tabText} bordered>
-                    <Icon theme={{iconFamily: "MaterialIcons"}} style={styles.icon} name="settings"/>Settings
-                </Button>
-                <Button onPress={() => {drawer.close()}} large style={styles.tabButton} textStyle={styles.tabText} bordered>
-                    <Icon theme={{iconFamily: "MaterialIcons"}} style={styles.icon} name="info"/>About
-                </Button>
+                <TouchableOpacity onPress={() => {drawer.close(); Actions.screenConnection();}} style={styles.tabButton}>
+                    <Icon theme={{iconFamily: "MaterialIcons"}} style={styles.icon} name="bluetooth"/>
+                    <Text style={styles.tabText}>Connect</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => {drawer.close(); Actions.screenGraph();}} style={styles.tabButton}>
+                    <Icon theme={{iconFamily: "MaterialIcons"}} style={styles.icon} name="insert-chart"/>
+                    <Text style={styles.tabText}>Chart</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => {drawer.close(); Actions.screenReadings();}} style={styles.tabButton}>
+                    <Icon theme={{iconFamily: "MaterialIcons"}} style={styles.icon} name="history"/>
+                    <Text style={styles.tabText}>Readings</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => {drawer.close()}} style={styles.tabButton}>
+                    <Icon theme={{iconFamily: "MaterialIcons"}} style={styles.icon} name="settings"/>
+                    <Text style={styles.tabText}>Settings</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => {drawer.close()}} style={styles.tabButton}>
+                    <Icon theme={{iconFamily: "MaterialIcons"}} style={styles.icon} name="info"/>
+                    <Text style={styles.tabText}>About</Text>
+                </TouchableOpacity>
             </View>
         );
     }

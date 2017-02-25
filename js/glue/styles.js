@@ -10,12 +10,19 @@ export default StyleSheet.create({
         flex: 1,
         alignSelf: 'stretch',
         backgroundColor: 'whitesmoke',
-        borderColor: 'royalblue'
+        borderWidth: 1.5,
+        borderColor: 'royalblue',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        flexDirection: 'row'
     },
     tabText: {
-        color: 'royalblue'
+        color: 'royalblue',
+        fontSize: 25,
+        fontWeight: 'bold'
     },
     icon: {
-        color: 'royalblue'
+        color: 'royalblue',
+        fontSize: 45
     }
 });
