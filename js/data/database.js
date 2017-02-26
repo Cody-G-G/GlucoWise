@@ -145,21 +145,28 @@ const database = {
      * @param callback
      */
     initBGLReadingListener(callback) {
-        realm.objects('BGLReading').addListener(callback);
+        realm.objects('BGLReading').addListener((objects, changes) => {
+            existChanges(changes) && callback();
+
+        });
     },
 
     /**
      * @param callback
      */
     initBGLSafeRangeListener(callback) {
-        realm.objects('BGLSafeRange').addListener(callback);
+        realm.objects('BGLSafeRange').addListener((objects, changes) => {
+            existChanges(changes) && callback();
+        });
     },
 
     /**
      * @param callback
      */
     initBGLStandardListener(callback) {
-        realm.objects('BGLStandard').addListener(callback);
+        realm.objects('BGLStandard').addListener((objects, changes) => {
+            existChanges(changes) && callback();
+        });
     },
 
     deleteReading(reading) {
@@ -169,5 +176,13 @@ const database = {
         });
     }
 };
+
+function existChanges(changes) {
+    let isModification = changes.modifications.length > 0;
+    let isDeletion = changes.deletions.length > 0;
+    let isInsertion = changes.insertions.length > 0;
+
+    return (isModification || isDeletion || isInsertion);
+}
 
 export default database;

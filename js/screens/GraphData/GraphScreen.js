@@ -82,7 +82,7 @@ export default class GraphScreen extends Component {
      */
     updateState(newHourRange) {
         let hourRange = (typeof newHourRange !== 'undefined') ? newHourRange : this.state.hourRange;
-        let readings = this.state.hourRange === 24 ? db.get24hBGLReadings() : db.get60mBGLReadings();
+        let readings = hourRange === 24 ? db.get24hBGLReadings() : db.get60mBGLReadings();
         let standard = db.getBGLStandard().standard;
         let safeRange = db.getBGLSafeRange();
         let graphReadings = this.getGraphReadings(readings, hourRange, standard);
