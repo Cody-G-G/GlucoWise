@@ -145,27 +145,21 @@ const database = {
      * @param callback
      */
     initBGLReadingListener(callback) {
-        realm.objects('BGLReading').addListener((readings, changes) => {
-            callback();
-        });
+        realm.objects('BGLReading').addListener(callback);
     },
 
     /**
      * @param callback
      */
     initBGLSafeRangeListener(callback) {
-        realm.objects('BGLSafeRange').addListener((readings, changes) => {
-            callback();
-        });
+        realm.objects('BGLSafeRange').addListener(callback);
     },
 
     /**
      * @param callback
      */
     initBGLStandardListener(callback) {
-        realm.objects('BGLStandard').addListener((readings, changes) => {
-            callback();
-        });
+        realm.objects('BGLStandard').addListener(callback);
     },
 
     deleteReading(reading) {

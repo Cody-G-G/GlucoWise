@@ -22,8 +22,7 @@ export default class ReadingsScreen extends Component {
     }
 
     componentWillMount() {
-        this.updateReadings();
-        this.updateStandard();
+        this.updateState();
     }
 
     render() {
@@ -43,19 +42,13 @@ export default class ReadingsScreen extends Component {
     }
 
     componentDidMount() {
-        db.initBGLReadingListener(this.updateReadings.bind(this));
-        db.initBGLStandardListener(this.updateStandard.bind(this));
+        db.initBGLReadingListener(this.updateState.bind(this));
     }
 
-    updateReadings() {
+    updateState() {
         this.setState({
             readings: db.getBGLReadingsInDateRange(this.state.startDate, this.state.endDate),
-        });
-    }
-
-    updateStandard() {
-        this.setState({
-            standard: db.getBGLStandard().standard,
+            standard: db.getBGLStandard().standard
         });
     }
 

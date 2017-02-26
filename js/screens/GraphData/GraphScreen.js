@@ -23,9 +23,7 @@ export default class GraphScreen extends Component {
     }
 
     componentWillMount() {
-        this.updateReadings();
-        this.updateSafeRange();
-        this.updateStandard();
+        this.updateState();
     }
 
     render() {
@@ -50,11 +48,17 @@ export default class GraphScreen extends Component {
     }
 
     componentDidMount() {
-        db.initBGLReadingListener(this.updateReadings.bind(this));
-        db.initBGLSafeRangeListener(this.updateSafeRange.bind(this));
-        db.initBGLStandardListener(this.updateStandard.bind(this))
+        db.initBGLReadingListener(this.updateState.bind(this));
+        db.initBGLSafeRangeListener(this.updateState.bind(this));
+        db.initBGLStandardListener(this.updateState.bind(this))
     }
 
+    /**
+     * @param readings
+     * @param hourRange
+     * @param standard
+     * @returns {[*]}
+     */
     getGraphReadings(readings, hourRange, standard) {
         let graphReadings = [];
         let timeUnitsFromPresent = hourRange === 24 ? dateUtil.hoursFromPresent : dateUtil.minutesFromPresent;
@@ -70,42 +74,25 @@ export default class GraphScreen extends Component {
 
     toggleTimeRange() {
         log("Toggled time range");
-        let newHourRange = this.state.hourRange === 24 ? 1 : 24;
-        let readings = newHourRange === 24 ? db.get24hBGLReadings() : db.get60mBGLReadings();
-        let graphReadings = this.getGraphReadings(readings, newHourRange, this.state.standard);
-        this.setState({
-            hourRange: newHourRange,
-            readings: readings,
-            graphReadings: graphReadings
-        });
+        this.updateState(this.state.hourRange === 24 ? 1 : 24);
     }
 
-    updateReadings() {
-        let readings = this.state.hourRange === 24 ? db.get24hBGLReadings() : db.get60mBGLReadings();
-        let graphReadings = this.getGraphReadings(readings, this.state.hourRange, this.state.standard);
-        this.setState({
-            readings: readings,
-            graphReadings: graphReadings
-        });
-    }
-
-    updateSafeRange() {
-        let safeRange = db.getBGLSafeRange();
-        this.setState({
-            safeRangeMin: safeRange.minValue,
-            safeRangeMax: safeRange.maxValue
-        })
-    }
-
-    updateStandard() {
+    /**
+     * @param newHourRange
+     */
+    updateState(newHourRange) {
+        let hourRange = (typeof newHourRange !== 'undefined') ? newHourRange : this.state.hourRange;
         let readings = this.state.hourRange === 24 ? db.get24hBGLReadings() : db.get60mBGLReadings();
         let standard = db.getBGLStandard().standard;
-        let graphReadings = this.getGraphReadings(readings, this.state.hourRange, standard);
+        let safeRange = db.getBGLSafeRange();
+        let graphReadings = this.getGraphReadings(readings, hourRange, standard);
         this.setState({
             standard: standard,
             readings: readings,
-            graphReadings: graphReadings
+            graphReadings: graphReadings,
+            safeRangeMin: safeRange.minValue,
+            safeRangeMax: safeRange.maxValue,
+            hourRange: hourRange
         });
     }
-
 }
