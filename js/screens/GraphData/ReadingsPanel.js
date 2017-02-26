@@ -20,7 +20,7 @@ export default class ReadingsPanel extends Component {
                     <TimeRangeButton toggleTimeRange={this.props.toggleTimeRange}
                                      timeRangeButtonText={this.props.timeRangeButtonText}/>
                 </View>
-                <ReadingsList readings={this.props.readings}/>
+                <ReadingsList readings={this.props.readings} standard={this.props.standard} deleteReading={this.props.deleteReading}/>
             </View>
         );
     }

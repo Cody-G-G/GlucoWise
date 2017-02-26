@@ -159,6 +159,15 @@ const database = {
         });
     },
 
+    /**
+     * @param callback
+     */
+    initBGLStandardListener(callback) {
+        realm.objects('BGLStandard').addListener((readings, changes) => {
+            callback();
+        });
+    },
+
     deleteReading(reading) {
         log("Deleting reading " + JSON.stringify(reading));
         realm.write(() => {

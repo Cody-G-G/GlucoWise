@@ -3,24 +3,27 @@ import React, {Component} from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
 import {ListItem} from 'native-base';
 import styles from "./styles";
-import log from "../../helpers/util/logger";
 import SafeRangesRowPanel from "./SafeRangesRowPanel";
 import StandardSetterButton from "./StandardSetterButton";
 import db from "../../data/database";
+import processReading from"../../helpers/util/readingProcessor";
 
 export default class SettingsScreen extends Component {
     constructor(props) {
         super(props);
+        let standard = db.getBGLStandard().standard;
+        let safeRange = db.getBGLSafeRange();
         this.state = {
-            standard: db.getBGLStandard().standard,
-            safeRangeMin: db.getBGLSafeRange().minValue,
-            safeRangeMax: db.getBGLSafeRange().maxValue
+            standard: standard,
+            safeRangeMin: processReading(safeRange.minValue, standard, 1),
+            safeRangeMax: processReading(safeRange.maxValue, standard, 1)
         };
     }
 
     componentWillMount() {
         this.standardUK = "mmol/L";
         this.standardUS = "mg/dL";
+        this.updateBGLSafeRange();
     }
 
     render() {
@@ -34,12 +37,14 @@ export default class SettingsScreen extends Component {
                                         inputValue={this.state.safeRangeMin}
                                         defaultSafeRange={this.setDefaultMin.bind(this)}
                                         updateSafeRange={this.setSafeRangeMin.bind(this)}
-                                        saveSafeRange={this.saveSafeRangeMin.bind(this)}/>
+                                        saveSafeRange={this.saveSafeRangeMin.bind(this)}
+                                        standard={this.state.standard}/>
                     <SafeRangesRowPanel inputLabel={'Max:'}
                                         inputValue={this.state.safeRangeMax}
                                         defaultSafeRange={this.setDefaultMax.bind(this)}
                                         saveSafeRange={this.saveSafeRangeMax.bind(this)}
-                                        updateSafeRange={this.setSafeRangeMax.bind(this)}/>
+                                        updateSafeRange={this.setSafeRangeMax.bind(this)}
+                                        standard={this.state.standard}/>
                 </View>
                 <View>
                     <ListItem itemDivider><Text style={styles.divider}>Measurement Units</Text></ListItem>
@@ -50,6 +55,10 @@ export default class SettingsScreen extends Component {
                 </View>
             </View>
         )
+    }
+
+    componentDidMount() {
+        this.initBGLStandardListener();
     }
 
     setStandardUS() {
@@ -84,26 +93,38 @@ export default class SettingsScreen extends Component {
 
     setDefaultMin() {
         this.setState({
-            safeRangeMin: '70'
+            safeRangeMin: processReading(70, this.state.standard, 1)
         }, this.saveSafeRangeMin);
 
     }
 
     setDefaultMax() {
         this.setState({
-            safeRangeMax: '130'
+            safeRangeMax: processReading(130, this.state.standard, 1)
         }, this.saveSafeRangeMax)
     }
 
     saveSafeRangeMin() {
-        db.updateBGLSafeRangeMin(this.state.safeRangeMin);
+        db.updateBGLSafeRangeMin(String(processReading(this.state.safeRangeMin, this.state.standard, 1, true)));
     }
 
     saveSafeRangeMax() {
-        db.updateBGLSafeRangeMax(this.state.safeRangeMax);
+        db.updateBGLSafeRangeMax(String(processReading(this.state.safeRangeMax, this.state.standard, 1, true)));
     }
 
     saveStandard() {
         db.updateBGLStandard(this.state.standard);
+    }
+
+    updateBGLSafeRange() {
+        let safeRange = db.getBGLSafeRange();
+        this.setState({
+            safeRangeMin: processReading(safeRange.minValue, this.state.standard, 1),
+            safeRangeMax: processReading(safeRange.maxValue, this.state.standard, 1)
+        });
+    }
+
+    initBGLStandardListener() {
+        db.initBGLStandardListener(this.updateBGLSafeRange.bind(this));
     }
 }

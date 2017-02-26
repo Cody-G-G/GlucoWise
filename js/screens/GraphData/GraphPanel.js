@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {View, Dimensions} from 'react-native';
 import {StockLine} from 'react-native-pathjs-charts';
 import styles from './styles';
+import processReading from "../../helpers/util/readingProcessor";
 
 export default class GraphPanel extends Component {
     constructor(props) {
@@ -11,8 +12,8 @@ export default class GraphPanel extends Component {
     render() {
         const regions = [{
             label: '',
-            from: this.props.safeRangeMin,
-            to: this.props.safeRangeMax,
+            from: processReading(this.props.safeRangeMin, this.props.standard, 1),
+            to: processReading(this.props.safeRangeMax, this.props.standard, 1),
             fill: '#18c947'
         }];
 
@@ -62,19 +63,7 @@ export default class GraphPanel extends Component {
                 showTicks: true,
                 zeroAxis: false,
                 orient: 'left',
-                tickValues: [
-                    {value: 40},
-                    {value: 55},
-                    {value: 70},
-                    {value: 90},
-                    {value: 110},
-                    {value: 130},
-                    {value: 150},
-                    {value: 170},
-                    {value: 190},
-                    {value: 205},
-                    {value: 220}
-                ],
+                tickValues: this.getTickValues(),
                 label: {
                     fontFamily: 'Arial',
                     fontSize: 14,
@@ -82,8 +71,8 @@ export default class GraphPanel extends Component {
                     fill: '#34495E'
                 }
             },
-            min: 40,
-            max: 220,
+            min: processReading(40, this.props.standard, 1),
+            max: processReading(220, this.props.standard, 1),
             showAreas: false,
             strokeWidth: 3
         };
@@ -99,5 +88,23 @@ export default class GraphPanel extends Component {
                            yKey='y'/>
             </View>
         );
+    }
+
+    getTickValues() {
+        return [
+            {value: 40},
+            {value: 55},
+            {value: 70},
+            {value: 90},
+            {value: 110},
+            {value: 130},
+            {value: 150},
+            {value: 170},
+            {value: 190},
+            {value: 205},
+            {value: 220}
+        ].map(entry => {
+            return {value: processReading(entry.value, this.props.standard, 1)}
+        });
     }
 }

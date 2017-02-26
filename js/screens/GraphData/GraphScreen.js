@@ -7,6 +7,7 @@ import ReadingsPanel from './ReadingsPanel';
 import db from "../../data/database";
 import dateUtil from "../../helpers/util/date";
 import log from "../../helpers/util/logger";
+import processReading from "../../helpers/util/readingProcessor";
 
 export default class GraphScreen extends Component {
     constructor(props) {
@@ -16,13 +17,15 @@ export default class GraphScreen extends Component {
             readings: null,
             graphReadings: null,
             safeRangeMin: null,
-            safeRangeMax: null
+            safeRangeMax: null,
+            standard: null
         }
     }
 
     componentWillMount() {
         this.updateReadings();
         this.updateSafeRange();
+        this.updateStandard();
     }
 
     render() {
@@ -34,11 +37,14 @@ export default class GraphScreen extends Component {
                 <GraphPanel readings={this.state.graphReadings}
                             hourRange={this.state.hourRange}
                             safeRangeMin={this.state.safeRangeMin}
-                            safeRangeMax={this.state.safeRangeMax}/>
+                            safeRangeMax={this.state.safeRangeMax}
+                            standard={this.state.standard}/>
                 <ReadingsPanel readings={this.state.readings}
                                toggleTimeRange={this.toggleTimeRange.bind(this)}
                                timeRangeButtonText={timeRangeButtonText}
-                               currentTimeRange={currentTimeRange}/>
+                               currentTimeRange={currentTimeRange}
+                               standard={this.state.standard}
+                               deleteReading={db.deleteReading}/>
             </View>
         );
     }
@@ -46,6 +52,7 @@ export default class GraphScreen extends Component {
     componentDidMount() {
         db.initBGLReadingListener(this.updateReadings.bind(this));
         db.initBGLSafeRangeListener(this.updateSafeRange.bind(this));
+        db.initBGLStandardListener(this.updateStandard.bind(this))
     }
 
     getGraphReadings(readings, hourRange) {
@@ -54,7 +61,7 @@ export default class GraphScreen extends Component {
         readings.forEach((reading) => {
                 graphReadings.push({
                     x: timeUnitsFromPresent(reading.date),
-                    y: reading.value
+                    y: processReading(reading.value, this.state.standard, 1)
                 })
             }
         );
@@ -89,4 +96,11 @@ export default class GraphScreen extends Component {
             safeRangeMax: safeRange.maxValue
         })
     }
+
+    updateStandard() {
+        this.setState({
+            standard: db.getBGLStandard().standard,
+        }, this.updateReadings);
+    }
+
 }

@@ -14,9 +14,9 @@ export default class SafeRangesRowPanel extends Component {
             <View style={styles.safeRangesRowPanel}>
                 <Text style={styles.safeRangeInputLabel}>{this.props.inputLabel}</Text>
                 <TextInput style={styles.safeRangeInput}
-                           value={this.props.inputValue}
+                           value={String(this.props.inputValue)}
                            keyboardType={'numeric'}
-                           maxLength={4}
+                           maxLength={5}
                            onChangeText={(input) => this.props.updateSafeRange(input)}/>
                 <SafeRangeButton backgroundColor={'royalblue'}
                                  buttonText={'Set'}
@@ -32,7 +32,7 @@ export default class SafeRangesRowPanel extends Component {
         let numbers = '0123456789.';
         let decimalPoints = 0;
         let valid = true;
-        let digits = this.props.inputValue.trim().split('');
+        let digits = String(this.props.inputValue).trim().split('');
 
         let isInputEmpty = digits.length === 0;
         let isLastCharDecimalPoint = digits[digits.length - 1] === '.';

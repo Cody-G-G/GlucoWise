@@ -14,10 +14,16 @@ export default class ReadingsScreen extends Component {
         super(props);
         this.today = date.getTodayString();
         this.state = {
-            readings: db.getBGLReadingsInDateRange(this.today, this.today),
+            readings: null,
             startDate: this.today,
-            endDate: this.today
+            endDate: this.today,
+            standard: null
         }
+    }
+
+    componentWillMount() {
+        this.updateReadings();
+        this.updateStandard();
     }
 
     render() {
@@ -30,19 +36,26 @@ export default class ReadingsScreen extends Component {
                     <ReadingsDatePicker minDate={this.state.startDate} maxDate={this.today} date={this.state.endDate} handleDateChange={this.updateEndDate.bind(this)}/>
                 </View>
                 <View style={{flex: 8, alignSelf:'stretch'}}>
-                    <ReadingsList readings={this.state.readings}/>
+                    <ReadingsList readings={this.state.readings} standard={this.state.standard} deleteReading={db.deleteReading}/>
                 </View>
             </View>
         );
     }
 
     componentDidMount() {
-        db.initBGLReadingListener(this.setReadings.bind(this));
+        db.initBGLReadingListener(this.updateReadings.bind(this));
+        db.initBGLStandardListener(this.updateStandard.bind(this));
     }
 
-    setReadings() {
+    updateReadings() {
         this.setState({
             readings: db.getBGLReadingsInDateRange(this.state.startDate, this.state.endDate),
+        });
+    }
+
+    updateStandard() {
+        this.setState({
+            standard: db.getBGLStandard().standard,
         });
     }
 
