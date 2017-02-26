@@ -43,12 +43,13 @@ export default class ReadingsScreen extends Component {
 
     componentDidMount() {
         db.initBGLReadingListener(this.updateState.bind(this));
+        db.initBGLStandardListener(this.updateState.bind(this));
     }
 
     updateState() {
         this.setState({
+            standard: db.getBGLStandard().standard,
             readings: db.getBGLReadingsInDateRange(this.state.startDate, this.state.endDate),
-            standard: db.getBGLStandard().standard
         });
     }
 

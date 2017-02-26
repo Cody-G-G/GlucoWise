@@ -23,7 +23,6 @@ export default class SettingsScreen extends Component {
     componentWillMount() {
         this.standardUK = "mmol/L";
         this.standardUS = "mg/dL";
-        this.updateBGLSafeRange();
     }
 
     render() {
