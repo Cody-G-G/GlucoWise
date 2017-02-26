@@ -55,13 +55,13 @@ export default class GraphScreen extends Component {
         db.initBGLStandardListener(this.updateStandard.bind(this))
     }
 
-    getGraphReadings(readings, hourRange) {
+    getGraphReadings(readings, hourRange, standard) {
         let graphReadings = [];
         let timeUnitsFromPresent = hourRange === 24 ? dateUtil.hoursFromPresent : dateUtil.minutesFromPresent;
         readings.forEach((reading) => {
                 graphReadings.push({
                     x: timeUnitsFromPresent(reading.date),
-                    y: processReading(reading.value, this.state.standard, 1)
+                    y: processReading(reading.value, standard, 1)
                 })
             }
         );
@@ -72,7 +72,7 @@ export default class GraphScreen extends Component {
         log("Toggled time range");
         let newHourRange = this.state.hourRange === 24 ? 1 : 24;
         let readings = newHourRange === 24 ? db.get24hBGLReadings() : db.get60mBGLReadings();
-        let graphReadings = this.getGraphReadings(readings, newHourRange);
+        let graphReadings = this.getGraphReadings(readings, newHourRange, this.state.standard);
         this.setState({
             hourRange: newHourRange,
             readings: readings,
@@ -82,7 +82,7 @@ export default class GraphScreen extends Component {
 
     updateReadings() {
         let readings = this.state.hourRange === 24 ? db.get24hBGLReadings() : db.get60mBGLReadings();
-        let graphReadings = this.getGraphReadings(readings, this.state.hourRange);
+        let graphReadings = this.getGraphReadings(readings, this.state.hourRange, this.state.standard);
         this.setState({
             readings: readings,
             graphReadings: graphReadings
@@ -98,9 +98,14 @@ export default class GraphScreen extends Component {
     }
 
     updateStandard() {
+        let readings = this.state.hourRange === 24 ? db.get24hBGLReadings() : db.get60mBGLReadings();
+        let standard = db.getBGLStandard().standard;
+        let graphReadings = this.getGraphReadings(readings, this.state.hourRange, standard);
         this.setState({
-            standard: db.getBGLStandard().standard,
-        }, this.updateReadings);
+            standard: standard,
+            readings: readings,
+            graphReadings: graphReadings
+        });
     }
 
 }
