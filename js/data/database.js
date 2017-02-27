@@ -2,12 +2,13 @@
 import log from "../helpers/util/logger";
 import dateUtil from "../helpers/util/date";
 import processReading from "../helpers/util/readingProcessor";
+const uuid = require('uuid/v1');
 const Realm = require('realm');
 
 const key = new Int8Array(64);
 let realm = new Realm({
     schema: [
-        {name: 'BGLReading', properties: {value: 'string', date: 'date'}},
+        {name: 'BGLReading', properties: {id: 'string', value: 'string', date: 'date'}},
         {name: 'BGLSafeRange', properties: {minValue: 'string', maxValue: 'string'}},
         {name: 'BGLStandard', properties: {standard: 'string'}}
     ],
@@ -47,15 +48,15 @@ const database = {
 
     addMockData() {
         realm.delete(realm.objects('BGLReading'));
-        realm.create('BGLReading', {value: '155', date: (new Date(Date.now() - 65 * 6e4))});
-        realm.create('BGLReading', {value: '70', date: (new Date(Date.now() - 62 * 6e4))});
-        realm.create('BGLReading', {value: '50', date: (new Date(Date.now() - 55 * 6e4))});
-        realm.create('BGLReading', {value: '120', date: (new Date(Date.now() - 20 * 6e4))});
-        realm.create('BGLReading', {value: '90', date: (new Date(Date.now() - 15 * 6e4))});
-        realm.create('BGLReading', {value: '65', date: (new Date(Date.now() - 13 * 6e4))});
-        realm.create('BGLReading', {value: '80', date: (new Date(Date.now() - 9.66 * 6e4))});
-        realm.create('BGLReading', {value: '200', date: (new Date(Date.now() - 8 * 6e4))});
-        realm.create('BGLReading', {value: '50', date: (new Date(Date.now() - 3 * 864e5))});
+        realm.create('BGLReading', {id: uuid(), value: '155', date: (new Date(Date.now() - 65 * 6e4))});
+        realm.create('BGLReading', {id: uuid(), value: '70', date: (new Date(Date.now() - 62 * 6e4))});
+        realm.create('BGLReading', {id: uuid(), value: '50', date: (new Date(Date.now() - 55 * 6e4))});
+        realm.create('BGLReading', {id: uuid(), value: '120', date: (new Date(Date.now() - 20 * 6e4))});
+        realm.create('BGLReading', {id: uuid(), value: '90', date: (new Date(Date.now() - 15 * 6e4))});
+        realm.create('BGLReading', {id: uuid(), value: '65', date: (new Date(Date.now() - 13 * 6e4))});
+        realm.create('BGLReading', {id: uuid(), value: '80', date: (new Date(Date.now() - 9.66 * 6e4))});
+        realm.create('BGLReading', {id: uuid(), value: '200', date: (new Date(Date.now() - 8 * 6e4))});
+        realm.create('BGLReading', {id: uuid(), value: '50', date: (new Date(Date.now() - 3 * 864e5))});
     },
 
     /**
@@ -66,6 +67,7 @@ const database = {
         log("Saving BGLReading: " + value + " " + date);
         realm.write(() => {
             realm.create('BGLReading', {
+                id: uuid(),
                 value: value,
                 date: date
             });
@@ -136,6 +138,7 @@ const database = {
             .sorted('date', true)
             .forEach((reading) => {
                 filteredReadings.push({
+                    id: reading.id,
                     value: processReading(reading.value, this.getBGLStandard()),
                     date: reading.date
                 });
@@ -149,6 +152,7 @@ const database = {
         let filteredReadings = [];
         realm.objects('BGLReading').sorted('date', true).forEach((reading) => {
             dateUtil.isWithin24Hours(reading.date) && filteredReadings.push({
+                id: reading.id,
                 value: processReading(reading.value, this.getBGLStandard()),
                 date: reading.date
             });
@@ -161,6 +165,7 @@ const database = {
         let filteredReadings = [];
         realm.objects('BGLReading').sorted('date', true).forEach((reading) => {
             dateUtil.isWithin60Minutes(reading.date) && filteredReadings.push({
+                id: reading.id,
                 value: processReading(reading.value, this.getBGLStandard()),
                 date: reading.date
             });
@@ -216,7 +221,7 @@ const database = {
     deleteReading(reading) {
         log("Deleting reading " + JSON.stringify(reading));
         realm.write(() => {
-            realm.delete(reading);
+            realm.delete(realm.objects('BGLReading').filtered('id = $0', reading.id));
         });
     }
 };

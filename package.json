@@ -20,7 +20,8 @@
     "react-native-router-flux": "^3.37.0",
     "react-native-spinkit": "^1.0.1",
     "react-native-vector-icons": "4.0.0",
-    "realm": "^1.0.2"
+    "realm": "^1.0.2",
+    "uuid": "^3.0.1"
   },
   "jest": {
     "preset": "jest-react-native"
