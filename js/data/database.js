@@ -10,24 +10,24 @@ let realm = new Realm({
         {name: 'BGLSafeRange', properties: {minValue: 'string', maxValue: 'string'}},
         {name: 'BGLStandard', properties: {standard: 'string'}}
     ],
-    schemaVersion: 2,
-    migration: (oldRealm, newRealm) => {
-        if (oldRealm.schemaVersion < 2) {
-            let oldReadings = oldRealm.objects('BGLReading');
-            let oldRanges = oldRealm.objects('BGLSafeRange');
-            let newReadings = newRealm.objects('BGLReading');
-            let newRanges = newRealm.objects('BGLSafeRange');
-
-            for (let i = 0; i < oldRanges.length; i++) {
-                newRanges[i].minValue = oldRanges[i].minValue + "";
-                newRanges[i].maxValue = oldRanges[i].maxValue + "";
-            }
-            for (let i = 0; i < oldReadings.length; i++) {
-                newReadings[i].value = oldReadings[i].value + "";
-                newReadings[i].date = oldReadings[i].date;
-            }
-        }
-    },
+    schemaVersion: 1,
+    // migration: (oldRealm, newRealm) => {
+    //     if (oldRealm.schemaVersion < 2) {
+    //         let oldReadings = oldRealm.objects('BGLReading');
+    //         let oldRanges = oldRealm.objects('BGLSafeRange');
+    //         let newReadings = newRealm.objects('BGLReading');
+    //         let newRanges = newRealm.objects('BGLSafeRange');
+    //
+    //         for (let i = 0; i < oldRanges.length; i++) {
+    //             newRanges[i].minValue = oldRanges[i].minValue + "";
+    //             newRanges[i].maxValue = oldRanges[i].maxValue + "";
+    //         }
+    //         for (let i = 0; i < oldReadings.length; i++) {
+    //             newReadings[i].value = oldReadings[i].value + "";
+    //             newReadings[i].date = oldReadings[i].date;
+    //         }
+    //     }
+    // },
     encryptionKey: key
 });
 
@@ -39,7 +39,7 @@ const database = {
         const initBGLStandard = realm.objects('BGLStandard').length === 0;
         realm.write(() => {
             initBGLStandard && realm.create('BGLStandard', {standard: 'mg/dL'});
-            initBGLSafeRange && realm.create('BGLSafeRange', {minValue: 70, maxValue: 130});
+            initBGLSafeRange && realm.create('BGLSafeRange', {minValue: '70', maxValue: '130'});
             this.addMockData();
         });
     },
