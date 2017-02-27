@@ -51,7 +51,6 @@ export default class ConnectionScreen extends Component {
     }
 
     componentDidMount() {
-        permissions.requestLocationCoarsePermission();
         this.initBleManager();
         this.initScanStopListener();
         this.initBluetoothStateChangeListener();
@@ -137,7 +136,7 @@ export default class ConnectionScreen extends Component {
 
     initReadingCharacteristicUpdate() {
         NativeAppEventEmitter.addListener("BleManagerDidUpdateValueForCharacteristic", (args) => {
-            const reading = hexToAscii(args.value).slice(0,5);
+            const reading = hexToAscii(args.value).slice(0, 5);
             log("Peripheral " + args.peripheral + " characteristic " + args.characteristic + " was updated to " + reading);
             db.saveBGLReading(reading, new Date());
         });
@@ -185,14 +184,19 @@ export default class ConnectionScreen extends Component {
             log("Bluetooth state is " + args.state);
             if (args.state !== "turning-off" && args.state !== "turning-on" && this.pressedScan) {
                 this.updatePressedScan(false);
-                BleManager.enableBluetooth()
-                    .then(() => {
-                        log("Bluetooth enabled");
-                        permissions.requestLocationServices(this.startScan.bind(this));
-                    })
-                    .catch((error) => {
-                        log("Enabling bluetooth failed: " + error);
+
+                permissions.requestLocationCoarsePermission().then((granted) => {
+                    granted && permissions.requestLocationServices().then(() => {
+                        BleManager.enableBluetooth()
+                            .then(() => {
+                                log("Bluetooth enabled");
+                                this.startScan();
+                            })
+                            .catch((error) => {
+                                log("Enabling bluetooth failed: " + error);
+                            });
                     });
+                });
             }
         });
     }
