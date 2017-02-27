@@ -7,7 +7,6 @@ import ReadingsPanel from './ReadingsPanel';
 import db from "../../data/database";
 import dateUtil from "../../helpers/util/date";
 import log from "../../helpers/util/logger";
-import processReading from "../../helpers/util/readingProcessor";
 
 export default class GraphScreen extends Component {
     constructor(props) {
@@ -56,16 +55,15 @@ export default class GraphScreen extends Component {
     /**
      * @param readings
      * @param hourRange
-     * @param standard
      * @returns {[*]}
      */
-    getGraphReadings(readings, hourRange, standard) {
+    getGraphReadings(readings, hourRange) {
         let graphReadings = [];
         let timeUnitsFromPresent = hourRange === 24 ? dateUtil.hoursFromPresent : dateUtil.minutesFromPresent;
         readings.forEach((reading) => {
                 graphReadings.push({
                     x: timeUnitsFromPresent(reading.date),
-                    y: processReading(reading.value, standard, 1)
+                    y: reading.value,
                 })
             }
         );
@@ -83,9 +81,9 @@ export default class GraphScreen extends Component {
     updateState(newHourRange) {
         let hourRange = (typeof newHourRange !== 'undefined') ? newHourRange : this.state.hourRange;
         let readings = hourRange === 24 ? db.get24hBGLReadings() : db.get60mBGLReadings();
-        let standard = db.getBGLStandard().standard;
+        let standard = db.getBGLStandard();
         let safeRange = db.getBGLSafeRange();
-        let graphReadings = this.getGraphReadings(readings, hourRange, standard);
+        let graphReadings = this.getGraphReadings(readings, hourRange);
         this.setState({
             standard: standard,
             readings: readings,

@@ -20,7 +20,6 @@ export default StyleSheet.create({
     readingText: {
         flex: 6,
         alignItems: 'center',
-        backgroundColor: 'cornflowerblue',
         color: 'white',
         fontSize: 18,
         padding: 7

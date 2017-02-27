@@ -6,17 +6,16 @@ import styles from "./styles";
 import SafeRangesRowPanel from "./SafeRangesRowPanel";
 import StandardSetterButton from "./StandardSetterButton";
 import db from "../../data/database";
-import processReading from"../../helpers/util/readingProcessor";
 
 export default class SettingsScreen extends Component {
     constructor(props) {
         super(props);
-        let standard = db.getBGLStandard().standard;
+        let standard = db.getBGLStandard();
         let safeRange = db.getBGLSafeRange();
         this.state = {
             standard: standard,
-            safeRangeMin: processReading(safeRange.minValue, standard, 1),
-            safeRangeMax: processReading(safeRange.maxValue, standard, 1)
+            safeRangeMin: safeRange.minValue,
+            safeRangeMax: safeRange.maxValue
         };
     }
 
@@ -57,7 +56,7 @@ export default class SettingsScreen extends Component {
     }
 
     componentDidMount() {
-        this.initBGLStandardListener();
+        db.initBGLStandardListener(this.updateBGLSafeRange.bind(this));
     }
 
     setStandardUS() {
@@ -91,24 +90,19 @@ export default class SettingsScreen extends Component {
     }
 
     setDefaultMin() {
-        this.setState({
-            safeRangeMin: processReading(70, this.state.standard, 1)
-        }, this.saveSafeRangeMin);
-
+        db.updateBGLSafeRangeMinToDefault();
     }
 
     setDefaultMax() {
-        this.setState({
-            safeRangeMax: processReading(130, this.state.standard, 1)
-        }, this.saveSafeRangeMax)
+        db.updateBGLSafeRangeMaxToDefault();
     }
 
     saveSafeRangeMin() {
-        db.updateBGLSafeRangeMin(String(processReading(this.state.safeRangeMin, this.state.standard, 1, true)));
+        db.updateBGLSafeRangeMin(this.state.safeRangeMin);
     }
 
     saveSafeRangeMax() {
-        db.updateBGLSafeRangeMax(String(processReading(this.state.safeRangeMax, this.state.standard, 1, true)));
+        db.updateBGLSafeRangeMax(this.state.safeRangeMax);
     }
 
     saveStandard() {
@@ -118,12 +112,8 @@ export default class SettingsScreen extends Component {
     updateBGLSafeRange() {
         let safeRange = db.getBGLSafeRange();
         this.setState({
-            safeRangeMin: processReading(safeRange.minValue, this.state.standard, 1),
-            safeRangeMax: processReading(safeRange.maxValue, this.state.standard, 1)
+            safeRangeMin: safeRange.minValue,
+            safeRangeMax: safeRange.maxValue
         });
-    }
-
-    initBGLStandardListener() {
-        db.initBGLStandardListener(this.updateBGLSafeRange.bind(this));
     }
 }

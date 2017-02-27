@@ -23,7 +23,7 @@ export default {
     },
 
     requestLocationCoarsePermission: () => {
-        log("REQUESTING>");
+        log("Requesting Location Coarse Permission");
         return new Promise((resolve, reject) => {
             PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION).then((alreadyGranted) => {
                 alreadyGranted && resolve(true);

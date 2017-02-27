@@ -21,6 +21,15 @@ export default StyleSheet.create({
         fontSize: 25,
         fontWeight: 'bold'
     },
+    tabReadingText: {
+        color: 'black',
+        fontSize: 15,
+        fontWeight: 'bold'
+    },
+    tabReadingValue: {
+        fontSize: 15,
+        fontWeight: 'bold'
+    },
     icon: {
         color: 'royalblue',
         fontSize: 45

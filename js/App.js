@@ -19,8 +19,7 @@ export default class App extends Component {
         return (
             <Router getSceneStyle={getSceneStyle}>
                 <Scene key="drawer" component={NavigationDrawer}>
-                    <Scene key="main"
-                           tabs>
+                    <Scene key="main" tabs>
                         <Scene key="screenConnection" title="Connection" initial hideTabBar component={ConnectionScreen}/>
                         <Scene key="screenGraph" title="Graph" hideTabBar component={GraphScreen}/>
                         <Scene key="screenReadings" title="Readings" hideTabBar component={ReadingsScreen}/>

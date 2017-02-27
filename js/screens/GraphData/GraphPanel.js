@@ -12,8 +12,8 @@ export default class GraphPanel extends Component {
     render() {
         const regions = [{
             label: '',
-            from: processReading(this.props.safeRangeMin, this.props.standard, 1),
-            to: processReading(this.props.safeRangeMax, this.props.standard, 1),
+            from: this.props.safeRangeMin,
+            to: this.props.safeRangeMax,
             fill: '#18c947'
         }];
 
@@ -71,8 +71,8 @@ export default class GraphPanel extends Component {
                     fill: '#34495E'
                 }
             },
-            min: processReading(40, this.props.standard, 1),
-            max: processReading(220, this.props.standard, 1),
+            min: processReading(40, this.props.standard),
+            max: processReading(220, this.props.standard),
             showAreas: false,
             strokeWidth: 3
         };
@@ -104,7 +104,7 @@ export default class GraphPanel extends Component {
             {value: 205},
             {value: 220}
         ].map(entry => {
-            return {value: processReading(entry.value, this.props.standard, 1)}
+            return {value: processReading(entry.value, this.props.standard)}
         });
     }
 }

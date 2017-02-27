@@ -1,6 +1,7 @@
 'use strict';
 import log from "../helpers/util/logger";
 import dateUtil from "../helpers/util/date";
+import processReading from "../helpers/util/readingProcessor";
 const Realm = require('realm');
 
 const key = new Int8Array(64);
@@ -64,7 +65,10 @@ const database = {
     saveBGLReading(value, date) {
         log("Saving BGLReading: " + value + " " + date);
         realm.write(() => {
-            realm.create('BGLReading', {value: value, date: date});
+            realm.create('BGLReading', {
+                value: value,
+                date: date
+            });
         });
     },
 
@@ -75,7 +79,15 @@ const database = {
         log("Updating BGLSafeRange min: " + minValue);
         let savedBGLSafeRanges = realm.objects('BGLSafeRange');
         realm.write(() => {
-            savedBGLSafeRanges[0].minValue = minValue;
+            savedBGLSafeRanges[0].minValue = String(processReading(minValue, this.getBGLStandard(), true));
+        });
+    },
+
+    updateBGLSafeRangeMinToDefault() {
+        log("Updating BGLSafeRange min to default");
+        let savedBGLSafeRanges = realm.objects('BGLSafeRange');
+        realm.write(() => {
+            savedBGLSafeRanges[0].minValue = '70';
         });
     },
 
@@ -86,7 +98,15 @@ const database = {
         log("Updating BGLSafeRange max: " + maxValue);
         let savedBGLSafeRanges = realm.objects('BGLSafeRange');
         realm.write(() => {
-            savedBGLSafeRanges[0].maxValue = maxValue;
+            savedBGLSafeRanges[0].maxValue = String(processReading(maxValue, this.getBGLStandard(), true));
+        });
+    },
+
+    updateBGLSafeRangeMaxToDefault() {
+        log("Updating BGLSafeRange max to default");
+        let savedBGLSafeRanges = realm.objects('BGLSafeRange');
+        realm.write(() => {
+            savedBGLSafeRanges[0].maxValue = '130';
         });
     },
 
@@ -101,23 +121,37 @@ const database = {
         });
     },
 
-    getBGLReadings() {
-        log("Getting all BGLReadings");
-        return realm.objects('BGLReading');
+    getLatestReading() {
+        log("Getting latest BGLReading");
+        return processReading(realm.objects('BGLReading').sorted('date', true)[0].value, this.getBGLStandard());
     },
 
     getBGLReadingsInDateRange(startDate, endDate) {
         log("Getting BGLReadings between " + startDate + " and " + endDate);
-        return realm.objects('BGLReading').filtered('date < $0 AND date > $1',
-            dateUtil.toDateFromString(endDate, 23, 59, 59, 999),
-            dateUtil.toDateFromString(startDate, 0, 0, 0, 0));
+        let filteredReadings = [];
+        realm.objects('BGLReading')
+            .filtered('date < $0 AND date > $1',
+                dateUtil.toDateFromString(endDate, 23, 59, 59, 999),
+                dateUtil.toDateFromString(startDate, 0, 0, 0, 0))
+            .sorted('date', true)
+            .forEach((reading) => {
+                filteredReadings.push({
+                    value: processReading(reading.value, this.getBGLStandard()),
+                    date: reading.date
+                });
+            });
+
+        return filteredReadings;
     },
 
     get24hBGLReadings() {
         log("Getting BGLReadings for last 24h");
         let filteredReadings = [];
-        realm.objects('BGLReading').forEach((reading) => {
-            dateUtil.isWithin24Hours(reading.date) && filteredReadings.push(reading);
+        realm.objects('BGLReading').sorted('date', true).forEach((reading) => {
+            dateUtil.isWithin24Hours(reading.date) && filteredReadings.push({
+                value: processReading(reading.value, this.getBGLStandard()),
+                date: reading.date
+            });
         });
         return filteredReadings;
     },
@@ -125,20 +159,28 @@ const database = {
     get60mBGLReadings() {
         log("Getting BGLReadings for last 60m");
         let filteredReadings = [];
-        realm.objects('BGLReading').forEach((reading) => {
-            dateUtil.isWithin60Minutes(reading.date) && filteredReadings.push(reading);
+        realm.objects('BGLReading').sorted('date', true).forEach((reading) => {
+            dateUtil.isWithin60Minutes(reading.date) && filteredReadings.push({
+                value: processReading(reading.value, this.getBGLStandard()),
+                date: reading.date
+            });
         });
         return filteredReadings;
     },
 
     getBGLSafeRange() {
         log("Getting BGLSafeRange");
-        return realm.objects('BGLSafeRange')[0];
+        const safeRange = realm.objects('BGLSafeRange')[0];
+        const standard = this.getBGLStandard();
+        return {
+            minValue: processReading(safeRange.minValue, standard),
+            maxValue: processReading(safeRange.maxValue, standard)
+        };
     },
 
     getBGLStandard() {
         log("Getting BGLStandard");
-        return realm.objects('BGLStandard')[0];
+        return realm.objects('BGLStandard')[0].standard;
     },
 
     /**
@@ -147,7 +189,6 @@ const database = {
     initBGLReadingListener(callback) {
         realm.objects('BGLReading').addListener((objects, changes) => {
             existChanges(changes) && callback();
-
         });
     },
 
@@ -169,6 +210,9 @@ const database = {
         });
     },
 
+    /**
+     * @param reading
+     */
     deleteReading(reading) {
         log("Deleting reading " + JSON.stringify(reading));
         realm.write(() => {

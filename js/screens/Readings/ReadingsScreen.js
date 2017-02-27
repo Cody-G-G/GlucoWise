@@ -48,7 +48,7 @@ export default class ReadingsScreen extends Component {
 
     updateState() {
         this.setState({
-            standard: db.getBGLStandard().standard,
+            standard: db.getBGLStandard(),
             readings: db.getBGLReadingsInDateRange(this.state.startDate, this.state.endDate),
         });
     }
