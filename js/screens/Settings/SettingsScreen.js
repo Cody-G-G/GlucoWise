@@ -91,10 +91,12 @@ export default class SettingsScreen extends Component {
 
     setDefaultMin() {
         db.updateBGLSafeRangeMinToDefault();
+        this.updateBGLSafeRange();
     }
 
     setDefaultMax() {
         db.updateBGLSafeRangeMaxToDefault();
+        this.updateBGLSafeRange();
     }
 
     saveSafeRangeMin() {
