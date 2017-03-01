@@ -100,5 +100,9 @@ export default StyleSheet.create({
     screenTopPanel: {
         flex: 1,
         flexDirection: 'row'
+    },
+    screenContainer: {
+        flex: 1,
+        backgroundColor: 'aliceblue'
     }
 });

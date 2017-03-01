@@ -31,7 +31,7 @@ export default class ReadingsScreen extends Component {
     render() {
         log("Rendering ReadingsScreen");
         return (
-            <View style={{flex: 1}}>
+            <View style={styles.screenContainer}>
                 <View style={styles.screenTopPanel}>
                     <View style={styles.dateRangePickers}>
                         <ReadingsDatePicker style={styles.readingsDatePicker}

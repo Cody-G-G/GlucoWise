@@ -12,6 +12,7 @@ import {Actions} from 'react-native-router-flux';
 import styles from "./styles";
 import db from "../data/database";
 import log from "../helpers/util/logger";
+import DrawerTab from "./DrawerTab";
 
 const contextTypes = {
     drawer: React.PropTypes.object,
@@ -38,16 +39,9 @@ export default class DrawerPanel extends Component {
         const valueColor = (this.state.latestReading > this.state.safeRangeMax || this.state.latestReading < this.state.safeRangeMin) ? 'firebrick' : 'forestgreen';
         return (
             <View style={styles.container}>
-                <TouchableOpacity onPress={() => {drawer.close(); Actions.screenConnection();}} style={styles.tabButton}>
-                    <Icon theme={{iconFamily: "MaterialIcons"}} style={styles.icon} name="bluetooth"/>
-                    <Text style={styles.tabText}>Connect</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => {drawer.close(); Actions.screenGraph();}} style={styles.tabButton}>
-                    <Icon theme={{iconFamily: "MaterialIcons"}} style={styles.icon} name="insert-chart"/>
-                    <Text style={styles.tabText}>Chart</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => {drawer.close(); Actions.screenReadings();}} style={styles.tabButton}>
-                    <Icon theme={{iconFamily: "MaterialIcons"}} style={styles.icon} name="history"/>
+                <DrawerTab onPress={() => {drawer.close(); Actions.screenConnection();}} icon='bluetooth' text='Connect'/>
+                <DrawerTab onPress={() => {drawer.close(); Actions.screenGraph();}} icon='insert-chart' text='Graph'/>
+                <DrawerTab onPress={() => {drawer.close(); Actions.screenReadings();}} icon='history'>
                     <View>
                         <Text style={StyleSheet.flatten([styles.tabText, {alignSelf:'center'}])}>Readings</Text>
                         <View style={{flexDirection:'row'}}>
@@ -57,15 +51,10 @@ export default class DrawerPanel extends Component {
                             </Text>
                         </View>
                     </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => {drawer.close(); Actions.screenSettings();}} style={styles.tabButton}>
-                    <Icon theme={{iconFamily: "MaterialIcons"}} style={styles.icon} name="settings"/>
-                    <Text style={styles.tabText}>Settings</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => {drawer.close()}} style={styles.tabButton}>
-                    <Icon theme={{iconFamily: "MaterialIcons"}} style={styles.icon} name="info"/>
-                    <Text style={styles.tabText}>About</Text>
-                </TouchableOpacity>
+                </DrawerTab>
+                <DrawerTab onPress={() => {drawer.close(); Actions.screenSettings();}} icon='settings' text='Settings'/>
+                <DrawerTab onPress={() => {drawer.close(); Actions.screenAbout();}} icon='info' text='About'/>
+
             </View>
         );
     }
