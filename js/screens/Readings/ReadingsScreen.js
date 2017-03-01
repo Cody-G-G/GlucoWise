@@ -40,7 +40,7 @@ export default class ReadingsScreen extends Component {
                                             type={'date'}
                                             maxDate={this.state.endDate}
                                             date={this.state.startDate}
-                                            handleDateChange={this.updateStartDate.bind(this)}/>
+                                            handleDateChange={this.updateStartDate}/>
                         <TextBold style={styles.dateRangeSeparatorText}> to </TextBold>
                         <ReadingsDatePicker style={styles.readingsDatePicker}
                                             backgroundColor='dimgray'
@@ -48,10 +48,10 @@ export default class ReadingsScreen extends Component {
                                             type={'date'}
                                             maxDate={this.today}
                                             date={this.state.endDate}
-                                            handleDateChange={this.updateEndDate.bind(this)}/>
+                                            handleDateChange={this.updateEndDate}/>
                     </View>
 
-                    <AddReadingButton addReading={this.addingReading.bind(this)}/>
+                    <AddReadingButton addReading={this.addingReading}/>
                 </View>
 
                 <ReadingsList style={{flex: 8}}
@@ -59,52 +59,52 @@ export default class ReadingsScreen extends Component {
                               standard={this.state.standard}
                               deleteReading={db.deleteReading}/>
 
-                <AddReadingModal opened={this.state.addingReading} finished={this.finishedAddingReading.bind(this)}/>
+                <AddReadingModal opened={this.state.addingReading} finished={this.finishedAddingReading}/>
             </View>
         );
     }
 
     componentDidMount() {
-        db.initBGLReadingListener(this.updateState.bind(this));
-        db.initBGLStandardListener(this.updateState.bind(this));
+        db.initBGLReadingListener(this.updateState);
+        db.initBGLStandardListener(this.updateState);
     }
 
-    updateState() {
+    updateState = () => {
         this.setState({
             standard: db.getBGLStandard(),
             readings: db.getBGLReadingsInDateRange(this.state.startDate, this.state.endDate),
         });
-    }
+    };
 
     /**
      * @param startDate
      */
-    updateStartDate(startDate) {
+    updateStartDate = (startDate) => {
         this.setState({
             startDate: startDate,
             readings: db.getBGLReadingsInDateRange(startDate, this.state.endDate)
         });
-    }
+    };
 
     /**
      * @param endDate
      */
-    updateEndDate(endDate) {
+    updateEndDate = (endDate) => {
         this.setState({
             endDate: endDate,
             readings: db.getBGLReadingsInDateRange(this.state.startDate, endDate)
         });
-    }
+    };
 
-    finishedAddingReading() {
+    finishedAddingReading = () => {
         this.setState({
             addingReading: false
         });
-    }
+    };
 
-    addingReading() {
+    addingReading = () => {
         this.setState({
             addingReading: true
         });
-    }
+    };
 }

@@ -59,12 +59,12 @@ export default class DrawerPanel extends Component {
     }
 
     componentDidMount() {
-        db.initBGLReadingListener(this.updateLatestReading.bind(this));
-        db.initBGLSafeRangeListener(this.updateSafeRange.bind(this));
-        db.initBGLStandardListener(this.updateState.bind(this));
+        db.initBGLReadingListener(this.updateLatestReading);
+        db.initBGLSafeRangeListener(this.updateSafeRange);
+        db.initBGLStandardListener(this.updateState);
     }
 
-    updateSafeRange() {
+    updateSafeRange = () => {
         const safeRange = db.getBGLSafeRange();
         const safeRangeMin = safeRange.minValue;
         const safeRangeMax = safeRange.maxValue;
@@ -72,15 +72,15 @@ export default class DrawerPanel extends Component {
             safeRangeMin: safeRangeMin,
             safeRangeMax: safeRangeMax
         });
-    }
+    };
 
-    updateLatestReading() {
+    updateLatestReading = () => {
         this.setState({
             latestReading: db.getLatestReading()
         });
-    }
+    };
 
-    updateState() {
+    updateState = () => {
         const safeRange = db.getBGLSafeRange();
         const safeRangeMin = safeRange.minValue;
         const safeRangeMax = safeRange.maxValue;

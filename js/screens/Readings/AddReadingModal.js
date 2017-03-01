@@ -53,12 +53,12 @@ export default class AddReadingModal extends Component {
                                             type={'datetime'}
                                             maxDate={new Date()}
                                             date={this.state.inputDate}
-                                            handleDateChange={this.updateInputDate.bind(this)}/>
+                                            handleDateChange={this.updateInputDate}/>
                     </View>
 
                     <View style={styles.modalInputRow}>
-                        <StandardSetterButton type='US' onPress={this.setStandardUS.bind(this)} standard={this.state.standard}/>
-                        <StandardSetterButton type='UK' onPress={this.setStandardUK.bind(this)} standard={this.state.standard}/>
+                        <StandardSetterButton type='US' onPress={this.setStandardUS} standard={this.state.standard}/>
+                        <StandardSetterButton type='UK' onPress={this.setStandardUK} standard={this.state.standard}/>
                     </View>
                 </View>
 
@@ -72,17 +72,17 @@ export default class AddReadingModal extends Component {
         );
     }
 
-    setStandardUS() {
+    setStandardUS = () => {
         this.setState({
             standard: this.standardUS
         });
-    }
+    };
 
-    setStandardUK() {
+    setStandardUK = () => {
         this.setState({
             standard: this.standardUK
         });
-    }
+    };
 
     updateInputValue(inputValue) {
         this.setState({
@@ -90,11 +90,11 @@ export default class AddReadingModal extends Component {
         });
     }
 
-    updateInputDate(inputDate) {
+    updateInputDate = (inputDate) => {
         this.setState({
             inputDate: inputDate
         });
-    }
+    };
 
     clearState = () => {
         this.setState({

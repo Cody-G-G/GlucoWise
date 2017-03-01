@@ -26,22 +26,22 @@ export default class SettingsScreen extends Component {
                     <ListItem itemDivider><Text style={styles.divider}>Safe Ranges</Text></ListItem>
                     <SafeRangesRowPanel inputLabel={'Min:'}
                                         inputValue={this.state.safeRangeMin}
-                                        defaultSafeRange={this.setDefaultMin.bind(this)}
-                                        updateSafeRange={this.setSafeRangeMin.bind(this)}
-                                        saveSafeRange={this.saveSafeRangeMin.bind(this)}
+                                        defaultSafeRange={this.setDefaultMin}
+                                        updateSafeRange={this.setSafeRangeMin}
+                                        saveSafeRange={this.saveSafeRangeMin}
                                         standard={this.state.standard}/>
                     <SafeRangesRowPanel inputLabel={'Max:'}
                                         inputValue={this.state.safeRangeMax}
-                                        defaultSafeRange={this.setDefaultMax.bind(this)}
-                                        saveSafeRange={this.saveSafeRangeMax.bind(this)}
-                                        updateSafeRange={this.setSafeRangeMax.bind(this)}
+                                        defaultSafeRange={this.setDefaultMax}
+                                        saveSafeRange={this.saveSafeRangeMax}
+                                        updateSafeRange={this.setSafeRangeMax}
                                         standard={this.state.standard}/>
                 </View>
                 <View>
                     <ListItem itemDivider><Text style={styles.divider}>Measurement Units</Text></ListItem>
                     <View style={{flexDirection:'row'}}>
-                        <StandardSetterButton type='US' standard={this.state.standard} onPress={this.setStandardUS.bind(this)}/>
-                        <StandardSetterButton type='UK' standard={this.state.standard} onPress={this.setStandardUK.bind(this)}/>
+                        <StandardSetterButton type='US' standard={this.state.standard} onPress={this.setStandardUS}/>
+                        <StandardSetterButton type='UK' standard={this.state.standard} onPress={this.setStandardUK}/>
                     </View>
                 </View>
             </View>
@@ -52,53 +52,53 @@ export default class SettingsScreen extends Component {
         db.initBGLStandardListener(this.updateBGLSafeRange.bind(this));
     }
 
-    setStandardUS() {
+    setStandardUS = () => {
         this.setState({
             standard: 'mg/dL'
         }, this.saveStandard);
-    }
+    };
 
-    setStandardUK() {
+    setStandardUK = () => {
         this.setState({
             standard: 'mmol/L'
         }, this.saveStandard);
-    }
+    };
 
     /**
      * @param newMin
      */
-    setSafeRangeMin(newMin) {
+    setSafeRangeMin = (newMin) => {
         this.setState({
             safeRangeMin: newMin
         });
-    }
+    };
 
     /**
      * @param newMax
      */
-    setSafeRangeMax(newMax) {
+    setSafeRangeMax = (newMax) => {
         this.setState({
             safeRangeMax: newMax
         });
-    }
+    };
 
-    setDefaultMin() {
+    setDefaultMin = () => {
         db.updateBGLSafeRangeMinToDefault();
         this.updateBGLSafeRange();
-    }
+    };
 
-    setDefaultMax() {
+    setDefaultMax = () => {
         db.updateBGLSafeRangeMaxToDefault();
         this.updateBGLSafeRange();
-    }
+    };
 
-    saveSafeRangeMin() {
+    saveSafeRangeMin = () => {
         db.updateBGLSafeRangeMin(this.state.safeRangeMin);
-    }
+    };
 
-    saveSafeRangeMax() {
+    saveSafeRangeMax = () => {
         db.updateBGLSafeRangeMax(this.state.safeRangeMax);
-    }
+    };
 
     saveStandard() {
         db.updateBGLStandard(this.state.standard);

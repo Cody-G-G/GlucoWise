@@ -34,10 +34,10 @@ export default class ConnectionScreen extends Component {
         log("Rendering ConnectionScreen");
         return (
             <View style={styles.screenContainer}>
-                <SearchButtonPanel onPress={this.triggerStateCheckForScan.bind(this)}
+                <SearchButtonPanel onPress={this.triggerStateCheckForScan}
                                    scanning={this.state.scanning}/>
 
-                <DevicesPanel onPress={this.toggleDeviceConnection.bind(this)}
+                <DevicesPanel onPress={this.toggleDeviceConnection}
                               scannedDevices={this.state.scannedDevices}
                               devicesTogglingConnection={this.state.devicesTogglingConnection}
                               connectedDevices={this.state.connectedDevices}/>
@@ -71,7 +71,7 @@ export default class ConnectionScreen extends Component {
             });
     }
 
-    toggleDeviceConnection(peripheral) {
+    toggleDeviceConnection = (peripheral) => {
         const extendedDeviceId = peripheral.name + " - " + peripheral.id;
         log("Toggling connection with peripheral: <" + extendedDeviceId + ">");
         this.addDeviceTogglingConnection(peripheral.id);
@@ -87,7 +87,7 @@ export default class ConnectionScreen extends Component {
                 this.removeDeviceTogglingConnection(peripheral.id);
                 log("Checking connection to " + extendedDeviceId + " failed: " + error);
             });
-    }
+    };
 
     connectPeripheral(peripheral, extendedDeviceId) {
         log("Connecting to " + extendedDeviceId);
@@ -118,10 +118,10 @@ export default class ConnectionScreen extends Component {
             });
     }
 
-    triggerStateCheckForScan() {
+    triggerStateCheckForScan = () => {
         this.updatePressedScan(true);
         BleManager.checkState();
-    }
+    };
 
     startScan() {
         BleManager.scan([], 10)

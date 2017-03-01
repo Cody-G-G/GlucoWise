@@ -37,7 +37,7 @@ export default class GraphScreen extends Component {
                             safeRangeMax={this.state.safeRangeMax}
                             standard={this.state.standard}/>
                 <ReadingsPanel readings={this.state.readings}
-                               toggleTimeRange={this.toggleTimeRange.bind(this)}
+                               toggleTimeRange={this.toggleTimeRange}
                                timeRangeButtonText={timeRangeButtonText}
                                currentTimeRange={currentTimeRange}
                                standard={this.state.standard}
@@ -47,9 +47,9 @@ export default class GraphScreen extends Component {
     }
 
     componentDidMount() {
-        db.initBGLReadingListener(this.updateState.bind(this));
-        db.initBGLSafeRangeListener(this.updateState.bind(this));
-        db.initBGLStandardListener(this.updateState.bind(this))
+        db.initBGLReadingListener(this.updateState);
+        db.initBGLSafeRangeListener(this.updateState);
+        db.initBGLStandardListener(this.updateState)
     }
 
     /**
@@ -70,15 +70,15 @@ export default class GraphScreen extends Component {
         return [graphReadings];
     }
 
-    toggleTimeRange() {
+    toggleTimeRange = () => {
         log("Toggled time range");
         this.updateState(this.state.hourRange === 24 ? 1 : 24);
-    }
+    };
 
     /**
      * @param newHourRange
      */
-    updateState(newHourRange) {
+    updateState = (newHourRange) => {
         let hourRange = (typeof newHourRange !== 'undefined') ? newHourRange : this.state.hourRange;
         let readings = hourRange === 24 ? db.get24hBGLReadings() : db.get60mBGLReadings();
         let standard = db.getBGLStandard();
@@ -92,5 +92,5 @@ export default class GraphScreen extends Component {
             safeRangeMax: safeRange.maxValue,
             hourRange: hourRange
         });
-    }
+    };
 }
