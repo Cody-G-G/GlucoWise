@@ -34,7 +34,11 @@ export default {
         return parseFloat((Math.floor((Date.now()) - date) / 6e4).toFixed(1));
     },
 
-    toDateFromString(dateString, hour, minute, second, millisecond) {
+    toDateFromDateString(dateString, hour, minute, second, millisecond) {
         return new Date(moment(dateString, "DD-MM-YYYY").hour(hour).minute(minute).second(second).millisecond(millisecond));
+    },
+
+    toDateFromDateTimeString(dateString) {
+        return new Date(moment(dateString, "DD-MM-YYYY HH:mm"));
     }
 };

@@ -5,10 +5,11 @@ import ReadingsList from "../../helpers/components/ReadingsList";
 import db from "../../data/database";
 import date from "../../helpers/util/date";
 import TextBold from "../../helpers/components/TextBold";
-import ReadingsDatePicker from "./ReadingsDatePicker";
+import ReadingsDatePicker from "./ReadingDatePicker";
 import styles from "./styles";
 import log from "../../helpers/util/logger";
 import AddReadingButton from "./AddReadingButton";
+import AddReadingModal from "./AddReadingModal";
 
 export default class ReadingsScreen extends Component {
     constructor(props) {
@@ -18,7 +19,8 @@ export default class ReadingsScreen extends Component {
             readings: null,
             startDate: this.today,
             endDate: this.today,
-            standard: null
+            standard: null,
+            addingReading: false
         }
     }
 
@@ -32,17 +34,33 @@ export default class ReadingsScreen extends Component {
             <View style={{flex:1, backgroundColor: 'white'}}>
                 <View style={{flex: 1, flexDirection:'row'}}>
                     <View style={{flex: 6, flexDirection:'row'}}>
-                        <ReadingsDatePicker minDate={"31-08-1994"} maxDate={this.state.endDate} date={this.state.startDate} handleDateChange={this.updateStartDate.bind(this)}/>
+                        <ReadingsDatePicker style={{flex: 1}}
+                                            backgroundColor='darkgrey'
+                                            minDate={"31-08-1994"}
+                                            type={'date'}
+                                            maxDate={this.state.endDate}
+                                            date={this.state.startDate}
+                                            handleDateChange={this.updateStartDate.bind(this)}/>
                         <TextBold style={styles.dateRangeSeparatorText}> to </TextBold>
-                        <ReadingsDatePicker minDate={this.state.startDate} maxDate={this.today} date={this.state.endDate} handleDateChange={this.updateEndDate.bind(this)}/>
+                        <ReadingsDatePicker style={{flex: 1}}
+                                            backgroundColor='darkgrey'
+                                            minDate={this.state.startDate}
+                                            type={'date'}
+                                            maxDate={this.today}
+                                            date={this.state.endDate}
+                                            handleDateChange={this.updateEndDate.bind(this)}/>
                     </View>
+
                     <View style={{flex:1}}>
-                        <AddReadingButton addReading={() => {log("ADD READING")}}/>
+                        <AddReadingButton addReading={this.addingReading.bind(this)}/>
                     </View>
                 </View>
+
                 <View style={{flex: 8}}>
                     <ReadingsList readings={this.state.readings} standard={this.state.standard} deleteReading={db.deleteReading}/>
                 </View>
+
+                <AddReadingModal opened={this.state.addingReading} finished={this.finishedAddingReading.bind(this)}/>
             </View>
         );
     }
@@ -76,6 +94,18 @@ export default class ReadingsScreen extends Component {
         this.setState({
             endDate: endDate,
             readings: db.getBGLReadingsInDateRange(this.state.startDate, endDate)
+        });
+    }
+
+    finishedAddingReading() {
+        this.setState({
+            addingReading: false
+        });
+    }
+
+    addingReading() {
+        this.setState({
+            addingReading: true
         });
     }
 }

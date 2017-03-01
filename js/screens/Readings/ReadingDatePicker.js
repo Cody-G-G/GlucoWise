@@ -1,7 +1,7 @@
 'use strict';
 import DatePicker from 'react-native-datepicker'
 import React, {Component} from 'react'
-import {View} from 'react-native'
+import {View, StyleSheet} from 'react-native'
 import styles from "./styles";
 
 export default class ReadingsDatePicker extends Component {
@@ -12,10 +12,10 @@ export default class ReadingsDatePicker extends Component {
     render() {
         return (
             <DatePicker
-                style={{flex:1}}
+                style={this.props.style}
                 date={this.props.date}
-                mode="date"
-                format="DD-MM-YYYY"
+                mode={this.props.type}
+                format={this.props.type === 'date' ? 'DD-MM-YYYY' : 'DD-MM-YYYY HH:mm'}
                 minDate={this.props.minDate}
                 maxDate={this.props.maxDate}
                 confirmBtnText="Confirm"
@@ -24,7 +24,8 @@ export default class ReadingsDatePicker extends Component {
                 iconSource={require('../../../assets/date.png')}
                 customStyles={{
                         dateText: styles.dateText,
-                        dateTouchBody: styles.dateTouchBody
+                        dateInput: styles.dateInput,
+                        dateTouchBody: StyleSheet.flatten([styles.dateTouchBody, {backgroundColor: this.props.backgroundColor}])
                     }}
                 onDateChange={(date) => {this.props.handleDateChange(date)}}
             />

@@ -4,7 +4,7 @@ import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native'
 import {ListItem} from 'native-base';
 import styles from "./styles";
 import SafeRangesRowPanel from "./SafeRangesRowPanel";
-import StandardSetterButton from "./StandardSetterButton";
+import StandardSetterButton from "../../helpers/components/StandardSetterButton";
 import db from "../../data/database";
 
 export default class SettingsScreen extends Component {
@@ -19,14 +19,7 @@ export default class SettingsScreen extends Component {
         };
     }
 
-    componentWillMount() {
-        this.standardUK = "mmol/L";
-        this.standardUS = "mg/dL";
-    }
-
     render() {
-        let colorUSStandard = this.state.standard === this.standardUS ? 'royalblue' : 'darkgrey';
-        let colorUKStandard = this.state.standard === this.standardUK ? 'royalblue' : 'darkgrey';
         return (
             <View style={styles.settingsScreen}>
                 <View style={styles.safeRangesPanel}>
@@ -47,8 +40,8 @@ export default class SettingsScreen extends Component {
                 <View>
                     <ListItem itemDivider><Text style={styles.divider}>Measurement Units</Text></ListItem>
                     <View style={{flexDirection:'row'}}>
-                        <StandardSetterButton buttonColor={colorUSStandard} setStandard={this.setStandardUS.bind(this)} buttonText={this.standardUS}/>
-                        <StandardSetterButton buttonColor={colorUKStandard} setStandard={this.setStandardUK.bind(this)} buttonText={this.standardUK}/>
+                        <StandardSetterButton type='US' standard={this.state.standard} onPress={this.setStandardUS.bind(this)}/>
+                        <StandardSetterButton type='UK' standard={this.state.standard} onPress={this.setStandardUK.bind(this)}/>
                     </View>
                 </View>
             </View>

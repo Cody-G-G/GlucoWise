@@ -22,11 +22,6 @@ export default StyleSheet.create({
         fontSize: 30,
         fontWeight: 'bold'
     },
-    safeRangeInput: {
-        flex: 1,
-        fontSize: 25,
-        color: 'white'
-    },
     safeRangesRowPanel: {
         flexDirection: 'row',
         borderWidth: 1
@@ -42,12 +37,9 @@ export default StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 23
     },
-    standardSetterButton: {
-        fontSize: 35,
-        color: 'white',
-        fontWeight: 'bold',
-        padding: 5,
-        textAlign: 'center',
-        borderWidth: 1
+    valueInput: {
+        flex: 1,
+        fontSize: 25,
+        color: 'white'
     }
 });

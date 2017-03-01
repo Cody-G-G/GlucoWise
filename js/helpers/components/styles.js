@@ -23,5 +23,13 @@ export default StyleSheet.create({
         color: 'white',
         fontSize: 18,
         padding: 7
+    },
+    standardSetterButton: {
+        fontSize: 35,
+        color: 'white',
+        fontWeight: 'bold',
+        padding: 5,
+        textAlign: 'center',
+        borderWidth: 1
     }
 });

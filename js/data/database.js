@@ -133,8 +133,8 @@ const database = {
         let filteredReadings = [];
         realm.objects('BGLReading')
             .filtered('date < $0 AND date > $1',
-                dateUtil.toDateFromString(endDate, 23, 59, 59, 999),
-                dateUtil.toDateFromString(startDate, 0, 0, 0, 0))
+                dateUtil.toDateFromDateString(endDate, 23, 59, 59, 999),
+                dateUtil.toDateFromDateString(startDate, 0, 0, 0, 0))
             .sorted('date', true)
             .forEach((reading) => {
                 filteredReadings.push({
@@ -178,8 +178,8 @@ const database = {
         const safeRange = realm.objects('BGLSafeRange')[0];
         const standard = this.getBGLStandard();
         return {
-            minValue: processReading(safeRange.minValue, standard),
-            maxValue: processReading(safeRange.maxValue, standard)
+            minValue: String(processReading(safeRange.minValue, standard)),
+            maxValue: String(processReading(safeRange.maxValue, standard))
         };
     },
 
