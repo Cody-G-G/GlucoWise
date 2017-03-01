@@ -44,7 +44,7 @@ export default class ConnectionScreen extends Component {
 
                 {this.state.scanning &&
                 <View style={styles.spinnerPanel}>
-                    <Spinner isVisible={this.state.scanning} size={100} type={'Wave'} color={'#6495ED'}/>
+                    <Spinner isVisible={this.state.scanning} size={100} type={'Wave'} color={'#4169e1'}/>
                 </View>}
             </View>
         );
