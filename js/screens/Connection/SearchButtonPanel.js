@@ -12,7 +12,7 @@ export default class SearchButtonPanel extends Component {
     render() {
         return (
             <View style={styles.searchButtonPanel}>
-                <Button onPress={this.props.onPress} large style={{backgroundColor: 'cornflowerblue'}} disabled={this.props.scanning}>
+                <Button onPress={this.props.onPress} large style={{backgroundColor: 'royalblue'}} disabled={this.props.scanning}>
                     <Icon theme={{iconFamily: "MaterialIcons"}} name="bluetooth"/>Search Devices
                 </Button>
             </View>

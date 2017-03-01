@@ -14,9 +14,9 @@ export default class StandardSetterButton extends Component {
         let buttonText = this.props.type === 'US' ? this.standardUS : this.standardUK;
         let buttonColor = buttonText === this.props.standard ? 'royalblue' : 'darkgrey';
         return (
-            <TouchableOpacity style={StyleSheet.flatten([{flex:1}, {backgroundColor: buttonColor}])}
+            <TouchableOpacity style={StyleSheet.flatten([styles.standardSetterButton, {backgroundColor: buttonColor}])}
                               onPress={() => this.props.onPress()}>
-                <Text style={styles.standardSetterButton}>
+                <Text style={styles.standardSetterButtonText}>
                     {buttonText}
                 </Text>
             </TouchableOpacity>

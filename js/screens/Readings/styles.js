@@ -54,5 +54,31 @@ export default StyleSheet.create({
     },
     dateInput: {
         borderWidth: 0
+    },
+    modalHeaderText: {
+        alignSelf: 'center',
+        fontSize: 30,
+        fontWeight: 'bold'
+    },
+    modalInputRow: {
+        flex: 1,
+        flexDirection: 'row',
+        margin: 10
+    },
+    modalContentContainer: {
+        flex: 5,
+        alignItems: 'center'
+    },
+    inputLabel: {
+        flex: 1,
+        color: 'black',
+        alignSelf: 'center',
+        fontWeight: 'bold',
+        fontSize: 25
+    },
+    datePicker: {
+        flex: 2.5,
+        width: 190,
+        borderWidth: 1
     }
 });

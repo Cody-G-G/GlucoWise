@@ -25,11 +25,14 @@ export default StyleSheet.create({
         padding: 7
     },
     standardSetterButton: {
+        flex: 1,
+        borderWidth: 1,
+        alignItems: 'center'
+    },
+    standardSetterButtonText: {
         fontSize: 35,
         color: 'white',
         fontWeight: 'bold',
-        padding: 5,
-        textAlign: 'center',
-        borderWidth: 1
+        padding: 5
     }
 });

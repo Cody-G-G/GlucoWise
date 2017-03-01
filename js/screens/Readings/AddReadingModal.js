@@ -34,19 +34,20 @@ export default class AddReadingModal extends Component {
                    backButtonClose={true}
                    animationDuration={300}
                    onClosed={this.props.finished}>
+                <View style={styles.modalContentContainer}>
+                    <ListItem itemDivider>
+                        <Text style={styles.modalHeaderText}>Add New Reading</Text>
+                    </ListItem>
 
-                <View style={{flex: 5, alignItems:'center'}}>
-                    <ListItem itemDivider><Text style={{alignSelf:'center', fontSize:30, fontWeight:'bold'}}>Add New Reading</Text></ListItem>
-
-                    <View style={{flex:1,flexDirection:'row', margin:10}}>
-                        <Text style={{flex:1, color:'black', alignSelf:'center', fontWeight: 'bold', fontSize:25}}>Value: </Text>
+                    <View style={styles.modalInputRow}>
+                        <Text style={styles.inputLabel}>Value: </Text>
                         <ReadingValueInput style={styles.valueInput}
                                            inputValue={this.state.inputValue}
                                            onChangeText={(input) => {this.updateInputValue(input)}}/>
                     </View>
-                    <View style={{flex: 1, flexDirection:'row', margin:10}}>
-                        <Text style={{flex:1,color:'black', alignSelf:'center', fontWeight: 'bold', fontSize:25}}>Date: </Text>
-                        <ReadingsDatePicker style={{flex:2.5, width: 190, borderWidth:1}}
+                    <View style={styles.modalInputRow}>
+                        <Text style={styles.inputLabel}>Date: </Text>
+                        <ReadingsDatePicker style={styles.datePicker}
                                             backgroundColor='royalblue'
                                             minDate={"31-08-1994"}
                                             type={'datetime'}
@@ -55,8 +56,7 @@ export default class AddReadingModal extends Component {
                                             handleDateChange={this.updateInputDate.bind(this)}/>
                     </View>
 
-
-                    <View style={{flexDirection:'row', margin: 10}}>
+                    <View style={styles.modalInputRow}>
                         <StandardSetterButton type='US' onPress={this.setStandardUS.bind(this)} standard={this.state.standard}/>
                         <StandardSetterButton type='UK' onPress={this.setStandardUK.bind(this)} standard={this.state.standard}/>
                     </View>
