@@ -7,7 +7,6 @@ import {
     View,
 } from 'react-native';
 import React, {Component} from 'react';
-import {Icon} from 'native-base';
 import {Actions} from 'react-native-router-flux';
 import styles from "./styles";
 import db from "../data/database";

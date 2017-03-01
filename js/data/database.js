@@ -131,6 +131,7 @@ const database = {
     getBGLReadingsInDateRange(startDate, endDate) {
         log("Getting BGLReadings between " + startDate + " and " + endDate);
         let filteredReadings = [];
+        const standard = this.getBGLStandard();
         realm.objects('BGLReading')
             .filtered('date < $0 AND date > $1',
                 dateUtil.toDateFromDateString(endDate, 23, 59, 59, 999),
@@ -139,7 +140,7 @@ const database = {
             .forEach((reading) => {
                 filteredReadings.push({
                     id: reading.id,
-                    value: processReading(reading.value, this.getBGLStandard()),
+                    value: processReading(reading.value, standard),
                     date: reading.date
                 });
             });
@@ -150,10 +151,11 @@ const database = {
     get24hBGLReadings() {
         log("Getting BGLReadings for last 24h");
         let filteredReadings = [];
+        const standard = this.getBGLStandard();
         realm.objects('BGLReading').sorted('date', true).forEach((reading) => {
             dateUtil.isWithin24Hours(reading.date) && filteredReadings.push({
                 id: reading.id,
-                value: processReading(reading.value, this.getBGLStandard()),
+                value: processReading(reading.value, standard),
                 date: reading.date
             });
         });
@@ -163,10 +165,11 @@ const database = {
     get60mBGLReadings() {
         log("Getting BGLReadings for last 60m");
         let filteredReadings = [];
+        const standard = this.getBGLStandard();
         realm.objects('BGLReading').sorted('date', true).forEach((reading) => {
             dateUtil.isWithin60Minutes(reading.date) && filteredReadings.push({
                 id: reading.id,
-                value: processReading(reading.value, this.getBGLStandard()),
+                value: processReading(reading.value, standard),
                 date: reading.date
             });
         });
