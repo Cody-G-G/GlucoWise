@@ -34,7 +34,7 @@ export default class AddReadingModal extends Component {
                    backButtonClose={true}
                    animationDuration={300}
                    onClosed={this.props.finished}>
-                <View style={styles.modalContentContainer}>
+                <View style={styles.modalMainPanel}>
                     <ListItem itemDivider>
                         <Text style={styles.modalHeaderText}>Add New Reading</Text>
                     </ListItem>
@@ -47,7 +47,7 @@ export default class AddReadingModal extends Component {
                     </View>
                     <View style={styles.modalInputRow}>
                         <Text style={styles.inputLabel}>Date: </Text>
-                        <ReadingsDatePicker style={styles.datePicker}
+                        <ReadingsDatePicker style={styles.modalDatePicker}
                                             backgroundColor='royalblue'
                                             minDate={"31-08-1994"}
                                             type={'datetime'}
@@ -60,12 +60,11 @@ export default class AddReadingModal extends Component {
                         <StandardSetterButton type='US' onPress={this.setStandardUS.bind(this)} standard={this.state.standard}/>
                         <StandardSetterButton type='UK' onPress={this.setStandardUK.bind(this)} standard={this.state.standard}/>
                     </View>
-
                 </View>
 
                 <View style={styles.modalBottomPanel}>
-                    <TouchableOpacity style={styles.modalAddButton} onPress={this.saveAndClose}>
-                        <Text style={styles.modalAddButtonText}>Add</Text>
+                    <TouchableOpacity style={styles.addButton} onPress={this.saveAndClose}>
+                        <Text style={styles.addButtonText}>Add</Text>
                     </TouchableOpacity>
                 </View>
 

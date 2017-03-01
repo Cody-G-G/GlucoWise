@@ -14,7 +14,8 @@ export default class ReadingsList extends Component {
 
     render() {
         return (
-            <ListView dataSource={this.ds.cloneWithRows(this.props.readings)} enableEmptySections={true} renderRow={(rowData) =>
+            <View style={this.props.style}>
+                <ListView dataSource={this.ds.cloneWithRows(this.props.readings)} enableEmptySections={true} renderRow={(rowData) =>
                     <View style={styles.reading}>
                         <Text style={StyleSheet.flatten([styles.readingText, {backgroundColor: this.props.readings[0] === rowData ? 'royalblue' : 'cornflowerblue'}])}>
                             <TextBold>Value:</TextBold> {rowData.value + " " + this.props.standard}{"\n"}
@@ -26,7 +27,8 @@ export default class ReadingsList extends Component {
                                 <Icon style={{color:'white', fontSize:30}} theme={{iconFamily: "MaterialIcons"}} name="delete-forever"/>
                         </TouchableOpacity>
                     </View>
-            }/>
+                }/>
+            </View>
         );
     }
 }

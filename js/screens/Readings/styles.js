@@ -4,7 +4,9 @@ import {StyleSheet} from "react-native";
 export default StyleSheet.create({
     dateRangeSeparatorText: {
         textAlignVertical: 'center',
-        fontSize: 20
+        fontSize: 20,
+        color: 'black',
+        backgroundColor: 'aliceblue'
     },
     addReadingButton: {
         flex: 1,
@@ -16,9 +18,13 @@ export default StyleSheet.create({
         color: 'white',
         fontSize: 40
     },
-    modalAddButton: {
+    addButton: {
         backgroundColor: 'royalblue',
-        padding: 10
+        paddingRight: 20,
+        paddingLeft: 20,
+        paddingTop: 10,
+        paddingBottom: 10,
+        borderWidth: 1
     },
     modalBottomPanel: {
         flex: 1,
@@ -29,9 +35,10 @@ export default StyleSheet.create({
     addReadingModal: {
         height: 400,
         width: 300,
-        borderWidth: 2
+        borderWidth: 2,
+        backgroundColor: 'aliceblue'
     },
-    modalAddButtonText: {
+    addButtonText: {
         color: 'white',
         fontSize: 25,
         fontWeight: 'bold'
@@ -65,7 +72,7 @@ export default StyleSheet.create({
         flexDirection: 'row',
         margin: 10
     },
-    modalContentContainer: {
+    modalMainPanel: {
         flex: 5,
         alignItems: 'center'
     },
@@ -76,9 +83,22 @@ export default StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 25
     },
-    datePicker: {
+    modalDatePicker: {
         flex: 2.5,
         width: 190,
         borderWidth: 1
+    },
+    readingsDatePicker: {
+        flex: 1,
+        borderWidth: 1
+    },
+    dateRangePickers: {
+        flex: 6,
+        flexDirection: 'row',
+        paddingLeft: 3
+    },
+    screenTopPanel: {
+        flex: 1,
+        flexDirection: 'row'
     }
 });

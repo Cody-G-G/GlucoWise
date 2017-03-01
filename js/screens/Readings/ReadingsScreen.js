@@ -31,19 +31,19 @@ export default class ReadingsScreen extends Component {
     render() {
         log("Rendering ReadingsScreen");
         return (
-            <View style={{flex:1, backgroundColor: 'white'}}>
-                <View style={{flex: 1, flexDirection:'row'}}>
-                    <View style={{flex: 6, flexDirection:'row'}}>
-                        <ReadingsDatePicker style={{flex: 1}}
-                                            backgroundColor='darkgrey'
+            <View style={{flex: 1}}>
+                <View style={styles.screenTopPanel}>
+                    <View style={styles.dateRangePickers}>
+                        <ReadingsDatePicker style={styles.readingsDatePicker}
+                                            backgroundColor='dimgray'
                                             minDate={"31-08-1994"}
                                             type={'date'}
                                             maxDate={this.state.endDate}
                                             date={this.state.startDate}
                                             handleDateChange={this.updateStartDate.bind(this)}/>
                         <TextBold style={styles.dateRangeSeparatorText}> to </TextBold>
-                        <ReadingsDatePicker style={{flex: 1}}
-                                            backgroundColor='darkgrey'
+                        <ReadingsDatePicker style={styles.readingsDatePicker}
+                                            backgroundColor='dimgray'
                                             minDate={this.state.startDate}
                                             type={'date'}
                                             maxDate={this.today}
@@ -51,14 +51,13 @@ export default class ReadingsScreen extends Component {
                                             handleDateChange={this.updateEndDate.bind(this)}/>
                     </View>
 
-                    <View style={{flex:1}}>
-                        <AddReadingButton addReading={this.addingReading.bind(this)}/>
-                    </View>
+                    <AddReadingButton addReading={this.addingReading.bind(this)}/>
                 </View>
 
-                <View style={{flex: 8}}>
-                    <ReadingsList readings={this.state.readings} standard={this.state.standard} deleteReading={db.deleteReading}/>
-                </View>
+                <ReadingsList style={{flex: 8}}
+                              readings={this.state.readings}
+                              standard={this.state.standard}
+                              deleteReading={db.deleteReading}/>
 
                 <AddReadingModal opened={this.state.addingReading} finished={this.finishedAddingReading.bind(this)}/>
             </View>
