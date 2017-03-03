@@ -7,7 +7,7 @@ import {
     NativeAppEventEmitter
 } from 'react-native';
 import styles from "./styles";
-import hexToAscii from "../../helpers/util/h2a";
+import hexToAscii from "../../helpers/util/hexToAscii";
 import permissions from "../../helpers/util/permissions";
 import log from '../../helpers/util/logger';
 import BleManager from 'react-native-ble-manager';
@@ -136,6 +136,8 @@ export default class ConnectionScreen extends Component {
 
     initReadingCharacteristicUpdate() {
         NativeAppEventEmitter.addListener("BleManagerDidUpdateValueForCharacteristic", (args) => {
+            log(typeof args.value);
+            log(hexToAscii(args.value));
             const reading = hexToAscii(args.value).slice(0, 5);
             log("Peripheral " + args.peripheral + " characteristic " + args.characteristic + " was updated to " + reading);
             db.saveBGLReading(reading, new Date());
