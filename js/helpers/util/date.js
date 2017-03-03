@@ -38,7 +38,7 @@ export default {
         return new Date(moment(dateString, "DD-MM-YYYY").hour(hour).minute(minute).second(second).millisecond(millisecond));
     },
 
-    toDateFromDateTimeString(dateString) {
-        return new Date(moment(dateString, "DD-MM-YYYY HH:mm"));
+    toDateFromDateTimeString(dateTimeString) {
+        return new Date(moment(dateTimeString, "DD-MM-YYYY HH:mm"));
     }
 };
