@@ -12,7 +12,7 @@ import db from "./data/database";
 export default class App extends Component {
     constructor(props) {
         super(props);
-        db.init();
+        db.init(true);
     }
 
     render() {

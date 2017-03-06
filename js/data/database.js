@@ -35,14 +35,14 @@ let realm = new Realm({
 
 const database = {
 
-    init() {
+    init(isTestRun) {
         log("Initiating database");
         const initBGLSafeRange = realm.objects('BGLSafeRange').length === 0;
         const initBGLStandard = realm.objects('BGLStandard').length === 0;
         realm.write(() => {
             initBGLStandard && realm.create('BGLStandard', {standard: 'mg/dL'});
             initBGLSafeRange && realm.create('BGLSafeRange', {minValue: '70', maxValue: '130'});
-            this.addMockData();
+            isTestRun && this.addMockData();
         });
     },
 
