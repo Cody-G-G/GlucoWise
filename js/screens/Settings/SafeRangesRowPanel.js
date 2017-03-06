@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {View, Text, TextInput} from 'react-native';
 import SafeRangeButton from "./SafeRangeButton";
 import styles from "./styles";
-import isInputValid from '../../helpers/util/readingValidator';
+import isInputValid from '../../helpers/util/readingValueValidator';
 import ReadingValueInput from "../../helpers/components/ReadingValueInput";
 
 export default class SafeRangesRowPanel extends Component {
