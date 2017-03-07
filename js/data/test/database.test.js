@@ -1,14 +1,14 @@
 'use strict';
 jest.mock('realm', () => {
-    return require('./helpers/realm.mock').default;
+    return require('./mocks/realm.mock').default;
 });
 jest.mock('uuid/v1');
 jest.mock('../../helpers/util/readingProcessor');
 const processReading = require('../../helpers/util/readingProcessor');
+import ResultsMock from './mocks/realmResults.mock';
 const uuid = require('uuid/v1');
 const Realm = require('realm');
 import db from "../database";
-import Results from './helpers/realmResults.stub';
 
 const safeRangeObjName = 'BGLSafeRange';
 const standardObjName = 'BGLStandard';
@@ -34,11 +34,7 @@ test("init() - creates and saves initial BGLStandard and BGLSafeRange objects to
 
     db.init();
 
-    expect(Realm.prototype.objects).toHaveBeenCalledTimes(2);
-    expect(Realm.prototype.objects).toHaveBeenCalledWith(safeRangeObjName);
-    expect(Realm.prototype.objects).toHaveBeenCalledWith(standardObjName);
-    expect(Realm.prototype.write).toHaveBeenCalledTimes(1);
-    expect(Realm.prototype.create).toHaveBeenCalledTimes(2);
+    expect(Realm.prototype.write).toHaveBeenCalled();
     expect(Realm.prototype.create).toHaveBeenCalledWith(standardObjName, {standard: standardUS});
     expect(Realm.prototype.create).toHaveBeenCalledWith(safeRangeObjName, {
         minValue: defaultSafeRangeMin,
@@ -56,8 +52,7 @@ test('saveBGLReading(value, date) - saves BGLReading to database with given valu
 
     db.saveBGLReading(stubValue, stubDate);
 
-    expect(Realm.prototype.write).toHaveBeenCalledTimes(1);
-    expect(uuid).toHaveBeenCalledTimes(1);
+    expect(Realm.prototype.write).toHaveBeenCalled();
     expect(Realm.prototype.create).toHaveBeenCalledWith(readingObjName, {
         id: stubUUID,
         value: stubValue,
@@ -79,11 +74,7 @@ test('updateBGLSafeRangeMin(minValue) - updates minValue of BGLSafeRange to give
 
     db.updateBGLSafeRangeMin(stubNewMinValue);
 
-    expect(Realm.prototype.objects).toHaveBeenCalledTimes(2);
-    expect(Realm.prototype.objects).toHaveBeenCalledWith(safeRangeObjName);
-    expect(Realm.prototype.objects).toHaveBeenCalledWith(standardObjName);
-    expect(Realm.prototype.write).toHaveBeenCalledTimes(1);
-    expect(processReading).toHaveBeenCalledTimes(1);
+    expect(Realm.prototype.write).toHaveBeenCalled();
     expect(processReading).toHaveBeenCalledWith(stubNewMinValue, stubStandard.standard, true);
     expect(stubSafeRange.minValue).toEqual(stubNewMinValue);
 });
@@ -102,11 +93,7 @@ test('updateBGLSafeRangeMax(maxValue) - updates maxValue of BGLSafeRange to give
 
     db.updateBGLSafeRangeMax(stubNewMaxValue);
 
-    expect(Realm.prototype.objects).toHaveBeenCalledTimes(2);
-    expect(Realm.prototype.objects).toHaveBeenCalledWith(safeRangeObjName);
-    expect(Realm.prototype.objects).toHaveBeenCalledWith(standardObjName);
-    expect(Realm.prototype.write).toHaveBeenCalledTimes(1);
-    expect(processReading).toHaveBeenCalledTimes(1);
+    expect(Realm.prototype.write).toHaveBeenCalled();
     expect(processReading).toHaveBeenCalledWith(stubNewMaxValue, stubStandard.standard, true);
     expect(stubSafeRange.maxValue).toEqual(stubNewMaxValue);
 });
@@ -119,9 +106,7 @@ test('updateBGLSafeRangeMinToDefault() - changes BGLSafeRange minValue to defaul
 
     db.updateBGLSafeRangeMinToDefault();
 
-    expect(Realm.prototype.objects).toHaveBeenCalledTimes(1);
-    expect(Realm.prototype.objects).toHaveBeenCalledWith(safeRangeObjName);
-    expect(Realm.prototype.write).toHaveBeenCalledTimes(1);
+    expect(Realm.prototype.write).toHaveBeenCalled();
     expect(stubSafeRange.minValue).toEqual(defaultSafeRangeMin);
 });
 
@@ -133,9 +118,7 @@ test('updateBGLSafeRangeMaxToDefault() - changes BGLSafeRange maxValue to defaul
 
     db.updateBGLSafeRangeMaxToDefault();
 
-    expect(Realm.prototype.objects).toHaveBeenCalledTimes(1);
-    expect(Realm.prototype.objects).toHaveBeenCalledWith(safeRangeObjName);
-    expect(Realm.prototype.write).toHaveBeenCalledTimes(1);
+    expect(Realm.prototype.write).toHaveBeenCalled();
     expect(stubSafeRange.maxValue).toEqual(defaultSafeRangeMax);
 });
 
@@ -147,14 +130,13 @@ test('updateBGLStandard(standard) - updates the BGLStandard.standard value in da
 
     db.updateBGLStandard(standardUK);
 
-    expect(Realm.prototype.objects).toHaveBeenCalledTimes(1);
-    expect(Realm.prototype.write).toHaveBeenCalledTimes(1);
+    expect(Realm.prototype.write).toHaveBeenCalled();
     expect(stubStandard.standard).toEqual(standardUK);
 });
 
 test('getLatestReading() - returns reading with the most recent date', () => {
     const expectedReading = {id: '1', value: '82.5', date: new Date(2017, 3, 6, 22, 50, 55)};
-    const readings = new Results(
+    const readings = new ResultsMock(
         {id: '3', value: '120', date: new Date(2017, 3, 5, 22, 50, 55)},
         expectedReading,
         {id: '2', value: '50', date: new Date(2017, 3, 6, 22, 50, 54)}
@@ -169,9 +151,30 @@ test('getLatestReading() - returns reading with the most recent date', () => {
 
     const actualReadingValue = db.getLatestReading();
 
-    expect(processReading).toHaveBeenCalledTimes(1);
-    expect(Realm.prototype.objects).toHaveBeenCalledTimes(2);
-    expect(Realm.prototype.objects).toHaveBeenCalledWith(readingObjName);
-    expect(Realm.prototype.objects).toHaveBeenCalledWith(standardObjName);
+    expect(processReading).toHaveBeenCalledWith(expectedReading.value, stubStandard.standard);
     expect(actualReadingValue).toEqual(expectedReading.value)
+});
+
+test('getBGLReadingsInDateRange(startDate, endDate) - gets readings within specified date range, reverse sorted by date', () => {
+    const startDate = new Date(2017, 2, 2);
+    const endDate = new Date(2017, 2, 7);
+    const readings = new ResultsMock(
+        {id: '1', value: '20', date: new Date(2017, 2, 1)},
+        {id: '2', value: '30', date: new Date(2017, 2, 2)},
+        {id: '3', value: '40', date: new Date(2017, 2, 5)},
+        {id: '4', value: '50', date: new Date(2017, 2, 7)},
+        {id: '5', value: '60', date: new Date(2017, 2, 8)}
+    );
+    const expectedReadings = [readings[3], readings[2], readings[1]];
+    const standardStub = {standard: standardUS};
+    Realm.prototype.objects = jest.fn((objectName) => {
+        return objectName === readingObjName ? readings : [standardStub]
+    });
+    processReading.mockImplementation = jest.fn((value) => {
+        return value;
+    });
+
+    const actualReadings = db.getBGLReadingsInDateRange(startDate, endDate);
+
+    expect(actualReadings).toEqual(expectedReadings);
 });
