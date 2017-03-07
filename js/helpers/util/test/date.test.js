@@ -8,7 +8,7 @@ test('padDate(datePortion) - pads date portion with 0 if portion < 10', () => {
 });
 
 test("getTodayString() - gets today's date as a string", () => {
-    MockDate.set("03-02-2016");
+    MockDate.set(new Date(2016, 2, 2));
     expect(dateUtil.getTodayString()).toEqual("02-03-2016");
     MockDate.reset();
 });
