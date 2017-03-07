@@ -26,7 +26,7 @@ export default class ConnectionScreen extends Component {
             scannedDevices: this.ds.cloneWithRows([]),
             devicesTogglingConnection: [],
             scanning: false,
-            connectedDevices: []
+            connectedDeviceIDs: []
         };
     }
 
@@ -40,7 +40,7 @@ export default class ConnectionScreen extends Component {
                 <DevicesPanel onPress={this.toggleDeviceConnection}
                               scannedDevices={this.state.scannedDevices}
                               devicesTogglingConnection={this.state.devicesTogglingConnection}
-                              connectedDevices={this.state.connectedDevices}/>
+                              connectedDeviceIDs={this.state.connectedDeviceIDs}/>
 
                 {this.state.scanning &&
                 <View style={styles.spinnerPanel}>
@@ -176,7 +176,7 @@ export default class ConnectionScreen extends Component {
     initDeviceDisconnectedListener() {
         NativeAppEventEmitter.addListener('BleManagerDisconnectPeripheral', (args) => {
             this.removeDeviceTogglingConnection(args.peripheral);
-            this.removeConnectedDevices(args.peripheral);
+            this.removeConnectedDevice(args.peripheral);
             log("Disconnected device: " + args.peripheral);
         });
     }
@@ -210,18 +210,18 @@ export default class ConnectionScreen extends Component {
     }
 
     addConnectedDevice(connectedId) {
-        let connectedUUIDs = this.state.connectedDevices.slice();
+        let connectedUUIDs = this.state.connectedDeviceIDs.slice();
         connectedUUIDs.push(connectedId);
         this.setState({
-            connectedDevices: connectedUUIDs
+            connectedDeviceIDs: connectedUUIDs
         });
     }
 
-    removeConnectedDevices(connectedId) {
-        let connectedUUIDs = this.state.connectedDevices.slice();
+    removeConnectedDevice(connectedId) {
+        let connectedUUIDs = this.state.connectedDeviceIDs.slice();
         connectedUUIDs.splice(connectedUUIDs.indexOf(connectedId));
         this.setState({
-            connectedDevices: connectedUUIDs
+            connectedDeviceIDs: connectedUUIDs
         });
     }
 

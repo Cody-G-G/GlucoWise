@@ -25,7 +25,21 @@
     "uuid": "^3.0.1"
   },
   "jest": {
-    "preset": "react-native"
+    "globals": {
+      "DEBUG": false
+    },
+    "preset": "react-native",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "packager/react-packager/src/Activity/"
+    ],
+    "unmockedModulePathPatterns": [
+      "<rootDir>/node_modules/react-native/",
+      "<rootDir>/node_modules/react-addons-test-utils"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/?!native-base"
+    ]
   },
   "devDependencies": {
     "babel-jest": "19.0.0",
