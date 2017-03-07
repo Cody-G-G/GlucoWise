@@ -14,15 +14,13 @@ test("getTodayString() - gets today's date as a string", () => {
 });
 
 test("toDateString(date) - returns date converted to string in format DD-MM-YYYY", () => {
-    MockDate.set("03-02-2016");
-    expect(dateUtil.toDateString(new Date())).toEqual("02-03-2016");
-    MockDate.reset();
+    const stubDate = new Date(2016, 2, 2);
+    expect(dateUtil.toDateString(stubDate)).toEqual("02-03-2016");
 });
 
 test("toDateTimeString(date) - returns dateTime converted to string in format DD-MM-YYYY HH:MM", () => {
-    MockDate.set("03-02-2016");
-    expect(dateUtil.toDateString(new Date())).toEqual("02-03-2016");
-    MockDate.reset();
+    const stubDate = new Date(2016, 2, 2);
+    expect(dateUtil.toDateString(stubDate)).toEqual("02-03-2016");
 });
 
 test("isWithin24Hours(date) - returns boolean indicating whether date is within last 24hrs", () => {
