@@ -404,3 +404,70 @@ test('getBGLSafeRange()_withStandardUK - returns safe range object with current 
 
     expect(actualSafeRange).toEqual(expectedSafeRange);
 });
+
+test('getBGLStandard() - returns string value of the current standard', () => {
+    const expectedStandard = standardUK;
+    Realm.prototype.objects = jest.fn(() => {
+        return [{standard: expectedStandard}]
+    });
+
+    const actualStandard = db.getBGLStandard();
+
+    expect(actualStandard).toEqual(expectedStandard)
+});
+
+test('initBGLReadingListener(callback) - initiates listener on BGLReading, and executes callback on changes', () => {
+    const callback = jest.fn();
+    const readings = new ResultsMock({value: '80', date: new Date(), id: '1'});
+    Realm.prototype.objects = jest.fn(() => {
+        return readings;
+    });
+
+    db.initBGLReadingListener(callback);
+
+    expect(callback).toHaveBeenCalledTimes(0);
+    readings.modified();
+    expect(callback).toHaveBeenCalledTimes(1);
+});
+
+test('initBGLSafeRangeListener(callback) - initiates listener on BGLSafeRange, and executes callback on changes', () => {
+    const callback = jest.fn();
+    const safeRange = new ResultsMock({minValue: defaultSafeRangeMin, maxValue: defaultSafeRangeMax});
+    Realm.prototype.objects = jest.fn(() => {
+        return safeRange;
+    });
+
+    db.initBGLReadingListener(callback);
+
+    expect(callback).toHaveBeenCalledTimes(0);
+    safeRange.modified();
+    expect(callback).toHaveBeenCalledTimes(1);
+});
+
+test('initBGLStandardListener(callback) - initiates listener on BGLStandard, and executes callback on changes', () => {
+    const callback = jest.fn();
+    const standard = new ResultsMock({standard: standardUK});
+    Realm.prototype.objects = jest.fn(() => {
+        return standard;
+    });
+
+    db.initBGLReadingListener(callback);
+
+    expect(callback).toHaveBeenCalledTimes(0);
+    standard.modified();
+    expect(callback).toHaveBeenCalledTimes(1);
+});
+
+test('deleteReading(reading) - deletes given reading from database', () => {
+    const readingToKeep = {id: '1', value: '50', date: new Date()};
+    const readingToDelete = {id: '2', value: '60', date: new Date()};
+    const readings = new ResultsMock(readingToKeep, readingToDelete);
+    Realm.prototype.objects = jest.fn(() => {
+        return readings;
+    });
+
+    db.deleteReading(readingToDelete);
+
+    expect(Realm.prototype.write).toHaveBeenCalled();
+    expect(Realm.prototype.delete).toHaveBeenCalledWith([readingToDelete]);
+});

@@ -1,4 +1,7 @@
 'use strict';
+const EventEmitter = require('events');
+const resultsEmitter = new EventEmitter();
+
 
 export default class ResultsMock extends Array {
     sorted = (sortBy, reverse) => {
@@ -9,9 +12,28 @@ export default class ResultsMock extends Array {
         }
     };
 
-    filtered = (string, startDate, endDate) => {
-        return new ResultsMock(... this.filter((reading) => {
-            return (reading.date <= startDate) && (reading.date >= endDate);
-        }));
+    filtered = function () {
+        if (arguments.length === 3) { // for getBGLReadingInDateRange()
+            const startDate = arguments[2];
+            const endDate = arguments[1];
+            return new ResultsMock(... this.filter((reading) => {
+                return (reading.date >= startDate) && (reading.date <= endDate);
+            }));
+        } else { // for deleteReading()
+            const id = arguments[1];
+            return this.filter((reading) => {
+                return reading.id === id;
+            });
+        }
+    };
+
+    addListener = (callback) => {
+        resultsEmitter.on('modification', () => {
+            callback(this, {modifications: [1], deletions: [], insertions: []})
+        });
+    };
+
+    modified = () => {
+        resultsEmitter.emit('modification');
     }
 }
