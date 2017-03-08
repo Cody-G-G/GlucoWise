@@ -34,21 +34,21 @@ export default class ReadingsScreen extends Component {
             <View style={styles.screenContainer}>
                 <View style={styles.screenTopPanel}>
                     <View style={styles.dateRangePickers}>
-                        <ReadingsDatePicker style={styles.readingsDatePicker}
-                                            backgroundColor='dimgray'
-                                            minDate={"31-08-1994"}
-                                            type={'date'}
-                                            maxDate={this.state.endDate}
-                                            date={this.state.startDate}
-                                            handleDateChange={this.updateStartDate}/>
+                        <ReadingDatePicker style={styles.readingsDatePicker}
+                                           backgroundColor='dimgray'
+                                           minDate={"31-08-1994"}
+                                           type={'date'}
+                                           maxDate={this.state.endDate}
+                                           date={this.state.startDate}
+                                           handleDateChange={this.updateStartDate}/>
                         <TextBold style={styles.dateRangeSeparatorText}> to </TextBold>
-                        <ReadingsDatePicker style={styles.readingsDatePicker}
-                                            backgroundColor='dimgray'
-                                            minDate={this.state.startDate}
-                                            type={'date'}
-                                            maxDate={this.today}
-                                            date={this.state.endDate}
-                                            handleDateChange={this.updateEndDate}/>
+                        <ReadingDatePicker style={styles.readingsDatePicker}
+                                           backgroundColor='dimgray'
+                                           minDate={this.state.startDate}
+                                           type={'date'}
+                                           maxDate={this.today}
+                                           date={this.state.endDate}
+                                           handleDateChange={this.updateEndDate}/>
                     </View>
 
                     <AddReadingButton addReading={this.addingReading}/>

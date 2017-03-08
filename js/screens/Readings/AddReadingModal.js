@@ -47,13 +47,13 @@ export default class AddReadingModal extends Component {
                     </View>
                     <View style={styles.modalInputRow}>
                         <Text style={styles.inputLabel}>Date: </Text>
-                        <ReadingsDatePicker style={styles.modalDatePicker}
-                                            backgroundColor='royalblue'
-                                            minDate={"31-08-1994"}
-                                            type={'datetime'}
-                                            maxDate={new Date()}
-                                            date={this.state.inputDate}
-                                            handleDateChange={this.updateInputDate}/>
+                        <ReadingDatePicker style={styles.modalDatePicker}
+                                           backgroundColor='royalblue'
+                                           minDate={"31-08-1994"}
+                                           type={'datetime'}
+                                           maxDate={new Date()}
+                                           date={this.state.inputDate}
+                                           handleDateChange={this.updateInputDate}/>
                     </View>
 
                     <View style={styles.modalInputRow}>

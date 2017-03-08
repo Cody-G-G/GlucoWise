@@ -4,7 +4,7 @@ import React, {Component} from 'react'
 import {View, StyleSheet} from 'react-native'
 import styles from "./styles";
 
-export default class ReadingsDatePicker extends Component {
+export default class ReadingDatePicker extends Component {
     constructor(props) {
         super(props);
     }
