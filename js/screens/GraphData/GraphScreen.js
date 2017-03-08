@@ -32,7 +32,6 @@ export default class GraphScreen extends Component {
         return (
             <View style={styles.screenContainer}>
                 <GraphPanel readings={this.state.graphReadings}
-                            hourRange={this.state.hourRange}
                             safeRangeMin={this.state.safeRangeMin}
                             safeRangeMax={this.state.safeRangeMax}
                             standard={this.state.standard}/>
