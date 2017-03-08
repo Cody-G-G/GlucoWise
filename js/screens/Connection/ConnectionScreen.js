@@ -3,7 +3,6 @@ import React, {Component} from 'react';
 import {
     View,
     StyleSheet,
-    ListView,
     NativeAppEventEmitter
 } from 'react-native';
 import styles from "./styles";
@@ -19,11 +18,10 @@ const Spinner = require('react-native-spinkit');
 export default class ConnectionScreen extends Component {
     constructor(props) {
         super(props);
-        this.ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.scannedDevices = [];
         this.pressedScan = false;
         this.state = {
-            scannedDevices: this.ds.cloneWithRows([]),
+            scannedDevices: [],
             devicesTogglingConnection: [],
             scanning: false,
             connectedDeviceIDs: []
@@ -205,7 +203,7 @@ export default class ConnectionScreen extends Component {
 
     setScannedDevices(devices) {
         this.setState({
-            scannedDevices: this.ds.cloneWithRows(devices)
+            scannedDevices: devices
         });
     }
 

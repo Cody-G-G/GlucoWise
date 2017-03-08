@@ -34,5 +34,9 @@ export default StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
         padding: 5
+    },
+    trashIcon: {
+        color: 'white',
+        fontSize: 30
     }
 });

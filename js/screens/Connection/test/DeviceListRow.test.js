@@ -5,9 +5,9 @@ import 'react-native';
 import renderer from 'react-test-renderer';
 
 test('DeviceListRow_withDeviceConnected - renders correctly', () => {
-    const device = '{"name":"DEVICE_NAME", "id":"DEVICE_ID"}';
+    const device = {name: "DEVICE_NAME", id: "DEVICE_ID"};
     const connectedDeviceIDs = [
-        JSON.parse(device).id,
+        device.id,
         "DEVICE_ID2",
         "DEVICE_ID3"
     ];
@@ -22,7 +22,7 @@ test('DeviceListRow_withDeviceConnected - renders correctly', () => {
 });
 
 test('DeviceListRow_withDeviceDisconnected - renders correctly', () => {
-    const device = '{"name":"DEVICE_NAME", "id":"DEVICE_ID"}';
+    const device = {name: "DEVICE_NAME", id: "DEVICE_ID"};
     const connectedDeviceIDs = [
         "DEVICE_ID2",
         "DEVICE_ID3"

@@ -13,9 +13,11 @@ export default class ReadingsList extends Component {
     }
 
     render() {
+        const dataSource = this.ds.cloneWithRows(this.props.readings);
+
         return (
             <View style={this.props.style}>
-                <ListView dataSource={this.ds.cloneWithRows(this.props.readings)} enableEmptySections={true} renderRow={(rowData) =>
+                <ListView dataSource={dataSource} enableEmptySections={true} renderRow={(rowData) =>
                     <View style={styles.reading}>
                         <Text style={StyleSheet.flatten([styles.readingText, {backgroundColor: this.props.readings[0] === rowData ? 'royalblue' : 'cornflowerblue'}])}>
                             <TextBold>Value:</TextBold> {rowData.value + " " + this.props.standard}{"\n"}
@@ -24,7 +26,7 @@ export default class ReadingsList extends Component {
                         <TouchableOpacity
                             style={styles.trashButton}
                             onPress={() => this.props.deleteReading(rowData)}>
-                                <Icon style={{color:'white', fontSize:30}} theme={{iconFamily: "MaterialIcons"}} name="delete-forever"/>
+                                <Icon style={styles.trashIcon} theme={{iconFamily: "MaterialIcons"}} name="delete-forever"/>
                         </TouchableOpacity>
                     </View>
                 }/>

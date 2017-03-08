@@ -63,14 +63,311 @@ exports[`DevicesPanel - renders correctly 1`] = `
       </Text>
     </View>
   </View>
-  <ListView
-    dataSource={
-      ListViewDataSource {
-        "items": 3,
-      }
-    }
-    enableEmptySections={true}
-    renderRow={[Function]}
-  />
+  <View>
+    <RCTScrollView>
+      <View>
+        <View
+          style={
+            Object {
+              "alignItems": "center",
+              "borderColor": "black",
+              "borderWidth": 1,
+              "flex": 1,
+              "flexDirection": "row",
+              "justifyContent": "flex-start",
+            }
+          }
+        >
+          <Text
+            accessible={true}
+            allowFontScaling={true}
+            ellipsizeMode="tail"
+            style={
+              Object {
+                "backgroundColor": "cornflowerblue",
+                "color": "white",
+                "flex": 4,
+                "fontSize": 20,
+                "padding": 7,
+              }
+            }
+          >
+            <Text
+              accessible={true}
+              allowFontScaling={true}
+              ellipsizeMode="tail"
+              style={
+                Object {
+                  "fontWeight": "bold",
+                }
+              }
+            >
+              Name:
+            </Text>
+             
+            DEVICE_NAME
+            
+            
+            <Text
+              accessible={true}
+              allowFontScaling={true}
+              ellipsizeMode="tail"
+              style={
+                Object {
+                  "fontWeight": "bold",
+                }
+              }
+            >
+              Id:
+            </Text>
+             
+            DEVICE_ID
+          </Text>
+          <View
+            accessibilityComponentType={undefined}
+            accessibilityLabel={undefined}
+            accessibilityTraits={undefined}
+            accessible={true}
+            hitSlop={undefined}
+            isTVSelectable={true}
+            onLayout={undefined}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+            style={
+              Object {
+                "alignItems": "center",
+                "alignSelf": "stretch",
+                "backgroundColor": "green",
+                "flex": 2,
+                "justifyContent": "center",
+                "opacity": 1,
+                "padding": 7,
+              }
+            }
+            testID={undefined}
+            tvParallaxProperties={undefined}
+          >
+            <Text
+              accessible={true}
+              allowFontScaling={true}
+              ellipsizeMode="tail"
+              style={
+                Object {
+                  "color": "white",
+                  "fontSize": 20,
+                }
+              }
+            >
+              Connect
+            </Text>
+          </View>
+        </View>
+        <View
+          style={
+            Object {
+              "alignItems": "center",
+              "borderColor": "black",
+              "borderWidth": 1,
+              "flex": 1,
+              "flexDirection": "row",
+              "justifyContent": "flex-start",
+            }
+          }
+        >
+          <Text
+            accessible={true}
+            allowFontScaling={true}
+            ellipsizeMode="tail"
+            style={
+              Object {
+                "backgroundColor": "cornflowerblue",
+                "color": "white",
+                "flex": 4,
+                "fontSize": 20,
+                "padding": 7,
+              }
+            }
+          >
+            <Text
+              accessible={true}
+              allowFontScaling={true}
+              ellipsizeMode="tail"
+              style={
+                Object {
+                  "fontWeight": "bold",
+                }
+              }
+            >
+              Name:
+            </Text>
+             
+            DEVICE_NAME2
+            
+            
+            <Text
+              accessible={true}
+              allowFontScaling={true}
+              ellipsizeMode="tail"
+              style={
+                Object {
+                  "fontWeight": "bold",
+                }
+              }
+            >
+              Id:
+            </Text>
+             
+            DEVICE_ID2
+          </Text>
+          <View
+            accessibilityComponentType={undefined}
+            accessibilityLabel={undefined}
+            accessibilityTraits={undefined}
+            accessible={true}
+            hitSlop={undefined}
+            isTVSelectable={true}
+            onLayout={undefined}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+            style={
+              Object {
+                "alignItems": "center",
+                "alignSelf": "stretch",
+                "backgroundColor": "firebrick",
+                "flex": 2,
+                "justifyContent": "center",
+                "opacity": 1,
+                "padding": 7,
+              }
+            }
+            testID={undefined}
+            tvParallaxProperties={undefined}
+          >
+            <Text
+              accessible={true}
+              allowFontScaling={true}
+              ellipsizeMode="tail"
+              style={
+                Object {
+                  "color": "white",
+                  "fontSize": 20,
+                }
+              }
+            >
+              Disconnect
+            </Text>
+          </View>
+        </View>
+        <View
+          style={
+            Object {
+              "alignItems": "center",
+              "borderColor": "black",
+              "borderWidth": 1,
+              "flex": 1,
+              "flexDirection": "row",
+              "justifyContent": "flex-start",
+            }
+          }
+        >
+          <Text
+            accessible={true}
+            allowFontScaling={true}
+            ellipsizeMode="tail"
+            style={
+              Object {
+                "backgroundColor": "cornflowerblue",
+                "color": "white",
+                "flex": 4,
+                "fontSize": 20,
+                "padding": 7,
+              }
+            }
+          >
+            <Text
+              accessible={true}
+              allowFontScaling={true}
+              ellipsizeMode="tail"
+              style={
+                Object {
+                  "fontWeight": "bold",
+                }
+              }
+            >
+              Name:
+            </Text>
+             
+            DEVICE_NAME3
+            
+            
+            <Text
+              accessible={true}
+              allowFontScaling={true}
+              ellipsizeMode="tail"
+              style={
+                Object {
+                  "fontWeight": "bold",
+                }
+              }
+            >
+              Id:
+            </Text>
+             
+            DEVICE_ID3
+          </Text>
+          <View
+            accessibilityComponentType={undefined}
+            accessibilityLabel={undefined}
+            accessibilityTraits={undefined}
+            accessible={true}
+            hitSlop={undefined}
+            isTVSelectable={true}
+            onLayout={undefined}
+            onResponderGrant={[Function]}
+            onResponderMove={[Function]}
+            onResponderRelease={[Function]}
+            onResponderTerminate={[Function]}
+            onResponderTerminationRequest={[Function]}
+            onStartShouldSetResponder={[Function]}
+            style={
+              Object {
+                "alignItems": "center",
+                "alignSelf": "stretch",
+                "backgroundColor": "firebrick",
+                "flex": 2,
+                "justifyContent": "center",
+                "opacity": 1,
+                "padding": 7,
+              }
+            }
+            testID={undefined}
+            tvParallaxProperties={undefined}
+          >
+            <Text
+              accessible={true}
+              allowFontScaling={true}
+              ellipsizeMode="tail"
+              style={
+                Object {
+                  "color": "white",
+                  "fontSize": 20,
+                }
+              }
+            >
+              Disconnect
+            </Text>
+          </View>
+        </View>
+      </View>
+    </RCTScrollView>
+  </View>
 </View>
 `;
