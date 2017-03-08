@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ReadingValueInput - renders correctly 1`] = `
+<TextInput
+  keyboardType="numeric"
+  maxLength={5}
+  onChangeText={[Function]}
+  style={
+    Object {
+      "color": "black",
+      "flex": 2.5,
+      "fontSize": 25,
+      "fontWeight": "bold",
+      "textAlign": "center",
+    }
+  }
+  value={undefined}
+/>
+`;
