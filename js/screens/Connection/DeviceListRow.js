@@ -10,7 +10,7 @@ export default class DeviceListRow extends Component {
     }
 
     render() {
-        const device = this.props.device;
+        const device = JSON.parse(this.props.device);
         return (
             <View style={styles.device}>
                 <Text style={styles.deviceDescription}>

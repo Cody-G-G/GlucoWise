@@ -5,7 +5,7 @@ import ReadingsList from "../../helpers/components/ReadingsList";
 import db from "../../data/database";
 import date from "../../helpers/util/date";
 import TextBold from "../../helpers/components/TextBold";
-import ReadingsDatePicker from "./ReadingDatePicker";
+import ReadingDatePicker from "./ReadingDatePicker";
 import styles from "./styles";
 import log from "../../helpers/util/logger";
 import AddReadingButton from "./AddReadingButton";

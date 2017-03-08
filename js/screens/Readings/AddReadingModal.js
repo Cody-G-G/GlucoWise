@@ -1,7 +1,7 @@
 import Modal from 'react-native-modalbox';
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, TextInput} from 'react-native';
-import ReadingsDatePicker from "./ReadingDatePicker";
+import ReadingDatePicker from "./ReadingDatePicker";
 import ReadingValueInput from "../../helpers/components/ReadingValueInput";
 import StandardSetterButton from "../../helpers/components/StandardSetterButton";
 import isInputValid from "../../helpers/util/readingValueValidator";

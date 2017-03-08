@@ -18,7 +18,6 @@ const Spinner = require('react-native-spinkit');
 export default class ConnectionScreen extends Component {
     constructor(props) {
         super(props);
-        this.scannedDevices = [];
         this.pressedScan = false;
         this.state = {
             scannedDevices: [],
@@ -148,9 +147,8 @@ export default class ConnectionScreen extends Component {
                 simpleDeviceObj.rssi = undefined;
                 let strDeviceObject = JSON.stringify(simpleDeviceObj);
                 log("Found device: " + strDeviceObject);
-                if (!this.scannedDevices.includes(strDeviceObject)) {
-                    this.scannedDevices.push(strDeviceObject);
-                    this.setScannedDevices([...this.scannedDevices]);
+                if (!this.state.scannedDevices.includes(strDeviceObject)) {
+                    this.addScannedDevice(strDeviceObject);
                 }
             }
         );
@@ -201,17 +199,15 @@ export default class ConnectionScreen extends Component {
         });
     }
 
-    setScannedDevices(devices) {
+    addScannedDevice(device) {
         this.setState({
-            scannedDevices: devices
+            scannedDevices: [... this.state.scannedDevices, device]
         });
     }
 
     addConnectedDevice(connectedId) {
-        let connectedUUIDs = this.state.connectedDeviceIDs.slice();
-        connectedUUIDs.push(connectedId);
         this.setState({
-            connectedDeviceIDs: connectedUUIDs
+            connectedDeviceIDs: [... this.state.connectedDeviceIDs, connectedId]
         });
     }
 
@@ -224,10 +220,8 @@ export default class ConnectionScreen extends Component {
     }
 
     addDeviceTogglingConnection(deviceId) {
-        let devicesTogglingConnection = this.state.devicesTogglingConnection.slice();
-        devicesTogglingConnection.push(deviceId);
         this.setState({
-            devicesTogglingConnection: devicesTogglingConnection
+            devicesTogglingConnection: [... this.state.devicesTogglingConnection, deviceId]
         });
     }
 

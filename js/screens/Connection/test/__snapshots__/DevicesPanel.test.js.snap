@@ -241,7 +241,7 @@ exports[`DevicesPanel - renders correctly 1`] = `
               Object {
                 "alignItems": "center",
                 "alignSelf": "stretch",
-                "backgroundColor": "firebrick",
+                "backgroundColor": "green",
                 "flex": 2,
                 "justifyContent": "center",
                 "opacity": 1,
@@ -262,7 +262,7 @@ exports[`DevicesPanel - renders correctly 1`] = `
                 }
               }
             >
-              Disconnect
+              Connect
             </Text>
           </View>
         </View>
@@ -341,7 +341,7 @@ exports[`DevicesPanel - renders correctly 1`] = `
               Object {
                 "alignItems": "center",
                 "alignSelf": "stretch",
-                "backgroundColor": "firebrick",
+                "backgroundColor": "green",
                 "flex": 2,
                 "justifyContent": "center",
                 "opacity": 1,
@@ -362,7 +362,7 @@ exports[`DevicesPanel - renders correctly 1`] = `
                 }
               }
             >
-              Disconnect
+              Connect
             </Text>
           </View>
         </View>
