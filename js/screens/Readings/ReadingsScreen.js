@@ -4,7 +4,6 @@ import {View, Text} from 'react-native';
 import ReadingsList from "../../helpers/components/ReadingsList";
 import db from "../../data/database";
 import date from "../../helpers/util/date";
-import TextBold from "../../helpers/components/TextBold";
 import ReadingDatePicker from "./ReadingDatePicker";
 import styles from "./styles";
 import log from "../../helpers/util/logger";
@@ -41,7 +40,7 @@ export default class ReadingsScreen extends Component {
                                            maxDate={this.state.endDate}
                                            date={this.state.startDate}
                                            handleDateChange={this.updateStartDate}/>
-                        <TextBold style={styles.dateRangeSeparatorText}> to </TextBold>
+                        <Text style={styles.dateRangeSeparatorText}> to </Text>
                         <ReadingDatePicker style={styles.readingsDatePicker}
                                            backgroundColor='dimgray'
                                            minDate={this.state.startDate}

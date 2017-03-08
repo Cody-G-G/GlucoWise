@@ -6,7 +6,8 @@ export default StyleSheet.create({
         textAlignVertical: 'center',
         fontSize: 20,
         color: 'black',
-        backgroundColor: 'aliceblue'
+        backgroundColor: 'aliceblue',
+        fontWeight: 'bold'
     },
     addReadingButton: {
         flex: 1,
