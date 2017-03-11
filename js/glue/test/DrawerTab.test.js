@@ -19,7 +19,6 @@ test('DrawerTab_withoutChildren - renders correctly', () => {
 
 test('DrawerTab_withChildren - renders correctly', () => {
     const icon = 'bluetooth';
-    const text = "PROP_TEXT";
 
     const tree = renderer.create(
         <DrawerTab icon={icon}>

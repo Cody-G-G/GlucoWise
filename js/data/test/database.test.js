@@ -44,135 +44,135 @@ test("init() - creates and saves initial BGLStandard and BGLSafeRange objects to
 });
 
 test('saveBGLReading(value, date) - saves BGLReading to database with given value and date', () => {
-    const stubValue = '82.5';
-    const stubDate = new Date();
-    const stubUUID = 'UUID';
+    const readingValue = '82.5';
+    const readingDate = new Date();
+    const readingUUID = 'UUID';
     uuid.mockImplementation(() => {
-        return stubUUID
+        return readingUUID
     });
 
-    db.saveBGLReading(stubValue, stubDate);
+    db.saveBGLReading(readingValue, readingDate);
 
     expect(Realm.prototype.write).toHaveBeenCalled();
     expect(Realm.prototype.create).toHaveBeenCalledWith(readingObjName, {
-        id: stubUUID,
-        value: stubValue,
-        date: stubDate
+        id: readingUUID,
+        value: readingValue,
+        date: readingDate
     })
 });
 
 test('updateBGLSafeRangeMin(minValue)_withStandardUS - updates minValue of BGLSafeRange to given value in database', () => {
-    const stubOldMinValue = '85';
-    const stubNewMinValue = '135';
-    const stubSafeRange = {minValue: stubOldMinValue};
-    const stubStandard = {standard: standardUS};
+    const oldMinValue = '85';
+    const newMinValue = '135';
+    const safeRange = {minValue: oldMinValue};
+    const standardObj = {standard: standardUS};
     Realm.prototype.objects = jest.fn((objectName) => {
-        return objectName === safeRangeObjName ? [stubSafeRange] : [stubStandard]
+        return objectName === safeRangeObjName ? [safeRange] : [standardObj]
     });
     processReading.default = jest.fn(() => {
-        return stubNewMinValue;
+        return newMinValue;
     });
 
-    db.updateBGLSafeRangeMin(stubNewMinValue);
+    db.updateBGLSafeRangeMin(newMinValue);
 
     expect(Realm.prototype.write).toHaveBeenCalled();
-    expect(processReading.default).toHaveBeenCalledWith(stubNewMinValue, stubStandard.standard, true);
-    expect(stubSafeRange.minValue).toEqual(stubNewMinValue);
+    expect(processReading.default).toHaveBeenCalledWith(newMinValue, standardObj.standard, true);
+    expect(safeRange.minValue).toEqual(newMinValue);
 });
 
 test('updateBGLSafeRangeMin(minValue)_withStandardUK - updates minValue of BGLSafeRange to given value in database', () => {
-    const stubOldMinValue = '85';
-    const stubNewMinValue = '13.5';
-    const expectedNewMinValue = '135';
-    const stubSafeRange = {minValue: stubOldMinValue};
-    const stubStandard = {standard: standardUK};
+    const oldMinValue = '85';
+    const newMinValue = '13.5';
+    const expectedMinValue = '135';
+    const safeRange = {minValue: oldMinValue};
+    const standardObj = {standard: standardUK};
     Realm.prototype.objects = jest.fn((objectName) => {
-        return objectName === safeRangeObjName ? [stubSafeRange] : [stubStandard]
+        return objectName === safeRangeObjName ? [safeRange] : [standardObj]
     });
     processReading.default = jest.fn(() => {
-        return expectedNewMinValue;
+        return expectedMinValue;
     });
 
-    db.updateBGLSafeRangeMin(stubNewMinValue);
+    db.updateBGLSafeRangeMin(newMinValue);
 
     expect(Realm.prototype.write).toHaveBeenCalled();
-    expect(processReading.default).toHaveBeenCalledWith(stubNewMinValue, stubStandard.standard, true);
-    expect(stubSafeRange.minValue).toEqual(expectedNewMinValue);
+    expect(processReading.default).toHaveBeenCalledWith(newMinValue, standardObj.standard, true);
+    expect(safeRange.minValue).toEqual(expectedMinValue);
 });
 
 test('updateBGLSafeRangeMax(maxValue)_withStandardUS - updates maxValue of BGLSafeRange to given value in database', () => {
-    const stubOldMaxValue = '85';
-    const stubNewMaxValue = '135';
-    const stubSafeRange = {minValue: stubOldMaxValue};
-    const stubStandard = {standard: standardUS};
+    const oldMaxValue = '85';
+    const newMaxValue = '135';
+    const safeRange = {minValue: oldMaxValue};
+    const standardObj = {standard: standardUS};
     Realm.prototype.objects = jest.fn((objectName) => {
-        return objectName === safeRangeObjName ? [stubSafeRange] : [stubStandard]
+        return objectName === safeRangeObjName ? [safeRange] : [standardObj]
     });
     processReading.default = jest.fn(() => {
-        return stubNewMaxValue;
+        return newMaxValue;
     });
 
-    db.updateBGLSafeRangeMax(stubNewMaxValue);
+    db.updateBGLSafeRangeMax(newMaxValue);
 
     expect(Realm.prototype.write).toHaveBeenCalled();
-    expect(processReading.default).toHaveBeenCalledWith(stubNewMaxValue, stubStandard.standard, true);
-    expect(stubSafeRange.maxValue).toEqual(stubNewMaxValue);
+    expect(processReading.default).toHaveBeenCalledWith(newMaxValue, standardObj.standard, true);
+    expect(safeRange.maxValue).toEqual(newMaxValue);
 });
 
 test('updateBGLSafeRangeMax(maxValue)_withStandardUK - updates maxValue of BGLSafeRange to given value in database', () => {
-    const stubOldMaxValue = '85';
-    const stubNewMaxValue = '3.5';
+    const oldMaxValue = '85';
+    const newMaxValue = '3.5';
     const expectedMaxValue = '35';
-    const stubSafeRange = {minValue: stubOldMaxValue};
-    const stubStandard = {standard: standardUK};
+    const safeRange = {minValue: oldMaxValue};
+    const standardObj = {standard: standardUK};
     Realm.prototype.objects = jest.fn((objectName) => {
-        return objectName === safeRangeObjName ? [stubSafeRange] : [stubStandard]
+        return objectName === safeRangeObjName ? [safeRange] : [standardObj]
     });
     processReading.default = jest.fn(() => {
         return expectedMaxValue;
     });
 
-    db.updateBGLSafeRangeMax(stubNewMaxValue);
+    db.updateBGLSafeRangeMax(newMaxValue);
 
     expect(Realm.prototype.write).toHaveBeenCalled();
-    expect(processReading.default).toHaveBeenCalledWith(stubNewMaxValue, stubStandard.standard, true);
-    expect(stubSafeRange.maxValue).toEqual(expectedMaxValue);
+    expect(processReading.default).toHaveBeenCalledWith(newMaxValue, standardObj.standard, true);
+    expect(safeRange.maxValue).toEqual(expectedMaxValue);
 });
 
 test('updateBGLSafeRangeMinToDefault() - changes BGLSafeRange minValue to default (70)', () => {
-    const stubSafeRange = {minValue: '100'};
+    const safeRange = {minValue: '100'};
     Realm.prototype.objects = jest.fn(() => {
-        return [stubSafeRange];
+        return [safeRange];
     });
 
     db.updateBGLSafeRangeMinToDefault();
 
     expect(Realm.prototype.write).toHaveBeenCalled();
-    expect(stubSafeRange.minValue).toEqual(defaultSafeRangeMin);
+    expect(safeRange.minValue).toEqual(defaultSafeRangeMin);
 });
 
 test('updateBGLSafeRangeMaxToDefault() - changes BGLSafeRange maxValue to default (130)', () => {
-    const stubSafeRange = {maxValue: '100'};
+    const safeRange = {maxValue: '100'};
     Realm.prototype.objects = jest.fn(() => {
-        return [stubSafeRange];
+        return [safeRange];
     });
 
     db.updateBGLSafeRangeMaxToDefault();
 
     expect(Realm.prototype.write).toHaveBeenCalled();
-    expect(stubSafeRange.maxValue).toEqual(defaultSafeRangeMax);
+    expect(safeRange.maxValue).toEqual(defaultSafeRangeMax);
 });
 
 test('updateBGLStandard(standard) - updates the BGLStandard.standard value in database to given value', () => {
-    const stubStandard = {standard: standardUS};
+    const standardObj = {standard: standardUS};
     Realm.prototype.objects = jest.fn(() => {
-        return [stubStandard];
+        return [standardObj];
     });
 
     db.updateBGLStandard(standardUK);
 
     expect(Realm.prototype.write).toHaveBeenCalled();
-    expect(stubStandard.standard).toEqual(standardUK);
+    expect(standardObj.standard).toEqual(standardUK);
 });
 
 test('getLatestReading()_withStandardUS - returns reading with the most recent date', () => {
@@ -182,9 +182,9 @@ test('getLatestReading()_withStandardUS - returns reading with the most recent d
         expectedReading,
         {id: '2', value: '50', date: new Date(2017, 3, 6, 22, 50, 54)}
     );
-    const stubStandard = {standard: standardUS};
+    const standardObj = {standard: standardUS};
     Realm.prototype.objects = jest.fn((objectName) => {
-        return objectName === readingObjName ? readings : [stubStandard];
+        return objectName === readingObjName ? readings : [standardObj];
     });
     processReading.default = jest.fn((value) => {
         return value;
@@ -192,21 +192,20 @@ test('getLatestReading()_withStandardUS - returns reading with the most recent d
 
     const actualReadingValue = db.getLatestReading();
 
-    expect(processReading.default).toHaveBeenCalledWith(expectedReading.value, stubStandard.standard);
+    expect(processReading.default).toHaveBeenCalledWith(expectedReading.value, standardObj.standard);
     expect(actualReadingValue).toEqual(expectedReading.value)
 });
 
 test('getLatestReading()_withStandardUK - returns reading with the most recent date', () => {
-    const readings = new ResultsMock(
-        {id: '3', value: '120', date: new Date(2017, 3, 5, 22, 50, 55)},
-        {id: '1', value: '82.5', date: new Date(2017, 3, 6, 22, 50, 55)},
-        {id: '2', value: '50', date: new Date(2017, 3, 6, 22, 50, 54)}
-    );
-    const expectedReading = Object.assign({}, readings[1]);
+    const reading1 = {id: '3', value: '120', date: new Date(2017, 3, 5, 22, 50, 55)};
+    const reading2 = {id: '1', value: '82.5', date: new Date(2017, 3, 6, 22, 50, 55)};
+    const reading3 = {id: '2', value: '50', date: new Date(2017, 3, 6, 22, 50, 54)};
+    const readings = new ResultsMock(reading1, reading2, reading3);
+    const expectedReading = Object.assign({}, reading1);
     expectedReading.value = '8.25';
-    const stubStandard = {standard: standardUS};
+    const standardObj = {standard: standardUS};
     Realm.prototype.objects = jest.fn((objectName) => {
-        return objectName === readingObjName ? readings : [stubStandard];
+        return objectName === readingObjName ? readings : [standardObj];
     });
     processReading.default = jest.fn((value) => {
         return String(value / 10);
@@ -214,24 +213,23 @@ test('getLatestReading()_withStandardUK - returns reading with the most recent d
 
     const actualReadingValue = db.getLatestReading();
 
-    expect(processReading.default).toHaveBeenCalledWith(String(expectedReading.value * 10), stubStandard.standard);
+    expect(processReading.default).toHaveBeenCalledWith(String(expectedReading.value * 10), standardObj.standard);
     expect(actualReadingValue).toEqual(expectedReading.value)
 });
 
 test('getBGLReadingsInDateRange(startDate, endDate)_withStandardUS - gets readings within specified date range, reverse sorted by date', () => {
     const startDate = new Date(2017, 2, 2);
     const endDate = new Date(2017, 2, 7);
-    const readings = new ResultsMock(
-        {id: '1', value: '20', date: new Date(2017, 2, 1)},
-        {id: '2', value: '30', date: new Date(2017, 2, 2)},
-        {id: '3', value: '40', date: new Date(2017, 2, 5)},
-        {id: '4', value: '50', date: new Date(2017, 2, 7)},
-        {id: '5', value: '60', date: new Date(2017, 2, 8)}
-    );
-    const expectedReadings = [readings[3], readings[2], readings[1]];
-    const standardStub = {standard: standardUS};
+    const reading1 = {id: '1', value: '20', date: new Date(2017, 2, 1)};
+    const reading2 = {id: '2', value: '30', date: new Date(2017, 2, 2)};
+    const reading3 = {id: '3', value: '40', date: new Date(2017, 2, 5)};
+    const reading4 = {id: '4', value: '50', date: new Date(2017, 2, 7)};
+    const reading5 = {id: '5', value: '60', date: new Date(2017, 2, 8)};
+    const readings = new ResultsMock(reading1, reading2, reading3, reading4, reading5);
+    const expectedReadings = [reading4, reading3, reading2];
+    const standardObj = {standard: standardUS};
     Realm.prototype.objects = jest.fn((objectName) => {
-        return objectName === readingObjName ? readings : [standardStub]
+        return objectName === readingObjName ? readings : [standardObj]
     });
     processReading.default = jest.fn((value) => {
         return value;
@@ -245,22 +243,21 @@ test('getBGLReadingsInDateRange(startDate, endDate)_withStandardUS - gets readin
 test('getBGLReadingsInDateRange(startDate, endDate)_withStandardUK - gets readings within specified date range, reverse sorted by date', () => {
     const startDate = new Date(2017, 2, 2);
     const endDate = new Date(2017, 2, 7);
-    const stubReading_1 = {id: '1', value: '20', date: new Date(2017, 2, 1)};
-    const stubReading_2 = {id: '2', value: '30', date: new Date(2017, 2, 2)};
-    const stubReading_3 = {id: '3', value: '40', date: new Date(2017, 2, 5)};
-    const stubReading_4 = {id: '4', value: '50', date: new Date(2017, 2, 7)};
-    const stubReading_5 = {id: '5', value: '60', date: new Date(2017, 2, 8)};
-    const readings = new ResultsMock(stubReading_1, stubReading_2, stubReading_3, stubReading_4, stubReading_5);
-    const stubExpectedReadingUK_1 = Object.assign({}, stubReading_2);
-    const stubExpectedReadingUK_2 = Object.assign({}, stubReading_3);
-    const stubExpectedReadingUK_3 = Object.assign({}, stubReading_4);
-    stubExpectedReadingUK_1.value = String(stubExpectedReadingUK_1.value / 10);
-    stubExpectedReadingUK_2.value = String(stubExpectedReadingUK_2.value / 10);
-    stubExpectedReadingUK_3.value = String(stubExpectedReadingUK_3.value / 10);
-    const expectedReadings = [stubExpectedReadingUK_3, stubExpectedReadingUK_2, stubExpectedReadingUK_1];
-    const standardStub = {standard: standardUK};
+    const reading1 = {id: '1', value: '20', date: new Date(2017, 2, 1)};
+    const reading2 = {id: '2', value: '30', date: new Date(2017, 2, 2)};
+    const reading3 = {id: '3', value: '40', date: new Date(2017, 2, 5)};
+    const reading4 = {id: '4', value: '50', date: new Date(2017, 2, 7)};
+    const reading5 = {id: '5', value: '60', date: new Date(2017, 2, 8)};
+    const readings = new ResultsMock(reading1, reading2, reading3, reading4, reading5);
+    const expectedReadings = [
+        Object.assign({}, reading4),
+        Object.assign({}, reading3),
+        Object.assign({}, reading2)
+    ];
+    expectedReadings.forEach((reading) => reading.value = String(reading.value / 10));
+    const standardObj = {standard: standardUK};
     Realm.prototype.objects = jest.fn((objectName) => {
-        return objectName === readingObjName ? readings : [standardStub]
+        return objectName === readingObjName ? readings : [standardObj]
     });
     processReading.default = jest.fn((value) => {
         return String(value / 10);
@@ -272,17 +269,16 @@ test('getBGLReadingsInDateRange(startDate, endDate)_withStandardUK - gets readin
 });
 
 test('get24hBGLReadings()_withStandardUS - returns readings with date within last 24hrs', () => {
-    const standardStub = {standard: standardUS};
-    const readings = new ResultsMock(
-        {id: '1', value: '20', date: new Date(2017, 2, 1, 15, 29)},
-        {id: '2', value: '30', date: new Date(2017, 2, 1, 15, 30)},
-        {id: '3', value: '40', date: new Date(2017, 2, 2, 12)},
-        {id: '4', value: '50', date: new Date(2017, 2, 2, 15, 30)}
-    );
-    const expectedReadings = [readings[3], readings[2], readings[1]];
+    const standardObj = {standard: standardUS};
+    const reading1 = {id: '1', value: '20', date: new Date(2017, 2, 1, 15, 29)};
+    const reading2 = {id: '2', value: '30', date: new Date(2017, 2, 1, 15, 30)};
+    const reading3 = {id: '3', value: '40', date: new Date(2017, 2, 2, 12)};
+    const reading4 = {id: '4', value: '50', date: new Date(2017, 2, 2, 15, 30)};
+    const readings = new ResultsMock(reading1, reading2, reading3, reading4);
+    const expectedReadings = [reading4, reading3, reading2];
     MockDate.set(new Date(2017, 2, 2, 15, 30));
     Realm.prototype.objects = jest.fn((objectName) => {
-        return objectName === readingObjName ? readings : [standardStub]
+        return objectName === readingObjName ? readings : [standardObj]
     });
     processReading.default = jest.fn((value) => {
         return value;
@@ -294,23 +290,21 @@ test('get24hBGLReadings()_withStandardUS - returns readings with date within las
 });
 
 test('get24hBGLReadings()_withStandardUK - returns readings with date within last 24hrs', () => {
-    const standardStub = {standard: standardUK};
-    const readings = new ResultsMock(
-        {id: '1', value: '20', date: new Date(2017, 2, 1, 15, 29)},
-        {id: '2', value: '30', date: new Date(2017, 2, 1, 15, 30)},
-        {id: '3', value: '40', date: new Date(2017, 2, 2, 12)},
-        {id: '4', value: '50', date: new Date(2017, 2, 2, 15, 30)}
-    );
-    const expectedReading_1 = Object.assign({}, readings[3]);
-    const expectedReading_2 = Object.assign({}, readings[2]);
-    const expectedReading_3 = Object.assign({}, readings[1]);
-    expectedReading_1.value = String(expectedReading_1.value / 10);
-    expectedReading_2.value = String(expectedReading_2.value / 10);
-    expectedReading_3.value = String(expectedReading_3.value / 10);
-    const expectedReadings = [expectedReading_1, expectedReading_2, expectedReading_3];
+    const standardObj = {standard: standardUK};
+    const reading1 = {id: '1', value: '20', date: new Date(2017, 2, 1, 15, 29)};
+    const reading2 = {id: '2', value: '30', date: new Date(2017, 2, 1, 15, 30)};
+    const reading3 = {id: '3', value: '40', date: new Date(2017, 2, 2, 12)};
+    const reading4 = {id: '4', value: '50', date: new Date(2017, 2, 2, 15, 30)};
+    const readings = new ResultsMock(reading1, reading2, reading3, reading4);
+    const expectedReadings = [
+        Object.assign({}, reading4),
+        Object.assign({}, reading3),
+        Object.assign({}, reading2)
+    ];
+    expectedReadings.forEach(reading => reading.value = String(reading.value / 10));
     MockDate.set(new Date(2017, 2, 2, 15, 30));
     Realm.prototype.objects = jest.fn((objectName) => {
-        return objectName === readingObjName ? readings : [standardStub]
+        return objectName === readingObjName ? readings : [standardObj]
     });
     processReading.default = jest.fn((value) => {
         return String(value / 10);
@@ -322,17 +316,16 @@ test('get24hBGLReadings()_withStandardUK - returns readings with date within las
 });
 
 test('get60mBGLReadings()_withStandardUS - returns readings with date within last 60 minutes', () => {
-    const standardStub = {standard: standardUS};
-    const readings = new ResultsMock(
-        {id: '1', value: '20', date: new Date(2017, 2, 2, 14, 29)},
-        {id: '2', value: '30', date: new Date(2017, 2, 2, 14, 30)},
-        {id: '3', value: '40', date: new Date(2017, 2, 2, 14, 40)},
-        {id: '4', value: '50', date: new Date(2017, 2, 2, 15, 30)}
-    );
-    const expectedReadings = [readings[3], readings[2], readings[1]];
+    const standardObj = {standard: standardUS};
+    const reading1 = {id: '1', value: '20', date: new Date(2017, 2, 2, 14, 29)};
+    const reading2 = {id: '2', value: '30', date: new Date(2017, 2, 2, 14, 30)};
+    const reading3 = {id: '3', value: '40', date: new Date(2017, 2, 2, 14, 40)};
+    const reading4 = {id: '4', value: '50', date: new Date(2017, 2, 2, 15, 30)};
+    const readings = new ResultsMock(reading1, reading2, reading3, reading4);
+    const expectedReadings = [reading4, reading3, reading2];
     MockDate.set(new Date(2017, 2, 2, 15, 30));
     Realm.prototype.objects = jest.fn((objectName) => {
-        return objectName === readingObjName ? readings : [standardStub]
+        return objectName === readingObjName ? readings : [standardObj]
     });
     processReading.default = jest.fn((value) => {
         return value;
@@ -344,23 +337,21 @@ test('get60mBGLReadings()_withStandardUS - returns readings with date within las
 });
 
 test('get60mBGLReadings()_withStandardUK - returns readings with date within last 60 minutes', () => {
-    const standardStub = {standard: standardUK};
-    const readings = new ResultsMock(
-        {id: '1', value: '20', date: new Date(2017, 2, 2, 14, 29)},
-        {id: '2', value: '30', date: new Date(2017, 2, 2, 14, 30)},
-        {id: '3', value: '40', date: new Date(2017, 2, 2, 14, 40)},
-        {id: '4', value: '50', date: new Date(2017, 2, 2, 15, 30)}
-    );
-    const expectedReading_1 = Object.assign({}, readings[3]);
-    const expectedReading_2 = Object.assign({}, readings[2]);
-    const expectedReading_3 = Object.assign({}, readings[1]);
-    expectedReading_1.value = String(expectedReading_1.value / 10);
-    expectedReading_2.value = String(expectedReading_2.value / 10);
-    expectedReading_3.value = String(expectedReading_3.value / 10);
-    const expectedReadings = [expectedReading_1, expectedReading_2, expectedReading_3];
+    const standardObj = {standard: standardUK};
+    const reading1 = {id: '1', value: '20', date: new Date(2017, 2, 2, 14, 29)};
+    const reading2 = {id: '2', value: '30', date: new Date(2017, 2, 2, 14, 30)};
+    const reading3 = {id: '3', value: '40', date: new Date(2017, 2, 2, 14, 40)};
+    const reading4 = {id: '4', value: '50', date: new Date(2017, 2, 2, 15, 30)};
+    const readings = new ResultsMock(reading1, reading2, reading3, reading4);
+    const expectedReadings = [
+        Object.assign({}, readings[3]),
+        Object.assign({}, readings[2]),
+        Object.assign({}, readings[1])
+    ];
+    expectedReadings.forEach(reading => reading.value = String(reading.value / 10));
     MockDate.set(new Date(2017, 2, 2, 15, 30));
     Realm.prototype.objects = jest.fn((objectName) => {
-        return objectName === readingObjName ? readings : [standardStub]
+        return objectName === readingObjName ? readings : [standardObj]
     });
     processReading.default = jest.fn((value) => {
         return String(value / 10);
@@ -372,11 +363,11 @@ test('get60mBGLReadings()_withStandardUK - returns readings with date within las
 });
 
 test('getBGLSafeRange()_withStandardUS - returns safe range object with current minValue and maxValue', () => {
-    const standardStubUS = {standard: standardUS};
-    const safeRangeStub = {minValue: defaultSafeRangeMin, maxValue: defaultSafeRangeMax};
-    const expectedSafeRange = safeRangeStub;
+    const standardUS = {standard: standardUS};
+    const safeRange = {minValue: defaultSafeRangeMin, maxValue: defaultSafeRangeMax};
+    const expectedSafeRange = safeRange;
     Realm.prototype.objects = jest.fn((objectName) => {
-        return objectName === standardObjName ? [standardStubUS] : [safeRangeStub];
+        return objectName === standardObjName ? [standardUS] : [safeRange];
     });
     processReading.default = jest.fn((value) => {
         return value;
@@ -388,13 +379,13 @@ test('getBGLSafeRange()_withStandardUS - returns safe range object with current 
 });
 
 test('getBGLSafeRange()_withStandardUK - returns safe range object with current minValue and maxValue', () => {
-    const standardStubUK = {standard: standardUK};
+    const standardUK = {standard: standardUK};
     const expectedMinUK = '1.5';
     const expectedMaxUK = '3.5';
-    const safeRangeStub = {minValue: defaultSafeRangeMin, maxValue: defaultSafeRangeMax};
+    const safeRange = {minValue: defaultSafeRangeMin, maxValue: defaultSafeRangeMax};
     const expectedSafeRange = {minValue: expectedMinUK, maxValue: expectedMaxUK};
     Realm.prototype.objects = jest.fn((objectName) => {
-        return objectName === standardObjName ? [standardStubUK] : [safeRangeStub];
+        return objectName === standardObjName ? [standardUK] : [safeRange];
     });
     processReading.default = jest.fn((value) => {
         return value === defaultSafeRangeMin ? expectedMinUK : expectedMaxUK;
