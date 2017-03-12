@@ -53,7 +53,6 @@ export default class DrawerPanel extends Component {
                 </DrawerTab>
                 <DrawerTab onPress={() => {drawer.close(); Actions.screenSettings();}} icon='settings' text='Settings'/>
                 <DrawerTab onPress={() => {drawer.close(); Actions.screenAbout();}} icon='info' text='About'/>
-
             </View>
         );
     }

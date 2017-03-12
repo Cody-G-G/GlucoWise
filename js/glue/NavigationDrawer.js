@@ -13,6 +13,7 @@ export default class NavigationDrawer extends Component {
                 type="overlay"
                 ref="navigation"
                 content={<DrawerPanel/>}
+                open={state.open}
                 onOpen={() => Actions.refresh({ key: state.key, open: true })}
                 onClose={() => Actions.refresh({ key: state.key, open: false })}
                 tapToClose
