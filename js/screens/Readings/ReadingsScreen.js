@@ -68,6 +68,10 @@ export default class ReadingsScreen extends Component {
         db.initBGLStandardListener(this.updateState);
     }
 
+    componentWillUnmount() {
+        log("Unmounting ReadingsScreen");
+    }
+
     updateState = () => {
         this.setState({
             standard: db.getBGLStandard(),

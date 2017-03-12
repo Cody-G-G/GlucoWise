@@ -6,6 +6,7 @@ import styles from "./styles";
 import SafeRangesRowPanel from "./SafeRangesRowPanel";
 import StandardSetterButton from "../../helpers/components/StandardSetterButton";
 import db from "../../data/database";
+import log from "../../helpers/util/logger";
 
 export default class SettingsScreen extends Component {
     constructor(props) {
@@ -50,6 +51,10 @@ export default class SettingsScreen extends Component {
 
     componentDidMount() {
         db.initBGLStandardListener(this.updateBGLSafeRange.bind(this));
+    }
+
+    componentWillUnmount() {
+        log("Unmounting SettingsScreen");
     }
 
     setStandardUS = () => {

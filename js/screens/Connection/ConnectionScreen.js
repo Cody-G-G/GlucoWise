@@ -57,6 +57,10 @@ export default class ConnectionScreen extends Component {
         this.initReadingCharacteristicUpdate();
     }
 
+    componentWillUnmount() {
+        log("Unmounting ConnectionScreen");
+    }
+
     initBleManager() {
         BleManager
             .start()

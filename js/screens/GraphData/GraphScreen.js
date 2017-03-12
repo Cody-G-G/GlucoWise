@@ -51,6 +51,10 @@ export default class GraphScreen extends Component {
         db.initBGLStandardListener(this.updateState)
     }
 
+    componentWillUnmount() {
+        log("Unmounting GraphScreen");
+    }
+
     /**
      * @param readings
      * @param hourRange
