@@ -19,56 +19,36 @@ export default class App extends Component {
     }
 
     render() {
-        const backButtonImageStyle = {
-            height: 24,
-            resizeMode: 'contain'
-        };
-        const menuIcon = require('../../assets/menu_burger.png');
         return (
             <Router getSceneStyle={getSceneStyle}
-                    onExitApp={() => {openDrawer(); return true}}>
+                    backAndroidHandler={() => {openDrawer(); return true}}>
                 <Scene key="drawer" component={NavigationDrawer} open={false}>
-                    <Scene key="main"
-                           tabs={false}
-                           onLeft={openDrawer}
-                           leftButtonImage={menuIcon}>
+                    <Scene key="main" tabs>
                         <Scene key="screenConnection"
                                title="Connection"
                                hideTabBar
                                component={ConnectionScreen}
                                duration={0.35}
                                direction='leftToRight'
-                               initial
-                               backButtonImage={menuIcon}
-                               backButtonTextStyle={backButtonImageStyle}
-                               onBack={openDrawer}/>
+                               initial/>
                         <Scene key="screenGraph"
                                title="Graph"
                                hideTabBar
                                component={GraphScreen}
                                duration={0.35}
-                               direction='leftToRight'
-                               backButtonImage={menuIcon}
-                               backButtonTextStyle={backButtonImageStyle}
-                               onBack={openDrawer}/>
+                               direction='leftToRight'/>
                         <Scene key="screenReadings"
                                title="Readings"
                                hideTabBar
                                component={ReadingsScreen}
                                duration={0.35}
-                               direction='leftToRight'
-                               backButtonImage={menuIcon}
-                               backButtonTextStyle={backButtonImageStyle}
-                               onBack={openDrawer}/>
+                               direction='leftToRight'/>
                         <Scene key="screenSettings"
                                title="Settings"
                                hideTabBar
                                component={SettingsScreen}
                                duration={0.35}
-                               direction='leftToRight'
-                               backButtonImage={menuIcon}
-                               backButtonTextStyle={backButtonImageStyle}
-                               onBack={openDrawer}/>
+                               direction='leftToRight'/>
                     </Scene>
                 </Scene>
             </Router>
