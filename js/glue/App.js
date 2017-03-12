@@ -24,31 +24,10 @@ export default class App extends Component {
                     backAndroidHandler={() => {openDrawer(); return true}}>
                 <Scene key="drawer" component={NavigationDrawer} open={false}>
                     <Scene key="main" tabs>
-                        <Scene key="screenConnection"
-                               title="Connection"
-                               hideTabBar
-                               component={ConnectionScreen}
-                               duration={0.35}
-                               direction='leftToRight'
-                               initial/>
-                        <Scene key="screenGraph"
-                               title="Graph"
-                               hideTabBar
-                               component={GraphScreen}
-                               duration={0.35}
-                               direction='leftToRight'/>
-                        <Scene key="screenReadings"
-                               title="Readings"
-                               hideTabBar
-                               component={ReadingsScreen}
-                               duration={0.35}
-                               direction='leftToRight'/>
-                        <Scene key="screenSettings"
-                               title="Settings"
-                               hideTabBar
-                               component={SettingsScreen}
-                               duration={0.35}
-                               direction='leftToRight'/>
+                        <Scene key="screenConnection" title="Connection" hideTabBar component={ConnectionScreen} initial/>
+                        <Scene key="screenGraph" title="Graph" hideTabBar component={GraphScreen}/>
+                        <Scene key="screenReadings" title="Readings" hideTabBar component={ReadingsScreen}/>
+                        <Scene key="screenSettings" title="Settings" hideTabBar component={SettingsScreen}/>
                     </Scene>
                 </Scene>
             </Router>
