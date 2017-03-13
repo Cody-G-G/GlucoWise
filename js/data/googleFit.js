@@ -29,6 +29,14 @@ class GoogleFit {
     stepsLast60mInMinuteBuckets(callback) {
         googleFit.stepsLast60mInMinuteBuckets(callback);
     }
+
+    caloriesExpendedLast60mInMinuteBuckets(callback) {
+        googleFit.caloriesExpendedLast60mInMinuteBuckets(callback);
+    }
+
+    caloriesExpendedLast24hInHourBuckets(callback) {
+        googleFit.caloriesExpendedLast24hInHourBuckets(callback);
+    }
 }
 
 const gFit = new GoogleFit();
@@ -47,6 +55,12 @@ gFit.onConnected((args) => {
     });
     gFit.stepsLast60mInMinuteBuckets((args) => {
         log("Steps last 60m in minute buckets - steps: " + args.steps + " dates: " + args.dates);
+    });
+    gFit.caloriesExpendedLast24hInHourBuckets((args) => {
+        log("Calories Expended last 24h in hour buckets - calories: " + args.calories + " dates: " + args.dates);
+    });
+    gFit.caloriesExpendedLast60mInMinuteBuckets((args) => {
+        log("Steps last 60m in minute buckets - calories: " + args.calories + " dates: " + args.dates);
     });
 });
 
