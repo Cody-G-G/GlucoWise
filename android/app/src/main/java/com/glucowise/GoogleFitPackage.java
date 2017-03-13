@@ -10,7 +10,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-class BluetoothManagerPackage implements ReactPackage {
+class GoogleFitPackage implements ReactPackage {
+
+    public GoogleFitPackage() {
+    }
 
     @Override
     public List<Class<? extends JavaScriptModule>> createJSModules() {
@@ -25,9 +28,7 @@ class BluetoothManagerPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
-
-        modules.add(new BluetoothManagerModule(reactContext));
-
+        modules.add(new GoogleFitModule(reactContext));
         return modules;
     }
 }

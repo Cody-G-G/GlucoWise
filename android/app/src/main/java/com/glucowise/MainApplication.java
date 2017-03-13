@@ -34,7 +34,8 @@ public class MainApplication extends Application implements ReactApplication {
                     new RNSpinkitPackage(),
                     new BleManagerPackage(),
                     new RNSvgPackage(),
-                    new RealmReactPackage()
+                    new RealmReactPackage(),
+                    new GoogleFitPackage()
             );
         }
     };
