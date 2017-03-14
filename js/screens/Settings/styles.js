@@ -41,5 +41,19 @@ export default StyleSheet.create({
         flex: 1,
         fontSize: 25,
         color: 'white'
+    },
+    dataSyncDescription: {
+        flex: 2,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'cornflowerblue',
+        alignSelf: 'stretch',
+        borderWidth: 1
+    },
+    dataSyncDescriptionText: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        color: 'white'
     }
 });

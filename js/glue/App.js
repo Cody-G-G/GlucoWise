@@ -8,7 +8,6 @@ import GraphScreen from '../screens/GraphData/GraphScreen';
 import SettingsScreen from '../screens/Settings/SettingsScreen';
 import {Navigator} from 'react-native';
 import db from "../data/database";
-import gFit from "../data/googleFit";
 
 export default class App extends Component {
     constructor(props) {

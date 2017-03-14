@@ -24,7 +24,7 @@ export default StyleSheet.create({
         fontSize: 18,
         padding: 7
     },
-    standardSetterButton: {
+    toggleButton: {
         flex: 1,
         borderWidth: 1,
         alignItems: 'center'

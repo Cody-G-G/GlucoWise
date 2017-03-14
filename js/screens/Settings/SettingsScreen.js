@@ -1,12 +1,14 @@
 'use strict';
 import React, {Component} from 'react';
-import {View, Text, TextInput, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, TextInput, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import {ListItem} from 'native-base';
 import styles from "./styles";
 import SafeRangesRowPanel from "./SafeRangesRowPanel";
 import StandardSetterButton from "../../helpers/components/StandardSetterButton";
 import db from "../../data/database";
 import log from "../../helpers/util/logger";
+import gFit from "../../data/googleFit";
+import OnOffButton from "./OnOffButton";
 
 export default class SettingsScreen extends Component {
     constructor(props) {
@@ -16,7 +18,8 @@ export default class SettingsScreen extends Component {
         this.state = {
             standard: standard,
             safeRangeMin: safeRange.minValue,
-            safeRangeMax: safeRange.maxValue
+            safeRangeMax: safeRange.maxValue,
+            gFitConnected: false
         };
     }
 
@@ -45,6 +48,16 @@ export default class SettingsScreen extends Component {
                         <StandardSetterButton type='UK' standard={this.state.standard} onPress={this.setStandardUK}/>
                     </View>
                 </View>
+                <View>
+                    <ListItem itemDivider><Text style={styles.divider}>Data Sync</Text></ListItem>
+                    <View style={{flexDirection:'row'}}>
+                        <View style={styles.dataSyncDescription}>
+                            <Image source={require('../../../assets/google_fit.png')}/>
+                            <Text style={styles.dataSyncDescriptionText}> Google Fit</Text>
+                        </View>
+                        <OnOffButton isOn={this.state.gFitConnected} onPress={this.toggleGFitConnection}/>
+                    </View>
+                </View>
             </View>
         )
     }
@@ -56,6 +69,15 @@ export default class SettingsScreen extends Component {
     componentWillUnmount() {
         log("Unmounting SettingsScreen");
     }
+
+    toggleGFitConnection = () => {
+        const newGFitConnected = !this.state.gFitConnected;
+        log("TOGGLING: " + this.state.gFitConnected);
+        log("NOW: " + newGFitConnected);
+        this.setState({
+            gFitConnected: newGFitConnected
+        });
+    };
 
     setStandardUS = () => {
         this.setState({

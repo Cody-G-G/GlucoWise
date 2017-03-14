@@ -1,7 +1,6 @@
 'use strict';
 import React, {Component} from 'react';
-import {StyleSheet, TouchableOpacity, Text} from 'react-native';
-import styles from "./styles";
+import ToggleButton from "./ToggleButton";
 
 export default class StandardSetterButton extends Component {
     constructor(props) {
@@ -11,15 +10,10 @@ export default class StandardSetterButton extends Component {
     }
 
     render() {
-        let buttonText = this.props.type === 'US' ? this.standardUS : this.standardUK;
-        let buttonColor = buttonText === this.props.standard ? 'royalblue' : 'darkgrey';
+        const buttonText = this.props.type === 'US' ? this.standardUS : this.standardUK;
+        const buttonColor = buttonText === this.props.standard ? 'royalblue' : 'darkgrey';
         return (
-            <TouchableOpacity style={StyleSheet.flatten([styles.standardSetterButton, {backgroundColor: buttonColor}])}
-                              onPress={() => this.props.onPress()}>
-                <Text style={styles.standardSetterButtonText}>
-                    {buttonText}
-                </Text>
-            </TouchableOpacity>
+            <ToggleButton buttonColor={buttonColor} buttonText={buttonText} onPress={this.props.onPress}/>
         );
     }
 }
