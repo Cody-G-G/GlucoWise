@@ -1,5 +1,6 @@
 package com.glucowise;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
@@ -11,7 +12,9 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.fitness.Fitness;
 import com.google.android.gms.fitness.data.Bucket;
 import com.google.android.gms.fitness.data.DataPoint;
@@ -34,6 +37,7 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
     public static final int REQUEST_OAUTH = 656;
     private final String LOG_TAG = NAME;
     private GoogleFitActivityEventListener activityEventListener;
+    private GoogleFitConnectionEventsHandler connectionEventsHandler;
 
     public GoogleFitModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -48,77 +52,77 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void stepsToday(Callback callback) {
-        long from = todayAt(0, 0, 0, 0).getTime();
-        long to = todayAt(23, 59, 59, 999).getTime();
-        int steps = getStepsData(from, to, TimeUnit.DAYS).getArray("steps").getInt(0);
-        if (callback != null)
-            callback.invoke(steps);
-        else
+    public void stepsToday(final Callback callback) {
+        if (callback != null) {
+            long from = todayAt(0, 0, 0, 0).getTime();
+            long to = todayAt(23, 59, 59, 999).getTime();
+            getStepsData(from, to, TimeUnit.DAYS, new Callback() {
+                @Override
+                public void invoke(Object... args) {
+                    callback.invoke(((WritableMap) args[0]).getArray("steps").getInt(0));
+                }
+            });
+        } else
             Log.e(LOG_TAG, "Callback for stepsToday() was NULL");
     }
 
     @ReactMethod
     public void stepsTodayInHourBuckets(Callback callback) {
-        long from = todayAt(0, 0, 0, 0).getTime();
-        long to = todayAt(23, 59, 59, 999).getTime();
-        WritableMap data = getStepsData(from, to, TimeUnit.HOURS);
-        if (callback != null)
-            callback.invoke(data);
-        else
+        if (callback != null) {
+            long from = todayAt(0, 0, 0, 0).getTime();
+            long to = todayAt(23, 59, 59, 999).getTime();
+            getStepsData(from, to, TimeUnit.HOURS, callback);
+        } else
             Log.e(LOG_TAG, "Callback for stepsTodayInHourBuckets() was NULL");
     }
 
     @ReactMethod
     public void stepsLast24hInHourBuckets(Callback callback) {
-        long from = hoursAgo(24).getTime();
-        long to = hoursAgo(0).getTime();
-        WritableMap data = getStepsData(from, to, TimeUnit.HOURS);
-        if (callback != null)
-            callback.invoke(data);
-        else
+        if (callback != null) {
+            long from = hoursAgo(24).getTime();
+            long to = hoursAgo(0).getTime();
+            getStepsData(from, to, TimeUnit.HOURS, callback);
+        } else
             Log.e(LOG_TAG, "Callback for stepsLast24hInHourBuckets() was NULL");
     }
 
     @ReactMethod
     public void stepsLast60mInMinuteBuckets(Callback callback) {
-        long from = hoursAgo(1).getTime();
-        long to = hoursAgo(0).getTime();
-        WritableMap data = getStepsData(from, to, TimeUnit.MINUTES);
-        if (callback != null)
-            callback.invoke(data);
-        else
+        if (callback != null) {
+            long from = hoursAgo(1).getTime();
+            long to = hoursAgo(0).getTime();
+            getStepsData(from, to, TimeUnit.MINUTES, callback);
+        } else
             Log.e(LOG_TAG, "Callback for stepsLast60mInMinuteBuckets() was NULL");
     }
 
     @ReactMethod
     public void caloriesExpendedLast24hInHourBuckets(Callback callback) {
-        long from = hoursAgo(24).getTime();
-        long to = hoursAgo(0).getTime();
-        WritableMap data = getCaloriesExpendedData(from, to, TimeUnit.HOURS);
-        if (callback != null)
-            callback.invoke(data);
-        else
+        if (callback != null) {
+            long from = hoursAgo(24).getTime();
+            long to = hoursAgo(0).getTime();
+            getCaloriesExpendedData(from, to, TimeUnit.HOURS, callback);
+        } else
             Log.e(LOG_TAG, "Callback for caloriesExpendedLast24hInHourBuckets() was NULL");
     }
 
     @ReactMethod
     public void caloriesExpendedLast60mInMinuteBuckets(Callback callback) {
-        long from = hoursAgo(1).getTime();
-        long to = hoursAgo(0).getTime();
-        WritableMap data = getCaloriesExpendedData(from, to, TimeUnit.MINUTES);
-        if (callback != null)
-            callback.invoke(data);
-        else
+        if (callback != null) {
+            long from = hoursAgo(1).getTime();
+            long to = hoursAgo(0).getTime();
+            getCaloriesExpendedData(from, to, TimeUnit.MINUTES, callback);
+        } else
             Log.e(LOG_TAG, "Callback for caloriesExpendedLast60mInMinuteBuckets() was NULL");
     }
 
 
     @ReactMethod
     public void authorizeAndConnect() {
-        GoogleFitConnectionEventsHandler connectionEventsHandler = new GoogleFitConnectionEventsHandler(getCurrentActivity(), reactContext);
+        connectionEventsHandler = new GoogleFitConnectionEventsHandler(getCurrentActivity(), reactContext);
         mClient = new GoogleApiClient.Builder(this.reactContext.getApplicationContext())
                 .addApi(Fitness.HISTORY_API)
+                .addApi(Fitness.CONFIG_API)
                 .addScope(new Scope(Scopes.FITNESS_ACTIVITY_READ_WRITE))
                 .addScope(new Scope(Scopes.FITNESS_BODY_READ_WRITE))
                 .addConnectionCallbacks(connectionEventsHandler)
@@ -128,7 +132,24 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
         mClient.connect();
     }
 
-    private WritableMap getCaloriesExpendedData(long from, long to, TimeUnit bucketUnit) {
+    @ReactMethod
+    public void disconnect() {
+        if (mClient.isConnected()) {
+            Fitness.ConfigApi.disableFit(mClient).setResultCallback(new ResultCallback<Status>() {
+                @Override
+                public void onResult(@NonNull Status status) {
+                    Log.i(LOG_TAG, "Google Fit disconnect finished with status: " + status);
+                    WritableMap args = Arguments.createMap();
+                    args.putBoolean("disconnected", true);
+                    connectionEventsHandler.sendEvent(reactContext, "GoogleFitDisconnected", args);
+                }
+            });
+        } else {
+            Log.i(LOG_TAG, "Could not disconnect Google Fit, as it is not connected");
+        }
+    }
+
+    private void getCaloriesExpendedData(long from, long to, final TimeUnit bucketUnit, final Callback callback) {
         DataReadRequest readRequest = new DataReadRequest.Builder()
                 .aggregate(DataType.TYPE_CALORIES_EXPENDED, DataType.AGGREGATE_CALORIES_EXPENDED)
                 .setTimeRange(from, to, TimeUnit.MILLISECONDS)
@@ -136,31 +157,35 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
                 .enableServerQueries()
                 .build();
 
-        DataReadResult readResult = Fitness.HistoryApi.readData(mClient, readRequest).await(1, TimeUnit.MINUTES);
-        List<Bucket> buckets = readResult.getBuckets();
-        WritableMap data = Arguments.createMap();
-        WritableArray calories = Arguments.createArray();
-        WritableArray dates = Arguments.createArray();
+        Fitness.HistoryApi.readData(mClient, readRequest).setResultCallback(new ResultCallback<DataReadResult>() {
+            @Override
+            public void onResult(@NonNull DataReadResult readResult) {
+                Log.i(LOG_TAG, "Finished reading expended calories data in " + bucketUnit.toString() + " buckets");
+                List<Bucket> buckets = readResult.getBuckets();
+                WritableMap data = Arguments.createMap();
+                WritableArray calories = Arguments.createArray();
+                WritableArray dates = Arguments.createArray();
 
-        for (Bucket bucket : buckets) {
-            List<DataPoint> dataPoints = bucket.getDataSet(DataType.AGGREGATE_CALORIES_EXPENDED).getDataPoints();
-            for (DataPoint dataPoint : dataPoints) {
-                long startTime = dataPoint.getStartTime(TimeUnit.MILLISECONDS);
-                long endTime = dataPoint.getEndTime(TimeUnit.MILLISECONDS);
-                long midwayTime = startTime + (endTime - startTime);
+                for (Bucket bucket : buckets) {
+                    List<DataPoint> dataPoints = bucket.getDataSet(DataType.AGGREGATE_CALORIES_EXPENDED).getDataPoints();
+                    for (DataPoint dataPoint : dataPoints) {
+                        long startTime = dataPoint.getStartTime(TimeUnit.MILLISECONDS);
+                        long endTime = dataPoint.getEndTime(TimeUnit.MILLISECONDS);
+                        long midwayTime = startTime + (endTime - startTime);
 
-                Log.i(LOG_TAG, "CALORIES: " + (int) dataPoint.getValue(Field.FIELD_CALORIES).asFloat());
-                calories.pushInt((int) dataPoint.getValue(Field.FIELD_CALORIES).asFloat());
-                dates.pushDouble(midwayTime);
+                        calories.pushInt((int) dataPoint.getValue(Field.FIELD_CALORIES).asFloat());
+                        dates.pushDouble(midwayTime);
+                    }
+                }
+
+                data.putArray("calories", calories);
+                data.putArray("dates", dates);
+                callback.invoke(data);
             }
-        }
-
-        data.putArray("calories", calories);
-        data.putArray("dates", dates);
-        return data;
+        });
     }
 
-    private WritableMap getStepsData(long from, long to, TimeUnit bucketUnit) {
+    private void getStepsData(long from, long to, final TimeUnit bucketUnit, final Callback callback) {
         DataReadRequest readRequest = new DataReadRequest.Builder()
                 .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
                 .setTimeRange(from, to, TimeUnit.MILLISECONDS)
@@ -168,27 +193,32 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
                 .enableServerQueries()
                 .build();
 
-        DataReadResult readResult = Fitness.HistoryApi.readData(mClient, readRequest).await(1, TimeUnit.MINUTES);
-        List<Bucket> buckets = readResult.getBuckets();
-        WritableMap data = Arguments.createMap();
-        WritableArray steps = Arguments.createArray();
-        WritableArray dates = Arguments.createArray();
+        Fitness.HistoryApi.readData(mClient, readRequest).setResultCallback(new ResultCallback<DataReadResult>() {
+            @Override
+            public void onResult(@NonNull DataReadResult readResult) {
+                Log.i(LOG_TAG, "Finished reading steps data in " + bucketUnit.toString() + " buckets");
+                List<Bucket> buckets = readResult.getBuckets();
+                WritableMap data = Arguments.createMap();
+                WritableArray steps = Arguments.createArray();
+                WritableArray dates = Arguments.createArray();
 
-        for (Bucket bucket : buckets) {
-            List<DataPoint> dataPoints = bucket.getDataSet(DataType.AGGREGATE_STEP_COUNT_DELTA).getDataPoints();
-            for (DataPoint dataPoint : dataPoints) {
-                long startTime = dataPoint.getStartTime(TimeUnit.MILLISECONDS);
-                long endTime = dataPoint.getEndTime(TimeUnit.MILLISECONDS);
-                long midwayTime = startTime + (endTime - startTime);
+                for (Bucket bucket : buckets) {
+                    List<DataPoint> dataPoints = bucket.getDataSet(DataType.AGGREGATE_STEP_COUNT_DELTA).getDataPoints();
+                    for (DataPoint dataPoint : dataPoints) {
+                        long startTime = dataPoint.getStartTime(TimeUnit.MILLISECONDS);
+                        long endTime = dataPoint.getEndTime(TimeUnit.MILLISECONDS);
+                        long midwayTime = startTime + (endTime - startTime);
 
-                steps.pushInt(dataPoint.getValue(Field.FIELD_STEPS).asInt());
-                dates.pushDouble(midwayTime);
+                        steps.pushInt(dataPoint.getValue(Field.FIELD_STEPS).asInt());
+                        dates.pushDouble(midwayTime);
+                    }
+                }
+
+                data.putArray("steps", steps);
+                data.putArray("dates", dates);
+                callback.invoke(data);
             }
-        }
-
-        data.putArray("steps", steps);
-        data.putArray("dates", dates);
-        return data;
+        });
     }
 
     private Date todayAt(int hour, int minute, int second, int millisecond) {

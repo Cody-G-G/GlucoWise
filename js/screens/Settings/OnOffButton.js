@@ -9,7 +9,7 @@ export default class OnOffButton extends Component {
 
     render() {
         const buttonText = this.props.isOn ? "On" : "Off";
-        const buttonColor = this.props.isOn ? "royalblue" : "darkgrey";
+        const buttonColor = this.props.isOn ? "forestgreen" : "darkgrey";
         return (
             <ToggleButton buttonColor={buttonColor} buttonText={buttonText} onPress={this.props.onPress}/>
         );

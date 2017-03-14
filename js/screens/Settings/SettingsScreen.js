@@ -64,6 +64,8 @@ export default class SettingsScreen extends Component {
 
     componentDidMount() {
         db.initBGLStandardListener(this.updateBGLSafeRange.bind(this));
+        this.initGFitConnectedHandler();
+        this.initGFitDisconnectedHandler();
     }
 
     componentWillUnmount() {
@@ -71,13 +73,48 @@ export default class SettingsScreen extends Component {
     }
 
     toggleGFitConnection = () => {
-        const newGFitConnected = !this.state.gFitConnected;
-        log("TOGGLING: " + this.state.gFitConnected);
-        log("NOW: " + newGFitConnected);
-        this.setState({
-            gFitConnected: newGFitConnected
-        });
+        if (this.state.gFitConnected) {
+            gFit.disconnect();
+        } else {
+            gFit.authorizeAndConnect();
+        }
     };
+
+    initGFitConnectedHandler() {
+        gFit.onConnected((args) => {
+            log("GoogleFit connected: " + args.connected);
+            this.setState({
+                gFitConnected: true
+            });
+            gFit.stepsToday((steps) => {
+                log("Steps today: " + steps);
+            });
+            gFit.stepsTodayInHourBuckets((args) => {
+                log("Steps today in hour buckets - steps: " + args.steps + " dates: " + args.dates);
+            });
+            gFit.stepsLast24hInHourBuckets((args) => {
+                log("Steps last 24h in hour buckets - steps: " + args.steps + " dates: " + args.dates);
+            });
+            gFit.stepsLast60mInMinuteBuckets((args) => {
+                log("Steps last 60m in minute buckets - steps: " + args.steps + " dates: " + args.dates);
+            });
+            gFit.caloriesExpendedLast24hInHourBuckets((args) => {
+                log("Calories expended last 24h in hour buckets - calories: " + args.calories + " dates: " + args.dates);
+            });
+            gFit.caloriesExpendedLast60mInMinuteBuckets((args) => {
+                log("Calories expended last 60m in minute buckets - calories: " + args.calories + " dates: " + args.dates);
+            });
+        });
+    }
+
+    initGFitDisconnectedHandler() {
+        gFit.onDisconnected((args) => {
+            log("GoogleFit disconnected: " + args.disconnected);
+            this.setState({
+                gFitConnected: false
+            });
+        });
+    }
 
     setStandardUS = () => {
         this.setState({
