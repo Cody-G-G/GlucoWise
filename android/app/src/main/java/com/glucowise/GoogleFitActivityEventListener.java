@@ -6,17 +6,28 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.facebook.react.bridge.ActivityEventListener;
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.WritableMap;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 public class GoogleFitActivityEventListener implements ActivityEventListener {
     private final String LOG_TAG = GoogleFitModule.NAME;
     private GoogleApiClient googleApiClient;
+    private ReactContext context;
+
+    public GoogleFitActivityEventListener(ReactContext context) {
+        this.context = context;
+    }
 
     @Override
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
         if (requestCode == GoogleFitModule.REQUEST_OAUTH) {
             if (resultCode == Activity.RESULT_CANCELED) {
                 Log.i(LOG_TAG, "User didn't choose a Google account to sign in with");
+                WritableMap args = Arguments.createMap();
+                args.putBoolean("connected", false);
+                GoogleFitConnectionEventsHandler.sendEvent(this.context, "GoogleFitConnected", args);
             } else if (resultCode == Activity.RESULT_OK) {
                 Log.i(LOG_TAG, "User signed in with Google account");
                 if (googleApiClient != null)

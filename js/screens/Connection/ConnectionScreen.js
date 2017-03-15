@@ -1,10 +1,6 @@
 'use strict';
 import React, {Component} from 'react';
-import {
-    View,
-    StyleSheet,
-    NativeAppEventEmitter
-} from 'react-native';
+import {View, StyleSheet, NativeAppEventEmitter} from 'react-native';
 import styles from "./styles";
 import hexToAscii from "../../helpers/util/hexToAscii";
 import permissions from "../../helpers/util/permissions";
@@ -31,8 +27,7 @@ export default class ConnectionScreen extends Component {
         log("Rendering ConnectionScreen");
         return (
             <View style={styles.screenContainer}>
-                <SearchButtonPanel onPress={this.triggerStateCheckForScan}
-                                   scanning={this.state.scanning}/>
+                <SearchButtonPanel onPress={this.triggerStateCheckForScan}/>
 
                 <DevicesPanel onPress={this.toggleDeviceConnection}
                               scannedDevices={this.state.scannedDevices}
@@ -120,8 +115,10 @@ export default class ConnectionScreen extends Component {
     }
 
     triggerStateCheckForScan = () => {
-        this.updatePressedScan(true);
-        BleManager.checkState();
+        if (!this.state.scanning) {
+            this.updatePressedScan(true);
+            BleManager.checkState();
+        }
     };
 
     startScan() {
@@ -137,7 +134,6 @@ export default class ConnectionScreen extends Component {
 
     initReadingCharacteristicUpdate() {
         NativeAppEventEmitter.addListener("BleManagerDidUpdateValueForCharacteristic", (args) => {
-            log(typeof args.value);
             log(hexToAscii(args.value));
             const reading = hexToAscii(args.value).slice(0, 5);
             log("Peripheral " + args.peripheral + " characteristic " + args.characteristic + " was updated to " + reading);

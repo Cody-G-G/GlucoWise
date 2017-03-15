@@ -41,7 +41,7 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
 
     public GoogleFitModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        activityEventListener = new GoogleFitActivityEventListener();
+        activityEventListener = new GoogleFitActivityEventListener(reactContext);
         reactContext.addActivityEventListener(activityEventListener);
         this.reactContext = reactContext;
     }
@@ -141,11 +141,14 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
                     Log.i(LOG_TAG, "Google Fit disconnect finished with status: " + status);
                     WritableMap args = Arguments.createMap();
                     args.putBoolean("disconnected", true);
-                    connectionEventsHandler.sendEvent(reactContext, "GoogleFitDisconnected", args);
+                    GoogleFitConnectionEventsHandler.sendEvent(reactContext, "GoogleFitDisconnected", args);
                 }
             });
         } else {
             Log.i(LOG_TAG, "Could not disconnect Google Fit, as it is not connected");
+            WritableMap args = Arguments.createMap();
+            args.putBoolean("disconnected", false);
+            GoogleFitConnectionEventsHandler.sendEvent(reactContext, "GoogleFitDisconnected", args);
         }
     }
 

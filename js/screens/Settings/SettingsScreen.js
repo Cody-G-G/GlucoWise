@@ -19,8 +19,9 @@ export default class SettingsScreen extends Component {
             standard: standard,
             safeRangeMin: safeRange.minValue,
             safeRangeMax: safeRange.maxValue,
-            gFitConnected: false
+            gFitConnected: false,
         };
+        this.gFitToggling = false;
     }
 
     render() {
@@ -73,19 +74,19 @@ export default class SettingsScreen extends Component {
     }
 
     toggleGFitConnection = () => {
-        if (this.state.gFitConnected) {
-            gFit.disconnect();
-        } else {
-            gFit.authorizeAndConnect();
+        if (!this.gFitToggling) {
+            this.gFitToggling = true;
+            this.state.gFitConnected ? gFit.disconnect() : gFit.authorizeAndConnect();
         }
     };
 
     initGFitConnectedHandler() {
         gFit.onConnected((args) => {
             log("GoogleFit connected: " + args.connected);
-            this.setState({
+            args.connected && this.setState({
                 gFitConnected: true
             });
+            this.gFitToggling = false;
             gFit.stepsToday((steps) => {
                 log("Steps today: " + steps);
             });
@@ -110,7 +111,8 @@ export default class SettingsScreen extends Component {
     initGFitDisconnectedHandler() {
         gFit.onDisconnected((args) => {
             log("GoogleFit disconnected: " + args.disconnected);
-            this.setState({
+            this.gFitToggling = false;
+            args.disconnected && this.setState({
                 gFitConnected: false
             });
         });
