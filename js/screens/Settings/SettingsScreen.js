@@ -69,10 +69,6 @@ export default class SettingsScreen extends Component {
         db.initBGLStandardListener(this.updateBGLSafeRange.bind(this));
         this.initGFitConnectedHandler();
         this.initGFitDisconnectedHandler();
-        if (this.state.gFitConnected) {
-            this.gFitToggling = true;
-            gFit.authorizeAndConnect();
-        }
     }
 
     componentWillUnmount() {
