@@ -125,7 +125,8 @@ const database = {
 
     getLatestReading() {
         log("Getting latest BGLReading");
-        return processReading(realm.objects('BGLReading').sorted('date', true)[0].value, this.getBGLStandard());
+        const latestReadingArr = (realm.objects('BGLReading').sorted('date', true));
+        return latestReadingArr.length > 0 ? processReading(latestReadingArr[0].value, this.getBGLStandard()) : 0;
     },
 
     getBGLReadingsInDateRange(startDate, endDate) {

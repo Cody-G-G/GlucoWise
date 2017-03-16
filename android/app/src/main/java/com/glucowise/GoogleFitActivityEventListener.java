@@ -30,10 +30,10 @@ public class GoogleFitActivityEventListener implements ActivityEventListener {
                 GoogleFitConnectionEventsHandler.sendEvent(this.context, "GoogleFitConnected", args);
             } else if (resultCode == Activity.RESULT_OK) {
                 Log.i(LOG_TAG, "User signed in with Google account");
-                if (googleApiClient != null)
+                if (googleApiClient != null && !googleApiClient.isConnecting() && !googleApiClient.isConnected())
                     googleApiClient.connect();
                 else
-                    Log.e(LOG_TAG, "GoogleApiClient was NULL, and did not connect");
+                    Log.e(LOG_TAG, "GoogleApiClient did not connect, because it was NULL, or is connecting / connected already");
             }
         }
     }

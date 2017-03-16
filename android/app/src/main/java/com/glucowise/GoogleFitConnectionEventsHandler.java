@@ -1,6 +1,5 @@
 package com.glucowise;
 
-import android.app.Activity;
 import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,11 +21,9 @@ public class GoogleFitConnectionEventsHandler implements
 
     private final String LOG_TAG = GoogleFitModule.NAME;
     private ReactContext reactContext;
-    private Activity activity;
 
-    public GoogleFitConnectionEventsHandler(Activity activity, ReactContext reactContext) {
+    public GoogleFitConnectionEventsHandler(ReactContext reactContext) {
         this.reactContext = reactContext;
-        this.activity = activity;
     }
 
     @Override
@@ -50,8 +47,7 @@ public class GoogleFitConnectionEventsHandler implements
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.i(LOG_TAG, "Google Play services connection failed. Cause: " + connectionResult.toString());
         try {
-            // Ask user to sign in with Google account
-            connectionResult.startResolutionForResult(this.activity, REQUEST_OAUTH);
+            connectionResult.startResolutionForResult(reactContext.getCurrentActivity(), REQUEST_OAUTH);
         } catch (IntentSender.SendIntentException e) {
             Log.i(LOG_TAG, "Failed to request OAuth, stacktrace below");
             e.printStackTrace();

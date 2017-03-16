@@ -23,11 +23,11 @@ import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.fitness.request.DataReadRequest;
 import com.google.android.gms.fitness.result.DataReadResult;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static com.glucowise.DateUtil.hoursAgo;
+import static com.glucowise.DateUtil.todayAt;
 
 public class GoogleFitModule extends ReactContextBaseJavaModule {
 
@@ -36,13 +36,11 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
     public static final String NAME = "GoogleFit";
     public static final int REQUEST_OAUTH = 656;
     private final String LOG_TAG = NAME;
-    private GoogleFitActivityEventListener activityEventListener;
-    private GoogleFitConnectionEventsHandler connectionEventsHandler;
+    GoogleFitConnectionEventsHandler connectionEventsHandler;
+    GoogleFitActivityEventListener activityEventListener;
 
     public GoogleFitModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        activityEventListener = new GoogleFitActivityEventListener(reactContext);
-        reactContext.addActivityEventListener(activityEventListener);
         this.reactContext = reactContext;
     }
 
@@ -119,28 +117,21 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void authorizeAndConnect() {
-        connectionEventsHandler = new GoogleFitConnectionEventsHandler(getCurrentActivity(), reactContext);
-        mClient = new GoogleApiClient.Builder(this.reactContext.getApplicationContext())
-                .addApi(Fitness.HISTORY_API)
-                .addApi(Fitness.CONFIG_API)
-                .addScope(new Scope(Scopes.FITNESS_ACTIVITY_READ_WRITE))
-                .addScope(new Scope(Scopes.FITNESS_BODY_READ_WRITE))
-                .addConnectionCallbacks(connectionEventsHandler)
-                .addOnConnectionFailedListener(connectionEventsHandler)
-                .build();
-        activityEventListener.setGoogleApiClient(mClient);
+        Log.i(LOG_TAG, "Authorizing and connecting to GoogleFit");
+        constructGoogleApiClient();
         mClient.connect();
     }
 
     @ReactMethod
     public void disconnect() {
+        Log.i(LOG_TAG, "Disconnecting from GoogleFit & clearing permissions, subscriptions, and OAuth cached tokens");
         if (mClient.isConnected()) {
             Fitness.ConfigApi.disableFit(mClient).setResultCallback(new ResultCallback<Status>() {
                 @Override
                 public void onResult(@NonNull Status status) {
                     Log.i(LOG_TAG, "Google Fit disconnect finished with status: " + status);
                     WritableMap args = Arguments.createMap();
-                    args.putBoolean("disconnected", true);
+                    args.putBoolean("disconnected", status.isSuccess());
                     GoogleFitConnectionEventsHandler.sendEvent(reactContext, "GoogleFitDisconnected", args);
                 }
             });
@@ -150,6 +141,34 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
             args.putBoolean("disconnected", false);
             GoogleFitConnectionEventsHandler.sendEvent(reactContext, "GoogleFitDisconnected", args);
         }
+    }
+
+    @ReactMethod
+    public void isConnected(Callback callback) {
+        if (callback != null)
+            if (mClient != null)
+                callback.invoke(mClient.isConnected());
+            else
+                callback.invoke(false);
+        else
+            Log.i(LOG_TAG, "Could not pass isConnected value since callback argument was NULL");
+    }
+
+    private void constructGoogleApiClient() {
+        if (connectionEventsHandler == null)
+            connectionEventsHandler = new GoogleFitConnectionEventsHandler(reactContext);
+        if (activityEventListener == null)
+            activityEventListener = new GoogleFitActivityEventListener(reactContext);
+        reactContext.addActivityEventListener(activityEventListener);
+        mClient = new GoogleApiClient.Builder(reactContext.getApplicationContext())
+                .addApi(Fitness.HISTORY_API)
+                .addApi(Fitness.CONFIG_API)
+                .addScope(new Scope(Scopes.FITNESS_ACTIVITY_READ_WRITE))
+                .addScope(new Scope(Scopes.FITNESS_BODY_READ_WRITE))
+                .addConnectionCallbacks(connectionEventsHandler)
+                .addOnConnectionFailedListener(connectionEventsHandler)
+                .build();
+        activityEventListener.setGoogleApiClient(mClient);
     }
 
     private void getCaloriesExpendedData(long from, long to, final TimeUnit bucketUnit, final Callback callback) {
@@ -222,20 +241,5 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
                 callback.invoke(data);
             }
         });
-    }
-
-    private Date todayAt(int hour, int minute, int second, int millisecond) {
-        Calendar today = new GregorianCalendar();
-        today.set(Calendar.HOUR_OF_DAY, hour);
-        today.set(Calendar.MINUTE, minute);
-        today.set(Calendar.SECOND, second);
-        today.set(Calendar.MILLISECOND, millisecond);
-        return today.getTime();
-    }
-
-    private Date hoursAgo(int hours) {
-        Calendar today = new GregorianCalendar();
-        today.add(Calendar.HOUR, -hours);
-        return today.getTime();
     }
 }

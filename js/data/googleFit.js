@@ -47,6 +47,10 @@ class GoogleFit {
     disconnect() {
         googleFit.disconnect();
     }
+
+    isConnected(callback) {
+        googleFit.isConnected(callback);
+    }
 }
 
 export default new GoogleFit();

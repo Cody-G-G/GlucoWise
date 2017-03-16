@@ -9,6 +9,7 @@ import db from "../../data/database";
 import log from "../../helpers/util/logger";
 import gFit from "../../data/googleFit";
 import OnOffButton from "./OnOffButton";
+import Toast from 'react-native-root-toast';
 
 export default class SettingsScreen extends Component {
     constructor(props) {
@@ -22,6 +23,7 @@ export default class SettingsScreen extends Component {
             gFitConnected: false,
         };
         this.gFitToggling = false;
+        this.toastShowing = false;
     }
 
     render() {
@@ -75,46 +77,60 @@ export default class SettingsScreen extends Component {
 
     toggleGFitConnection = () => {
         if (!this.gFitToggling) {
+            gFit.isConnected((connected) => log("Toggling GFit connection, GFit currently connected?: " + connected));
             this.gFitToggling = true;
             this.state.gFitConnected ? gFit.disconnect() : gFit.authorizeAndConnect();
+        } else {
+            !this.toastShowing && this.showToast("Google Fit is still syncing settings based on your previous action. Please wait a few more seconds before toggling sync.");
         }
     };
 
     initGFitConnectedHandler() {
         gFit.onConnected((args) => {
             log("GoogleFit connected: " + args.connected);
-            args.connected && this.setState({
-                gFitConnected: true
-            });
-            this.gFitToggling = false;
-            gFit.stepsToday((steps) => {
-                log("Steps today: " + steps);
-            });
-            gFit.stepsTodayInHourBuckets((args) => {
-                log("Steps today in hour buckets - steps: " + args.steps + " dates: " + args.dates);
-            });
-            gFit.stepsLast24hInHourBuckets((args) => {
-                log("Steps last 24h in hour buckets - steps: " + args.steps + " dates: " + args.dates);
-            });
-            gFit.stepsLast60mInMinuteBuckets((args) => {
-                log("Steps last 60m in minute buckets - steps: " + args.steps + " dates: " + args.dates);
-            });
-            gFit.caloriesExpendedLast24hInHourBuckets((args) => {
-                log("Calories expended last 24h in hour buckets - calories: " + args.calories + " dates: " + args.dates);
-            });
-            gFit.caloriesExpendedLast60mInMinuteBuckets((args) => {
-                log("Calories expended last 60m in minute buckets - calories: " + args.calories + " dates: " + args.dates);
-            });
+            if (args.connected)
+                this.setState({
+                    gFitConnected: true
+                }, () => setTimeout(() => {
+                    this.gFitToggling = false
+                }, 3000));
+            else
+                this.gFitToggling = false;
+            // gFit.stepsToday((steps) => {
+            //     log("Steps today: " + steps);
+            // });
+            // gFit.stepsTodayInHourBuckets((args) => {
+            //     log("Steps today in hour buckets - steps: " + args.steps + " dates: " + args.dates);
+            // });
+            // gFit.stepsLast24hInHourBuckets((args) => {
+            //     log("Steps last 24h in hour buckets - steps: " + args.steps + " dates: " + args.dates);
+            // });
+            // gFit.stepsLast60mInMinuteBuckets((args) => {
+            //     log("Steps last 60m in minute buckets - steps: " + args.steps + " dates: " + args.dates);
+            // });
+            // gFit.caloriesExpendedLast24hInHourBuckets((args) => {
+            //     log("Calories expended last 24h in hour buckets - calories: " + args.calories + " dates: " + args.dates);
+            // });
+            // gFit.caloriesExpendedLast60mInMinuteBuckets((args) => {
+            //     log("Calories expended last 60m in minute buckets - calories: " + args.calories + " dates: " + args.dates);
+            // });
         });
     }
 
     initGFitDisconnectedHandler() {
         gFit.onDisconnected((args) => {
             log("GoogleFit disconnected: " + args.disconnected);
-            this.gFitToggling = false;
-            args.disconnected && this.setState({
-                gFitConnected: false
-            });
+            if (args.disconnected) {
+                this.setState({
+                    gFitConnected: false
+                }, () => setTimeout(() => {
+                    this.gFitToggling = false
+                }, 10000));
+                //^  After disconnection, there's a delay for google services also disconnecting the account, and
+                //connecting again before that's finished gets the client in a bad state
+            }
+            else
+                this.gFitToggling = false
         });
     }
 
@@ -175,6 +191,23 @@ export default class SettingsScreen extends Component {
         this.setState({
             safeRangeMin: safeRange.minValue,
             safeRangeMax: safeRange.maxValue
+        });
+    }
+
+    showToast(string) {
+        Toast.show(string, {
+            duration: Toast.durations.LONG,
+            position: Toast.positions.BOTTOM,
+            shadow: true,
+            animation: true,
+            hideOnPress: true,
+            delay: 0,
+            onShow: () => {
+                this.toastShowing = true;
+            },
+            onHide: () => {
+                this.toastShowing = false;
+            }
         });
     }
 }
