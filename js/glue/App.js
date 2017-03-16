@@ -16,8 +16,8 @@ export default class App extends Component {
         this.state = {
             drawerOpen: false
         };
-        db.isGoogleFitSyncEnabled() && gFit.authorizeAndConnect();
         db.init(true);
+        db.isGoogleFitSyncEnabled() && gFit.authorizeAndConnect();
     }
 
     render() {

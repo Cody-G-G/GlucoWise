@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
-import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -26,8 +26,8 @@ import com.google.android.gms.fitness.result.DataReadResult;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static com.glucowise.DateUtil.hoursAgo;
-import static com.glucowise.DateUtil.todayAt;
+import static com.glucowise.DateUtil.hoursAgoMillis;
+import static com.glucowise.DateUtil.millisTodayAt;
 
 public class GoogleFitModule extends ReactContextBaseJavaModule {
 
@@ -50,68 +50,33 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void stepsToday(final Callback callback) {
-        if (callback != null) {
-            long from = todayAt(0, 0, 0, 0).getTime();
-            long to = todayAt(23, 59, 59, 999).getTime();
-            getStepsData(from, to, TimeUnit.DAYS, new Callback() {
-                @Override
-                public void invoke(Object... args) {
-                    callback.invoke(((WritableMap) args[0]).getArray("steps").getInt(0));
-                }
-            });
-        } else
-            Log.e(LOG_TAG, "Callback for stepsToday() was NULL");
+    public void stepsToday(Promise promise) {
+        getStepsData(millisTodayAt(0, 0, 0, 0), millisTodayAt(23, 59, 59, 999), TimeUnit.DAYS, promise);
     }
 
     @ReactMethod
-    public void stepsTodayInHourBuckets(Callback callback) {
-        if (callback != null) {
-            long from = todayAt(0, 0, 0, 0).getTime();
-            long to = todayAt(23, 59, 59, 999).getTime();
-            getStepsData(from, to, TimeUnit.HOURS, callback);
-        } else
-            Log.e(LOG_TAG, "Callback for stepsTodayInHourBuckets() was NULL");
+    public void stepsTodayInHourBuckets(Promise promise) {
+        getStepsData(millisTodayAt(0, 0, 0, 0), millisTodayAt(23, 59, 59, 999), TimeUnit.HOURS, promise);
     }
 
     @ReactMethod
-    public void stepsLast24hInHourBuckets(Callback callback) {
-        if (callback != null) {
-            long from = hoursAgo(24).getTime();
-            long to = hoursAgo(0).getTime();
-            getStepsData(from, to, TimeUnit.HOURS, callback);
-        } else
-            Log.e(LOG_TAG, "Callback for stepsLast24hInHourBuckets() was NULL");
+    public void stepsLast24hInHourBuckets(Promise promise) {
+        getStepsData(hoursAgoMillis(24), hoursAgoMillis(0), TimeUnit.HOURS, promise);
     }
 
     @ReactMethod
-    public void stepsLast60mInMinuteBuckets(Callback callback) {
-        if (callback != null) {
-            long from = hoursAgo(1).getTime();
-            long to = hoursAgo(0).getTime();
-            getStepsData(from, to, TimeUnit.MINUTES, callback);
-        } else
-            Log.e(LOG_TAG, "Callback for stepsLast60mInMinuteBuckets() was NULL");
+    public void stepsLast60mInMinuteBuckets(Promise promise) {
+        getStepsData(hoursAgoMillis(1), hoursAgoMillis(0), TimeUnit.MINUTES, promise);
     }
 
     @ReactMethod
-    public void caloriesExpendedLast24hInHourBuckets(Callback callback) {
-        if (callback != null) {
-            long from = hoursAgo(24).getTime();
-            long to = hoursAgo(0).getTime();
-            getCaloriesExpendedData(from, to, TimeUnit.HOURS, callback);
-        } else
-            Log.e(LOG_TAG, "Callback for caloriesExpendedLast24hInHourBuckets() was NULL");
+    public void caloriesExpendedLast24hInHourBuckets(Promise promise) {
+        getCaloriesExpendedData(hoursAgoMillis(24), hoursAgoMillis(0), TimeUnit.HOURS, promise);
     }
 
     @ReactMethod
-    public void caloriesExpendedLast60mInMinuteBuckets(Callback callback) {
-        if (callback != null) {
-            long from = hoursAgo(1).getTime();
-            long to = hoursAgo(0).getTime();
-            getCaloriesExpendedData(from, to, TimeUnit.MINUTES, callback);
-        } else
-            Log.e(LOG_TAG, "Callback for caloriesExpendedLast60mInMinuteBuckets() was NULL");
+    public void caloriesExpendedLast60mInMinuteBuckets(Promise promise) {
+        getCaloriesExpendedData(hoursAgoMillis(1), hoursAgoMillis(0), TimeUnit.MINUTES, promise);
     }
 
 
@@ -144,14 +109,11 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void isConnected(Callback callback) {
-        if (callback != null)
-            if (mClient != null)
-                callback.invoke(mClient.isConnected());
-            else
-                callback.invoke(false);
+    public void isConnected(Promise promise) {
+        if (mClient != null)
+            promise.resolve(mClient.isConnected());
         else
-            Log.i(LOG_TAG, "Could not pass isConnected value since callback argument was NULL");
+            promise.resolve(false);
     }
 
     private void constructGoogleApiClient() {
@@ -171,7 +133,7 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
         activityEventListener.setGoogleApiClient(mClient);
     }
 
-    private void getCaloriesExpendedData(long from, long to, final TimeUnit bucketUnit, final Callback callback) {
+    private void getCaloriesExpendedData(long from, long to, final TimeUnit bucketUnit, final Promise promise) {
         DataReadRequest readRequest = new DataReadRequest.Builder()
                 .aggregate(DataType.TYPE_CALORIES_EXPENDED, DataType.AGGREGATE_CALORIES_EXPENDED)
                 .setTimeRange(from, to, TimeUnit.MILLISECONDS)
@@ -202,12 +164,12 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
 
                 data.putArray("calories", calories);
                 data.putArray("dates", dates);
-                callback.invoke(data);
+                promise.resolve(data);
             }
         });
     }
 
-    private void getStepsData(long from, long to, final TimeUnit bucketUnit, final Callback callback) {
+    private void getStepsData(long from, long to, final TimeUnit bucketUnit, final Promise promise) {
         DataReadRequest readRequest = new DataReadRequest.Builder()
                 .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
                 .setTimeRange(from, to, TimeUnit.MILLISECONDS)
@@ -238,7 +200,7 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
 
                 data.putArray("steps", steps);
                 data.putArray("dates", dates);
-                callback.invoke(data);
+                promise.resolve(data);
             }
         });
     }

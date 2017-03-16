@@ -1,4 +1,3 @@
-import log from "./../helpers/util/logger";
 import {NativeModules, DeviceEventEmitter} from 'react-native';
 const googleFit = NativeModules.GoogleFit;
 
@@ -20,36 +19,36 @@ class GoogleFit {
         });
     }
 
-    stepsToday(callback) {
-        googleFit.stepsToday(callback);
+    stepsToday() {
+        return googleFit.stepsToday();
     }
 
-    stepsTodayInHourBuckets(callback) {
-        googleFit.stepsTodayInHourBuckets(callback);
+    stepsTodayInHourBuckets() {
+        return googleFit.stepsTodayInHourBuckets();
     }
 
-    stepsLast24hInHourBuckets(callback) {
-        googleFit.stepsLast24hInHourBuckets(callback);
+    stepsLast24hInHourBuckets() {
+        return googleFit.stepsLast24hInHourBuckets();
     }
 
-    stepsLast60mInMinuteBuckets(callback) {
-        googleFit.stepsLast60mInMinuteBuckets(callback);
+    stepsLast60mInMinuteBuckets() {
+        return googleFit.stepsLast60mInMinuteBuckets();
     }
 
-    caloriesExpendedLast60mInMinuteBuckets(callback) {
-        googleFit.caloriesExpendedLast60mInMinuteBuckets(callback);
+    caloriesExpendedLast60mInMinuteBuckets() {
+        return googleFit.caloriesExpendedLast60mInMinuteBuckets();
     }
 
-    caloriesExpendedLast24hInHourBuckets(callback) {
-        googleFit.caloriesExpendedLast24hInHourBuckets(callback);
+    caloriesExpendedLast24hInHourBuckets() {
+        return googleFit.caloriesExpendedLast24hInHourBuckets();
     }
 
     disconnect() {
         googleFit.disconnect();
     }
 
-    isConnected(callback) {
-        googleFit.isConnected(callback);
+    isConnected() {
+        return googleFit.isConnected();
     }
 }
 
