@@ -10,7 +10,8 @@ let realm = new Realm({
     schema: [
         {name: 'BGLReading', properties: {id: 'string', value: 'string', date: 'date'}},
         {name: 'BGLSafeRange', properties: {minValue: 'string', maxValue: 'string'}},
-        {name: 'BGLStandard', properties: {standard: 'string'}}
+        {name: 'BGLStandard', properties: {standard: 'string'}},
+        {name: 'DataSyncSettings', properties: {syncEnabledGFit: 'bool'}}
     ],
     schemaVersion: 1,
     // migration: (oldRealm, newRealm) => {
@@ -39,9 +40,11 @@ const database = {
         log("Initiating database");
         const initBGLSafeRange = realm.objects('BGLSafeRange').length === 0;
         const initBGLStandard = realm.objects('BGLStandard').length === 0;
+        const initDataSyncSettings = realm.objects('DataSyncSettings').length === 0;
         realm.write(() => {
             initBGLStandard && realm.create('BGLStandard', {standard: 'mg/dL'});
             initBGLSafeRange && realm.create('BGLSafeRange', {minValue: '70', maxValue: '130'});
+            initDataSyncSettings && realm.create('DataSyncSettings', {syncEnabledGFit: false});
             global.DEBUG && this.addMockData();
         });
     },
@@ -226,6 +229,27 @@ const database = {
         log("Deleting reading " + JSON.stringify(reading));
         realm.write(() => {
             realm.delete(realm.objects('BGLReading').filtered('id = $0', reading.id));
+        });
+    },
+
+    isGoogleFitSyncEnabled() {
+        log("Getting data sync settings");
+        return realm.objects('DataSyncSettings')[0].syncEnabledGFit;
+    },
+
+    enableGFitDataSync() {
+        log("Enabling data sync with Google Fit");
+        realm.write(() => {
+            let dataSyncSettings = realm.objects('DataSyncSettings')[0];
+            dataSyncSettings.syncEnabledGFit = true;
+        });
+    },
+
+    disableGFitDataSync() {
+        log("Disabling data sync with Google Fit");
+        realm.write(() => {
+            let dataSyncSettings = realm.objects('DataSyncSettings')[0];
+            dataSyncSettings.syncEnabledGFit = false;
         });
     }
 };

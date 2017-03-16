@@ -20,7 +20,7 @@ export default class SettingsScreen extends Component {
             standard: standard,
             safeRangeMin: safeRange.minValue,
             safeRangeMax: safeRange.maxValue,
-            gFitConnected: false,
+            gFitConnected: db.isGoogleFitSyncEnabled(),
         };
         this.gFitToggling = false;
         this.toastShowing = false;
@@ -69,6 +69,10 @@ export default class SettingsScreen extends Component {
         db.initBGLStandardListener(this.updateBGLSafeRange.bind(this));
         this.initGFitConnectedHandler();
         this.initGFitDisconnectedHandler();
+        if (this.state.gFitConnected) {
+            this.gFitToggling = true;
+            gFit.authorizeAndConnect();
+        }
     }
 
     componentWillUnmount() {
@@ -91,9 +95,14 @@ export default class SettingsScreen extends Component {
             if (args.connected)
                 this.setState({
                     gFitConnected: true
-                }, () => setTimeout(() => {
-                    this.gFitToggling = false
-                }, 3000));
+                }, () => {
+                    db.enableGFitDataSync();
+                    setTimeout(() => {
+                        this.gFitToggling = false
+                    }, 3000);
+                    //^  After connection, there's a small delay for google services also connecting the account, and
+                    //disconnecting before that's finished gets the client in a bad state
+                });
             else
                 this.gFitToggling = false;
             // gFit.stepsToday((steps) => {
@@ -123,11 +132,14 @@ export default class SettingsScreen extends Component {
             if (args.disconnected) {
                 this.setState({
                     gFitConnected: false
-                }, () => setTimeout(() => {
-                    this.gFitToggling = false
-                }, 10000));
+                }, () => {
+                    db.disableGFitDataSync();
+                    setTimeout(() => {
+                        this.gFitToggling = false
+                    }, 10000)
+                });
                 //^  After disconnection, there's a delay for google services also disconnecting the account, and
-                //connecting again before that's finished gets the client in a bad state
+                //before that's finished gets the client in a bad state
             }
             else
                 this.gFitToggling = false

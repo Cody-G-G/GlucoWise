@@ -14,6 +14,7 @@ import MockDate from 'mockdate';
 const safeRangeObjName = 'BGLSafeRange';
 const standardObjName = 'BGLStandard';
 const readingObjName = 'BGLReading';
+const dataSyncObjName = 'DataSyncSettings';
 const standardUS = 'mg/dL';
 const standardUK = 'mmol/L';
 const defaultSafeRangeMin = '70';
@@ -30,13 +31,14 @@ beforeEach(() => {
 
 test("init() - creates and saves initial BGLStandard and BGLSafeRange objects to database, if they haven't been created already", () => {
     Realm.prototype.objects = jest.fn((objectName) => {
-        return (objectName === 'BGLSafeRange' || objectName === 'BGLStandard') && [];
+        return (objectName === safeRangeObjName || objectName === standardObjName || objectName === dataSyncObjName) && [];
     });
 
     db.init();
 
     expect(Realm.prototype.write).toHaveBeenCalled();
     expect(Realm.prototype.create).toHaveBeenCalledWith(standardObjName, {standard: standardUS});
+    expect(Realm.prototype.create).toHaveBeenCalledWith(dataSyncObjName, {syncEnabledGFit: false});
     expect(Realm.prototype.create).toHaveBeenCalledWith(safeRangeObjName, {
         minValue: defaultSafeRangeMin,
         maxValue: defaultSafeRangeMax
@@ -461,4 +463,42 @@ test('deleteReading(reading) - deletes given reading from database', () => {
 
     expect(Realm.prototype.write).toHaveBeenCalled();
     expect(Realm.prototype.delete).toHaveBeenCalledWith([readingToDelete]);
+});
+
+test('isGoogleFitSyncEnabled() - returns whether Google Fit data sync has currently been enabled by user', () => {
+    const expected = true;
+    const dataSyncSettings = new ResultsMock({syncEnabledGFit: expected});
+    Realm.prototype.objects = jest.fn(() => {
+        return dataSyncSettings;
+    });
+
+    const actual = db.isGoogleFitSyncEnabled();
+
+    expect(actual).toBe(expected);
+});
+
+test('enableGFitDataSync() - saves Google Fit data sync as true in database', () => {
+    const dataSyncSetting = {syncEnabledGFit: false};
+    const expectedDataSyncSetting = {syncEnabledGFit: true};
+    const dataSyncSettings = new ResultsMock(dataSyncSetting);
+    Realm.prototype.objects = jest.fn(() => {
+        return dataSyncSettings;
+    });
+
+    db.enableGFitDataSync();
+
+    expect(dataSyncSetting).toEqual(expectedDataSyncSetting);
+});
+
+test('disableGFitDataSync() - saves Google Fit data sync as false in database', () => {
+    const dataSyncSetting = {syncEnabledGFit: true};
+    const expectedDataSyncSetting = {syncEnabledGFit: false};
+    const dataSyncSettings = new ResultsMock(dataSyncSetting);
+    Realm.prototype.objects = jest.fn(() => {
+        return dataSyncSettings;
+    });
+
+    db.disableGFitDataSync();
+
+    expect(dataSyncSetting).toEqual(expectedDataSyncSetting);
 });
