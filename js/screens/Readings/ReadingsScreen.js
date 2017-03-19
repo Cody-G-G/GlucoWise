@@ -15,10 +15,10 @@ export default class ReadingsScreen extends Component {
         super(props);
         this.today = date.getTodayString();
         this.state = {
-            readings: null,
+            data: [],
             startDate: this.today,
             endDate: this.today,
-            standard: null,
+            standard: '',
             addingReading: false
         }
     }
@@ -54,7 +54,7 @@ export default class ReadingsScreen extends Component {
                 </View>
 
                 <ReadingsList style={{flex: 8}}
-                              readings={this.state.readings}
+                              readings={this.state.data}
                               standard={this.state.standard}
                               deleteReading={db.deleteReading}/>
 
@@ -75,7 +75,7 @@ export default class ReadingsScreen extends Component {
     updateState = () => {
         this.setState({
             standard: db.getBGLStandard(),
-            readings: db.getBGLReadingsInDateRange(this.state.startDate, this.state.endDate),
+            data: db.getBGLReadingsInDateRange(this.state.startDate, this.state.endDate),
         });
     };
 
@@ -85,7 +85,7 @@ export default class ReadingsScreen extends Component {
     updateStartDate = (startDate) => {
         this.setState({
             startDate: startDate,
-            readings: db.getBGLReadingsInDateRange(startDate, this.state.endDate)
+            data: db.getBGLReadingsInDateRange(startDate, this.state.endDate)
         });
     };
 
@@ -95,7 +95,7 @@ export default class ReadingsScreen extends Component {
     updateEndDate = (endDate) => {
         this.setState({
             endDate: endDate,
-            readings: db.getBGLReadingsInDateRange(this.state.startDate, endDate)
+            data: db.getBGLReadingsInDateRange(this.state.startDate, endDate)
         });
     };
 

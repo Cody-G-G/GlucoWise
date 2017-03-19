@@ -45,7 +45,7 @@ test("hoursFromPresent(date) - returns the number of hours the given date is in 
     const stubNowMillis = (new Date(2016, 3, 2, 17)).getTime();
     const stubDate = new Date(2016, 3, 2, 14, 30);
     Date.now = jest.genMockFunction().mockReturnValue(stubNowMillis);
-    expect(dateUtil.hoursFromPresent(stubDate)).toEqual(2.5);
+    expect(dateUtil.hoursFromPresent(stubDate)).toEqual(3);
     expect(dateUtil.hoursFromPresent(new Date(stubNowMillis))).toEqual(0);
 });
 
@@ -53,7 +53,7 @@ test("minutesFromPresent(date) - returns the number of minutes the given date is
     const stubNowMillis = (new Date(2016, 3, 2, 15, 2, 30)).getTime();
     const stubDate = new Date(2016, 3, 2, 14, 30);
     Date.now = jest.genMockFunction().mockReturnValue(stubNowMillis);
-    expect(dateUtil.minutesFromPresent(stubDate)).toEqual(32.5);
+    expect(dateUtil.minutesFromPresent(stubDate)).toEqual(33);
     expect(dateUtil.minutesFromPresent(new Date(stubNowMillis))).toEqual(0);
 });
 

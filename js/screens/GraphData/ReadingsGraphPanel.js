@@ -4,7 +4,7 @@ import {StockLine} from 'react-native-pathjs-charts';
 import styles from './styles';
 import processReading from "../../helpers/util/readingProcessor";
 
-export default class GraphPanel extends Component {
+export default class ReadingsGraphPanel extends Component {
     constructor(props) {
         super(props);
     }
@@ -77,7 +77,7 @@ export default class GraphPanel extends Component {
             strokeWidth: 3
         };
 
-        let readings = typeof this.props.readings[0][0] != 'undefined' ? this.props.readings : [[{x: 0, y: 0}]];
+        let readings = typeof this.props.readings[0][0] === 'undefined' ? [[{x: 0, y: 0}]] : this.props.readings;
         return (
             <View style={styles.graphPanel}>
                 <StockLine data={readings}

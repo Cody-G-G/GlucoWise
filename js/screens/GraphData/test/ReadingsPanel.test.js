@@ -2,9 +2,9 @@
 import React from 'react';
 import 'react-native';
 import renderer from 'react-test-renderer';
-import ReadingsPanel from "../ReadingsPanel";
+import ReadingsListPanel from "../ReadingsListPanel";
 
-test('ReadingsPanel - renders correctly', () => {
+test('ReadingsListPanel - renders correctly', () => {
     const timeRangeButtonText = '24h';
     const currentTimeRange = '60m';
     const readings = [
@@ -15,10 +15,10 @@ test('ReadingsPanel - renders correctly', () => {
     const standard = 'mg/dL';
 
     const tree = renderer.create(
-        <ReadingsPanel readings={readings}
-                       timeRangeButtonText={timeRangeButtonText}
-                       currentTimeRange={currentTimeRange}
-                       standard={standard}/>
+        <ReadingsListPanel readings={readings}
+                           timeRangeButtonText={timeRangeButtonText}
+                           currentTimeRange={currentTimeRange}
+                           standard={standard}/>
     ).toJSON();
 
     expect(tree).toMatchSnapshot();

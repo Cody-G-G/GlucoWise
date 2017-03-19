@@ -147,7 +147,7 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
                 Log.i(LOG_TAG, "Finished reading expended calories data in " + bucketUnit.toString() + " buckets");
                 List<Bucket> buckets = readResult.getBuckets();
                 WritableMap data = Arguments.createMap();
-                WritableArray calories = Arguments.createArray();
+                WritableArray values = Arguments.createArray();
                 WritableArray dates = Arguments.createArray();
 
                 for (Bucket bucket : buckets) {
@@ -157,12 +157,12 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
                         long endTime = dataPoint.getEndTime(TimeUnit.MILLISECONDS);
                         long midwayTime = startTime + (endTime - startTime);
 
-                        calories.pushInt((int) dataPoint.getValue(Field.FIELD_CALORIES).asFloat());
+                        values.pushInt((int) dataPoint.getValue(Field.FIELD_CALORIES).asFloat());
                         dates.pushDouble(midwayTime);
                     }
                 }
 
-                data.putArray("calories", calories);
+                data.putArray("values", values);
                 data.putArray("dates", dates);
                 promise.resolve(data);
             }
@@ -183,7 +183,7 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
                 Log.i(LOG_TAG, "Finished reading steps data in " + bucketUnit.toString() + " buckets");
                 List<Bucket> buckets = readResult.getBuckets();
                 WritableMap data = Arguments.createMap();
-                WritableArray steps = Arguments.createArray();
+                WritableArray values = Arguments.createArray();
                 WritableArray dates = Arguments.createArray();
 
                 for (Bucket bucket : buckets) {
@@ -193,12 +193,12 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
                         long endTime = dataPoint.getEndTime(TimeUnit.MILLISECONDS);
                         long midwayTime = startTime + (endTime - startTime);
 
-                        steps.pushInt(dataPoint.getValue(Field.FIELD_STEPS).asInt());
+                        values.pushInt(dataPoint.getValue(Field.FIELD_STEPS).asInt());
                         dates.pushDouble(midwayTime);
                     }
                 }
 
-                data.putArray("steps", steps);
+                data.putArray("values", values);
                 data.putArray("dates", dates);
                 promise.resolve(data);
             }

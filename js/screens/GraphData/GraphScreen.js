@@ -2,10 +2,13 @@
 import React, {Component} from 'react';
 import {View, Text} from 'react-native';
 import styles from './styles';
-import GraphPanel from './GraphPanel';
-import ReadingsPanel from './ReadingsPanel';
+import ReadingsGraphPanel from './ReadingsGraphPanel';
+import StepsGraphPanel from './StepsGraphPanel';
+import ReadingsListPanel from './ReadingsListPanel';
 import db from "../../data/database";
+import gFit from "../../data/googleFit";
 import dateUtil from "../../helpers/util/date";
+import {graphModes} from "../../helpers/util/constants";
 import log from "../../helpers/util/logger";
 
 export default class GraphScreen extends Component {
@@ -13,11 +16,12 @@ export default class GraphScreen extends Component {
         super(props);
         this.state = {
             hourRange: 1,
-            readings: null,
-            graphReadings: null,
-            safeRangeMin: null,
-            safeRangeMax: null,
-            standard: null
+            data: [],
+            graphData: [[]],
+            safeRangeMin: '',
+            safeRangeMax: '',
+            standard: '',
+            graphMode: graphModes.steps
         }
     }
 
@@ -31,16 +35,19 @@ export default class GraphScreen extends Component {
         let currentTimeRange = this.state.hourRange === 24 ? "24h" : "60m";
         return (
             <View style={styles.screenContainer}>
-                <GraphPanel readings={this.state.graphReadings}
-                            safeRangeMin={this.state.safeRangeMin}
-                            safeRangeMax={this.state.safeRangeMax}
-                            standard={this.state.standard}/>
-                <ReadingsPanel readings={this.state.readings}
-                               toggleTimeRange={this.toggleTimeRange}
-                               timeRangeButtonText={timeRangeButtonText}
-                               currentTimeRange={currentTimeRange}
-                               standard={this.state.standard}
-                               deleteReading={db.deleteReading}/>
+                {this.state.graphMode === graphModes.readings ?
+                    <ReadingsGraphPanel readings={this.state.graphData}
+                                        safeRangeMin={this.state.safeRangeMin}
+                                        safeRangeMax={this.state.safeRangeMax}
+                                        standard={this.state.standard}/> :
+                    <StepsGraphPanel steps={this.state.graphData}/>
+                }
+                <ReadingsListPanel readings={this.state.data}
+                                   toggleTimeRange={this.toggleTimeRange}
+                                   timeRangeButtonText={timeRangeButtonText}
+                                   currentTimeRange={currentTimeRange}
+                                   standard={this.state.standard}
+                                   deleteReading={db.deleteReading}/>
             </View>
         );
     }
@@ -56,21 +63,47 @@ export default class GraphScreen extends Component {
     }
 
     /**
-     * @param readings
+     * @param data
      * @param hourRange
+     * @param graphMode
      * @returns {[*]}
      */
-    getGraphReadings(readings, hourRange) {
-        let graphReadings = [];
+    getDataForGraph(data, hourRange, graphMode) {
+        log("Processing data for graph: " + JSON.stringify(data));
+        let graphData = [];
         let timeUnitsFromPresent = hourRange === 24 ? dateUtil.hoursFromPresent : dateUtil.minutesFromPresent;
-        readings.forEach((reading) => {
-                graphReadings.push({
-                    x: timeUnitsFromPresent(reading.date),
-                    y: reading.value,
-                })
+        let xAxis;
+        switch (graphMode) {
+            case(graphModes.readings):
+                xAxis = "x";
+                break;
+            case(graphModes.steps):
+                xAxis = "name";
+                break;
+            case(graphModes.calories):
+                break;
+        }
+        data.forEach((dataPoint) => {
+                let graphDataPoint = {};
+                graphDataPoint[xAxis] = timeUnitsFromPresent(dataPoint.date);
+                graphDataPoint["y"] = dataPoint.value;
+                graphData.push(graphDataPoint);
             }
         );
-        return [graphReadings];
+        return [graphData];
+    }
+
+    /**
+     * @param data
+     * @returns {Array}
+     */
+    mapValuesToDates(data) {
+        log("Mapping data values to dates: " + JSON.stringify(data));
+        const mappedData = [];
+        for (let i = 0; i < data.dates.length; i++) {
+            mappedData.push({date: new Date(data.dates[i]), value: data.values[i]});
+        }
+        return mappedData.reverse();
     }
 
     toggleTimeRange = () => {
@@ -82,18 +115,60 @@ export default class GraphScreen extends Component {
      * @param newHourRange
      */
     updateState = (newHourRange) => {
-        let hourRange = (typeof newHourRange !== 'undefined') ? newHourRange : this.state.hourRange;
-        let readings = hourRange === 24 ? db.get24hBGLReadings() : db.get60mBGLReadings();
-        let standard = db.getBGLStandard();
-        let safeRange = db.getBGLSafeRange();
-        let graphReadings = this.getGraphReadings(readings, hourRange);
-        this.setState({
-            standard: standard,
-            readings: readings,
-            graphReadings: graphReadings,
-            safeRangeMin: safeRange.minValue,
-            safeRangeMax: safeRange.maxValue,
-            hourRange: hourRange
-        });
+        const hourRange = (typeof newHourRange !== 'undefined') ? newHourRange : this.state.hourRange;
+        this.getData(hourRange, this.state.graphMode)
+            .then((data) => {
+                const safeRange = db.getBGLSafeRange();
+                this.setState({
+                    standard: db.getBGLStandard(),
+                    data: data,
+                    graphData: this.getDataForGraph(data, hourRange, this.state.graphMode),
+                    safeRangeMin: safeRange.minValue,
+                    safeRangeMax: safeRange.maxValue,
+                    hourRange: hourRange
+                });
+            })
+            .catch((error) => log("getData for " + this.state.graphMode + " failed: " + error));
     };
+
+    /**
+     * @param newGraphMode
+     */
+    updateGraphMode = (newGraphMode) => {
+        const graphMode = (typeof newGraphMode !== 'undefined') ? newGraphMode : this.state.graphMode;
+        this.getData(this.state.hourRange, graphMode)
+            .then((data) => {
+                const graphData = this.getDataForGraph(data, this.state.hourRange, newGraphMode);
+                this.setState({
+                    graphMode: graphMode,
+                    // data: data,
+                    graphData: graphData
+                });
+            })
+            .catch((error) => log("getData for " + newGraphMode + " failed: " + error));
+    };
+
+    /**
+     *
+     * @param hourRange
+     * @param graphMode
+     * @returns {*}
+     */
+    getData(hourRange, graphMode) {
+        log("Getting data - mode: " + graphMode + " hourRange: " + hourRange);
+        return new Promise(async(resolve) => {
+            let data;
+            switch (graphMode) {
+                case(graphModes.readings):
+                    data = hourRange === 24 ? db.get24hBGLReadings() : db.get60mBGLReadings();
+                    break;
+                case(graphModes.steps):
+                    data = this.mapValuesToDates(await (hourRange === 24 ? gFit.stepsLast24hInHourBuckets() : gFit.stepsLast60mInMinuteBuckets()));
+                    break;
+                case(graphModes.calories):
+                    break;
+            }
+            resolve(data);
+        });
+    }
 }

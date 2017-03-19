@@ -6,7 +6,7 @@ import styles from "./styles";
 import ReadingsList from "../../helpers/components/ReadingsList";
 import TimeRangeButton from "./TimeRangeButton";
 
-export default class ReadingsPanel extends Component {
+export default class ReadingsListPanel extends Component {
     constructor(props) {
         super(props);
     }
