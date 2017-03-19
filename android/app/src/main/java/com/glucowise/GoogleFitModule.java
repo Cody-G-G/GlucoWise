@@ -156,9 +156,13 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
                         long startTime = dataPoint.getStartTime(TimeUnit.MILLISECONDS);
                         long endTime = dataPoint.getEndTime(TimeUnit.MILLISECONDS);
                         long midwayTime = startTime + (endTime - startTime);
+                        int value = (int) dataPoint.getValue(Field.FIELD_CALORIES).asFloat();
 
-                        values.pushInt((int) dataPoint.getValue(Field.FIELD_CALORIES).asFloat());
-                        dates.pushDouble(midwayTime);
+
+                        if (value != 0) {
+                            values.pushInt(value);
+                            dates.pushDouble(midwayTime);
+                        }
                     }
                 }
 
@@ -192,9 +196,12 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
                         long startTime = dataPoint.getStartTime(TimeUnit.MILLISECONDS);
                         long endTime = dataPoint.getEndTime(TimeUnit.MILLISECONDS);
                         long midwayTime = startTime + (endTime - startTime);
+                        int value = dataPoint.getValue(Field.FIELD_STEPS).asInt();
 
-                        values.pushInt(dataPoint.getValue(Field.FIELD_STEPS).asInt());
-                        dates.pushDouble(midwayTime);
+                        if (value != 0) {
+                            values.pushInt(value);
+                            dates.pushDouble(midwayTime);
+                        }
                     }
                 }
 

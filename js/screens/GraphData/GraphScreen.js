@@ -71,25 +71,36 @@ export default class GraphScreen extends Component {
         log("Processing data for graph: " + JSON.stringify(data));
         let graphData = [];
         let timeUnitsFromPresent = timeRange === timeRanges.lastDay ? dateUtil.hoursFromPresent : dateUtil.minutesFromPresent;
-        let xAxis;
-        switch (graphMode) {
-            case(graphModes.glucose):
-                xAxis = "x";
-                break;
-            case(graphModes.steps):
-                xAxis = "name";
-                break;
-            case(graphModes.calories):
-                break;
-        }
+        let xAxis = this.getXAxisString(graphMode);
         data.forEach((dataPoint) => {
                 let graphDataPoint = {};
                 graphDataPoint[xAxis] = timeUnitsFromPresent(dataPoint.date);
                 graphDataPoint["y"] = dataPoint.value;
-                graphData.push(graphDataPoint);
+
+                const graphModeIsSteps = graphMode === graphModes.steps;
+                const previousDataPoint = graphData[graphData.length - 1];
+                const existsPreviousDataPoint = typeof previousDataPoint !== 'undefined';
+                const currentDataPointHasSameTimeAsPrevious = existsPreviousDataPoint ? graphDataPoint[xAxis] === previousDataPoint[xAxis] : false; // due to rounding, two datapoints might have same X
+
+                if (currentDataPointHasSameTimeAsPrevious && graphModeIsSteps)
+                    previousDataPoint.y = previousDataPoint.y + graphDataPoint.y;
+                else
+                    graphData.push(graphDataPoint);
             }
         );
+        log("Processed data for graph: " + JSON.stringify(graphData));
         return [graphData];
+    }
+
+    getXAxisString(graphMode) {
+        switch (graphMode) {
+            case(graphModes.glucose):
+                return "x";
+            case(graphModes.steps):
+                return "name";
+            case(graphModes.calories):
+                return "name";
+        }
     }
 
     /**

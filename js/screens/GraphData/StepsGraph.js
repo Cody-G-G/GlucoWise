@@ -11,14 +11,14 @@ export default class StepsGraph extends Component {
     render() {
         const options = {
             width: 315,
-            height: 350,
+            height: 345,
             color: '#4169e1',
             gutter: 5,
             margin: {
-                top: 30,
+                top: 35,
                 left: 35,
                 bottom: 40,
-                right: 10
+                right: 5
             },
             axisX: {
                 showAxis: true,
@@ -30,7 +30,7 @@ export default class StepsGraph extends Component {
                 label: {
                     fontFamily: 'Arial',
                     fontSize: 12,
-                    bold: true,
+                    fontWeight: true,
                     fill: '#34495E'
                 }
             },
@@ -44,7 +44,7 @@ export default class StepsGraph extends Component {
                 label: {
                     fontFamily: 'Arial',
                     fontSize: 12,
-                    bold: true,
+                    fontWeight: true,
                     fill: '#34495E'
                 }
             }
