@@ -33,7 +33,7 @@ export default class GraphScreen extends Component {
         return (
             <View style={styles.screenContainer}>
                 <RadioButtonsPanel fontSize={25}
-                                   types={[graphModes.glucose, graphModes.calories, graphModes.steps]}
+                                   types={[graphModes.glucose, graphModes.steps, graphModes.calories]}
                                    selectedType={this.state.graphMode}
                                    onPress={this.updateGraphMode}/>
 
