@@ -6,9 +6,9 @@ const readingUnitStandards = {
 };
 
 const graphModes = {
-    readings: "readings",
-    steps: "steps",
-    calories: "calories"
+    glucose: "Glucose",
+    steps: "Steps",
+    calories: "Calories"
 };
 
 const timeRanges = {

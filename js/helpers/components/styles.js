@@ -27,13 +27,14 @@ export default StyleSheet.create({
     toggleButton: {
         flex: 1,
         borderWidth: 1,
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'center',
+        alignSelf:'stretch'
     },
-    standardSetterButtonText: {
+    toggleButtonText: {
         fontSize: 35,
         color: 'white',
-        fontWeight: 'bold',
-        padding: 5
+        fontWeight: 'bold'
     },
     trashIcon: {
         color: 'white',

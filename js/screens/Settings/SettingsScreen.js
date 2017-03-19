@@ -55,15 +55,11 @@ export default class SettingsScreen extends Component {
                         <ToggleButton type={readingUnitStandards.US}
                                       selectedType={this.state.standard}
                                       onPress={this.setStandardUS}
-                                      onColor='royalblue'
-                                      offColor='darkgrey'
                                       onText={readingUnitStandards.US}
                                       offText={readingUnitStandards.US}/>
                         <ToggleButton type={readingUnitStandards.UK}
                                       selectedType={this.state.standard}
                                       onPress={this.setStandardUK}
-                                      onColor='royalblue'
-                                      offColor='darkgrey'
                                       onText={readingUnitStandards.UK}
                                       offText={readingUnitStandards.UK}/>
                     </View>
@@ -76,7 +72,6 @@ export default class SettingsScreen extends Component {
                             <Text style={styles.dataSyncDescriptionText}> Google Fit</Text>
                         </View>
                         <ToggleButton onColor='forestgreen'
-                                      offColor='darkgrey'
                                       onText={this.buttonTypes.on}
                                       offText={this.buttonTypes.off}
                                       type={this.buttonTypes.on}

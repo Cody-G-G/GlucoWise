@@ -9,19 +9,25 @@ export default class ToggleButton extends Component {
     }
 
     render() {
+        const hasOnColorProp = typeof this.props.onColor !== 'undefined';
+        const hasFontSizeProp = typeof this.props.fontSize !== 'undefined';
+
         let buttonColor;
         let buttonText;
         if (this.props.selectedType === this.props.type) {
-            buttonColor = this.props.onColor;
+            buttonColor = hasOnColorProp ? this.props.onColor : 'royalblue';
             buttonText = this.props.onText;
         } else {
-            buttonColor = this.props.offColor;
+            buttonColor = 'darkgrey';
             buttonText = this.props.offText;
         }
+
+        const buttonTextStyle = hasFontSizeProp ? StyleSheet.flatten([styles.toggleButtonText, {fontSize: this.props.fontSize}]) : styles.toggleButtonText;
+        const buttonStyle = StyleSheet.flatten([styles.toggleButton, {backgroundColor: buttonColor}]);
+
         return (
-            <TouchableOpacity style={StyleSheet.flatten([styles.toggleButton, {backgroundColor: buttonColor}])}
-                              onPress={() => this.props.onPress()}>
-                <Text style={styles.standardSetterButtonText}>
+            <TouchableOpacity style={buttonStyle} onPress={() => this.props.onPress()}>
+                <Text style={buttonTextStyle}>
                     {buttonText}
                 </Text>
             </TouchableOpacity>

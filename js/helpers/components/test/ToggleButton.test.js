@@ -5,11 +5,10 @@ import renderer from 'react-test-renderer';
 import ToggleButton from "../ToggleButton";
 import {readingUnitStandards} from "../../../helpers/util/constants";
 
-test('ToggleButton_shouldBeOn - renders correctly', () => {
+test('ToggleButton_withOnColor_shouldBeOn - renders correctly', () => {
     const type = readingUnitStandards.US;
     const selectedType = readingUnitStandards.US;
-    const onColor = 'royalblue';
-    const offColor = 'darkgrey';
+    const onColor = 'forestgreen';
     const onText = "ON";
     const offText = "OFF";
 
@@ -17,7 +16,22 @@ test('ToggleButton_shouldBeOn - renders correctly', () => {
         <ToggleButton type={type}
                       selectedType={selectedType}
                       onColor={onColor}
-                      offColor={offColor}
+                      onText={onText}
+                      offText={offText}/>
+    ).toJSON();
+
+    expect(tree).toMatchSnapshot();
+});
+
+test('ToggleButton_withoutOnColor_shouldBeOn - renders correctly', () => {
+    const type = readingUnitStandards.US;
+    const selectedType = readingUnitStandards.US;
+    const onText = "ON";
+    const offText = "OFF";
+
+    const tree = renderer.create(
+        <ToggleButton type={type}
+                      selectedType={selectedType}
                       onText={onText}
                       offText={offText}/>
     ).toJSON();
@@ -29,7 +43,6 @@ test('ToggleButton_shouldBeOff - renders correctly', () => {
     const type = readingUnitStandards.US;
     const selectedType = readingUnitStandards.UK;
     const onColor = 'royalblue';
-    const offColor = 'darkgrey';
     const onText = "ON";
     const offText = "OFF";
 
@@ -37,7 +50,6 @@ test('ToggleButton_shouldBeOff - renders correctly', () => {
         <ToggleButton type={type}
                       selectedType={selectedType}
                       onColor={onColor}
-                      offColor={offColor}
                       onText={onText}
                       offText={offText}/>
     ).toJSON();

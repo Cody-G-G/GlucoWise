@@ -27,17 +27,14 @@ export default class ReadingsGraph extends Component {
 
         const options = {
             width: 315,
-            height: 280,
-            color: '#2980B9',
+            height: 370,
+            color: '#4169e1',
+            gutter: 5,
             margin: {
-                top: 20,
+                top: 30,
                 left: 35,
-                bottom: 25,
+                bottom: 40,
                 right: 10
-            },
-            animate: {
-                type: 'delayed',
-                duration: 200
             },
             axisX: {
                 showAxis: true,

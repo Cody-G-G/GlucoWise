@@ -13,7 +13,7 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    timeRangePanel: {
+    radioButtonsPanel: {
         flex: 1,
         flexDirection: 'row',
         alignItems:'center',

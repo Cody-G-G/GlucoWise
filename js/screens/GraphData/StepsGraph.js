@@ -11,13 +11,13 @@ export default class StepsGraph extends Component {
     render() {
         const options = {
             width: 315,
-            height: 390,
+            height: 350,
             color: '#4169e1',
             gutter: 5,
             margin: {
-                top: 20,
+                top: 30,
                 left: 35,
-                bottom: 45,
+                bottom: 40,
                 right: 10
             },
             axisX: {

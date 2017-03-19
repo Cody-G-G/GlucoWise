@@ -9,14 +9,13 @@ import gFit from "../../data/googleFit";
 import dateUtil from "../../helpers/util/date";
 import {graphModes, timeRanges} from "../../helpers/util/constants";
 import log from "../../helpers/util/logger";
-import TimeRangePanel from "./TimeRangePanel";
+import RadioButtonsPanel from "./RadioButtonsPanel";
 
 export default class GraphScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
             timeRange: timeRanges.lastHour,
-            data: [],
             graphData: [[]],
             safeRangeMin: '',
             safeRangeMax: '',
@@ -33,15 +32,21 @@ export default class GraphScreen extends Component {
         log("Rendering GraphScreen");
         return (
             <View style={styles.screenContainer}>
-                {this.state.graphMode === graphModes.readings ?
+                <RadioButtonsPanel fontSize={25}
+                                   types={[graphModes.glucose, graphModes.calories, graphModes.steps]}
+                                   selectedType={this.state.graphMode}
+                                   onPress={this.updateGraphMode}/>
+
+                {this.state.graphMode === graphModes.glucose ?
                     <ReadingsGraph readings={this.state.graphData}
                                    safeRangeMin={this.state.safeRangeMin}
                                    safeRangeMax={this.state.safeRangeMax}
                                    standard={this.state.standard}/> :
                     <StepsGraph steps={this.state.graphData}/>
                 }
-                <TimeRangePanel timeRange={this.state.timeRange}
-                                onPress={this.updateState}/>
+                <RadioButtonsPanel types={[timeRanges.lastHour, timeRanges.lastDay]}
+                                   selectedType={this.state.timeRange}
+                                   onPress={this.updateState}/>
             </View>
         );
     }
@@ -68,7 +73,7 @@ export default class GraphScreen extends Component {
         let timeUnitsFromPresent = timeRange === timeRanges.lastDay ? dateUtil.hoursFromPresent : dateUtil.minutesFromPresent;
         let xAxis;
         switch (graphMode) {
-            case(graphModes.readings):
+            case(graphModes.glucose):
                 xAxis = "x";
                 break;
             case(graphModes.steps):
@@ -130,7 +135,6 @@ export default class GraphScreen extends Component {
                 const graphData = this.getDataForGraph(data, this.state.timeRange, newGraphMode);
                 this.setState({
                     graphMode: graphMode,
-                    // data: data,
                     graphData: graphData
                 });
             })
@@ -148,7 +152,7 @@ export default class GraphScreen extends Component {
         return new Promise(async(resolve) => {
             let data;
             switch (graphMode) {
-                case(graphModes.readings):
+                case(graphModes.glucose):
                     data = timeRange === timeRanges.lastDay ? db.get24hBGLReadings() : db.get60mBGLReadings();
                     break;
                 case(graphModes.steps):
