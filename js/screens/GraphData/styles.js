@@ -13,24 +13,10 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    readingsPanel: {
-        flex: 5,
+    timeRangePanel: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems:'center',
         alignSelf: 'stretch'
-    },
-    readingsListHeaderText: {
-        fontSize: 15,
-        fontWeight: 'bold'
-    },
-    timeRangeButton: {
-        flex: 2,
-        alignSelf: 'stretch',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'darkgrey',
-    },
-    timeRangeButtonText: {
-        color: 'white',
-        fontSize: 20,
-        fontWeight: 'bold'
     }
 });

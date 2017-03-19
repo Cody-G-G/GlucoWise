@@ -11,4 +11,9 @@ const graphModes = {
     calories: "calories"
 };
 
-export {readingUnitStandards, graphModes};
+const timeRanges = {
+    lastHour: "60m",
+    lastDay: "24h"
+};
+
+export {readingUnitStandards, graphModes, timeRanges};

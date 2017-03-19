@@ -3,7 +3,7 @@ import {View, Dimensions} from 'react-native';
 import {Bar} from 'react-native-pathjs-charts';
 import styles from './styles';
 
-export default class StepsGraphPanel extends Component {
+export default class StepsGraph extends Component {
     constructor(props) {
         super(props);
     }
@@ -11,7 +11,7 @@ export default class StepsGraphPanel extends Component {
     render() {
         const options = {
             width: 315,
-            height: 280,
+            height: 390,
             color: '#4169e1',
             gutter: 5,
             margin: {

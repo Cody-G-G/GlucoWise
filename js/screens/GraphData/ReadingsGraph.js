@@ -4,7 +4,7 @@ import {StockLine} from 'react-native-pathjs-charts';
 import styles from './styles';
 import processReading from "../../helpers/util/readingProcessor";
 
-export default class ReadingsGraphPanel extends Component {
+export default class ReadingsGraph extends Component {
     constructor(props) {
         super(props);
     }

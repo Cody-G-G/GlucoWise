@@ -39,7 +39,7 @@ export default class DrawerPanel extends Component {
         return (
             <View style={styles.container}>
                 <DrawerTab onPress={() => {drawer.close(); Actions.screenConnection();}} icon='bluetooth' text='Connect'/>
-                <DrawerTab onPress={() => {drawer.close(); Actions.screenGraph();}} icon='insert-chart' text='Graph'/>
+                <DrawerTab onPress={() => {drawer.close(); Actions.screenGraph();}} icon='insert-chart' text='Graphs'/>
                 <DrawerTab onPress={() => {drawer.close(); Actions.screenReadings();}} icon='history'>
                     <View>
                         <Text style={StyleSheet.flatten([styles.tabText, {alignSelf:'center'}])}>Readings</Text>

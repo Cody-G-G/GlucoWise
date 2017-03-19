@@ -2,20 +2,20 @@
 import React, {Component} from 'react';
 import {View, Text} from 'react-native';
 import styles from './styles';
-import ReadingsGraphPanel from './ReadingsGraphPanel';
-import StepsGraphPanel from './StepsGraphPanel';
-import ReadingsListPanel from './ReadingsListPanel';
+import ReadingsGraph from './ReadingsGraph';
+import StepsGraph from './StepsGraph';
 import db from "../../data/database";
 import gFit from "../../data/googleFit";
 import dateUtil from "../../helpers/util/date";
-import {graphModes} from "../../helpers/util/constants";
+import {graphModes, timeRanges} from "../../helpers/util/constants";
 import log from "../../helpers/util/logger";
+import TimeRangePanel from "./TimeRangePanel";
 
 export default class GraphScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            hourRange: 1,
+            timeRange: timeRanges.lastHour,
             data: [],
             graphData: [[]],
             safeRangeMin: '',
@@ -31,23 +31,17 @@ export default class GraphScreen extends Component {
 
     render() {
         log("Rendering GraphScreen");
-        let timeRangeButtonText = this.state.hourRange === 24 ? "60m" : "24h";
-        let currentTimeRange = this.state.hourRange === 24 ? "24h" : "60m";
         return (
             <View style={styles.screenContainer}>
                 {this.state.graphMode === graphModes.readings ?
-                    <ReadingsGraphPanel readings={this.state.graphData}
-                                        safeRangeMin={this.state.safeRangeMin}
-                                        safeRangeMax={this.state.safeRangeMax}
-                                        standard={this.state.standard}/> :
-                    <StepsGraphPanel steps={this.state.graphData}/>
+                    <ReadingsGraph readings={this.state.graphData}
+                                   safeRangeMin={this.state.safeRangeMin}
+                                   safeRangeMax={this.state.safeRangeMax}
+                                   standard={this.state.standard}/> :
+                    <StepsGraph steps={this.state.graphData}/>
                 }
-                <ReadingsListPanel readings={this.state.data}
-                                   toggleTimeRange={this.toggleTimeRange}
-                                   timeRangeButtonText={timeRangeButtonText}
-                                   currentTimeRange={currentTimeRange}
-                                   standard={this.state.standard}
-                                   deleteReading={db.deleteReading}/>
+                <TimeRangePanel timeRange={this.state.timeRange}
+                                onPress={this.updateState}/>
             </View>
         );
     }
@@ -64,14 +58,14 @@ export default class GraphScreen extends Component {
 
     /**
      * @param data
-     * @param hourRange
+     * @param timeRange
      * @param graphMode
      * @returns {[*]}
      */
-    getDataForGraph(data, hourRange, graphMode) {
+    getDataForGraph(data, timeRange, graphMode) {
         log("Processing data for graph: " + JSON.stringify(data));
         let graphData = [];
-        let timeUnitsFromPresent = hourRange === 24 ? dateUtil.hoursFromPresent : dateUtil.minutesFromPresent;
+        let timeUnitsFromPresent = timeRange === timeRanges.lastDay ? dateUtil.hoursFromPresent : dateUtil.minutesFromPresent;
         let xAxis;
         switch (graphMode) {
             case(graphModes.readings):
@@ -106,26 +100,21 @@ export default class GraphScreen extends Component {
         return mappedData.reverse();
     }
 
-    toggleTimeRange = () => {
-        log("Toggled time range");
-        this.updateState(this.state.hourRange === 24 ? 1 : 24);
-    };
-
     /**
-     * @param newHourRange
+     * @param newTimeRange
      */
-    updateState = (newHourRange) => {
-        const hourRange = (typeof newHourRange !== 'undefined') ? newHourRange : this.state.hourRange;
-        this.getData(hourRange, this.state.graphMode)
+    updateState = (newTimeRange) => {
+        const timeRange = (typeof newTimeRange !== 'undefined') ? newTimeRange : this.state.timeRange;
+        this.getData(timeRange, this.state.graphMode)
             .then((data) => {
                 const safeRange = db.getBGLSafeRange();
                 this.setState({
                     standard: db.getBGLStandard(),
                     data: data,
-                    graphData: this.getDataForGraph(data, hourRange, this.state.graphMode),
+                    graphData: this.getDataForGraph(data, timeRange, this.state.graphMode),
                     safeRangeMin: safeRange.minValue,
                     safeRangeMax: safeRange.maxValue,
-                    hourRange: hourRange
+                    timeRange: timeRange
                 });
             })
             .catch((error) => log("getData for " + this.state.graphMode + " failed: " + error));
@@ -136,9 +125,9 @@ export default class GraphScreen extends Component {
      */
     updateGraphMode = (newGraphMode) => {
         const graphMode = (typeof newGraphMode !== 'undefined') ? newGraphMode : this.state.graphMode;
-        this.getData(this.state.hourRange, graphMode)
+        this.getData(this.state.timeRange, graphMode)
             .then((data) => {
-                const graphData = this.getDataForGraph(data, this.state.hourRange, newGraphMode);
+                const graphData = this.getDataForGraph(data, this.state.timeRange, newGraphMode);
                 this.setState({
                     graphMode: graphMode,
                     // data: data,
@@ -150,20 +139,20 @@ export default class GraphScreen extends Component {
 
     /**
      *
-     * @param hourRange
+     * @param timeRange
      * @param graphMode
      * @returns {*}
      */
-    getData(hourRange, graphMode) {
-        log("Getting data - mode: " + graphMode + " hourRange: " + hourRange);
+    getData(timeRange, graphMode) {
+        log("Getting data - mode: " + graphMode + " timeRange: " + timeRange);
         return new Promise(async(resolve) => {
             let data;
             switch (graphMode) {
                 case(graphModes.readings):
-                    data = hourRange === 24 ? db.get24hBGLReadings() : db.get60mBGLReadings();
+                    data = timeRange === timeRanges.lastDay ? db.get24hBGLReadings() : db.get60mBGLReadings();
                     break;
                 case(graphModes.steps):
-                    data = this.mapValuesToDates(await (hourRange === 24 ? gFit.stepsLast24hInHourBuckets() : gFit.stepsLast60mInMinuteBuckets()));
+                    data = this.mapValuesToDates(await (timeRange === timeRanges.lastDay ? gFit.stepsLast24hInHourBuckets() : gFit.stepsLast60mInMinuteBuckets()));
                     break;
                 case(graphModes.calories):
                     break;
