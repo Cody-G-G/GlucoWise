@@ -7,12 +7,10 @@ import SafeRangesRowPanel from "../SafeRangesRowPanel";
 test('SafeRangesRowPanel - renders correctly', () => {
     const inputLabel = 'Min:';
     const inputValue = '80';
-    const standard = 'mg/dL';
 
     const tree = renderer.create(
         <SafeRangesRowPanel inputLabel={inputLabel}
-                            inputValue={inputValue}
-                            standard={standard}/>
+                            inputValue={inputValue}/>
     ).toJSON();
 
     expect(tree).toMatchSnapshot();

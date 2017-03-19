@@ -2,6 +2,7 @@
 import log from "../helpers/util/logger";
 import dateUtil from "../helpers/util/date";
 import processReading from "../helpers/util/readingProcessor";
+import {readingUnitStandards, defaultSafeRange} from "../helpers/util/constants";
 const uuid = require('uuid/v1');
 const Realm = require('realm');
 
@@ -42,8 +43,11 @@ const database = {
         const initBGLStandard = realm.objects('BGLStandard').length === 0;
         const initDataSyncSettings = realm.objects('DataSyncSettings').length === 0;
         realm.write(() => {
-            initBGLStandard && realm.create('BGLStandard', {standard: 'mg/dL'});
-            initBGLSafeRange && realm.create('BGLSafeRange', {minValue: '70', maxValue: '130'});
+            initBGLStandard && realm.create('BGLStandard', {standard: readingUnitStandards.US});
+            initBGLSafeRange && realm.create('BGLSafeRange', {
+                minValue: defaultSafeRange.min,
+                maxValue: defaultSafeRange.max
+            });
             initDataSyncSettings && realm.create('DataSyncSettings', {syncEnabledGFit: false});
             global.DEBUG && this.addMockData();
         });
@@ -94,7 +98,7 @@ const database = {
         log("Updating BGLSafeRange min to default");
         let savedBGLSafeRanges = realm.objects('BGLSafeRange');
         realm.write(() => {
-            savedBGLSafeRanges[0].minValue = '70';
+            savedBGLSafeRanges[0].minValue = defaultSafeRange.min;
         });
     },
 
@@ -113,7 +117,7 @@ const database = {
         log("Updating BGLSafeRange max to default");
         let savedBGLSafeRanges = realm.objects('BGLSafeRange');
         realm.write(() => {
-            savedBGLSafeRanges[0].maxValue = '130';
+            savedBGLSafeRanges[0].maxValue = defaultSafeRange.max;
         });
     },
 

@@ -16,4 +16,9 @@ const timeRanges = {
     lastDay: "24h"
 };
 
-export {readingUnitStandards, graphModes, timeRanges};
+const defaultSafeRange = {
+    min: '70',
+    max: '130'
+};
+
+export {readingUnitStandards, graphModes, timeRanges, defaultSafeRange};

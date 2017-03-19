@@ -1,3 +1,5 @@
+import {readingUnitStandards} from "./constants";
+
 /**
  * @param value
  * @param currentStandard
@@ -6,5 +8,5 @@
  *
  */
 export default (value, currentStandard, forPersistence) => {
-    return Number(currentStandard === 'mg/dL' ? value : parseFloat(forPersistence ? (value * 18) : (value / 18)).toFixed(1));
+    return Number(currentStandard === readingUnitStandards.US ? value : parseFloat(forPersistence ? (value * 18) : (value / 18)).toFixed(1));
 }

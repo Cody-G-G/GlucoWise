@@ -161,13 +161,13 @@ export default class SettingsScreen extends Component {
 
     setStandardUS = () => {
         this.setState({
-            standard: 'mg/dL'
+            standard: readingUnitStandards.US
         }, this.saveStandard);
     };
 
     setStandardUK = () => {
         this.setState({
-            standard: 'mmol/L'
+            standard: readingUnitStandards.UK
         }, this.saveStandard);
     };
 

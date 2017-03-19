@@ -10,15 +10,12 @@ const uuid = require('uuid/v1');
 const Realm = require('realm');
 import db from "../database";
 import MockDate from 'mockdate';
+import {readingUnitStandards, defaultSafeRange} from "../../helpers/util/constants";
 
 const safeRangeObjName = 'BGLSafeRange';
 const standardObjName = 'BGLStandard';
 const readingObjName = 'BGLReading';
 const dataSyncObjName = 'DataSyncSettings';
-const standardUS = 'mg/dL';
-const standardUK = 'mmol/L';
-const defaultSafeRangeMin = '70';
-const defaultSafeRangeMax = '130';
 
 beforeEach(() => {
     Realm.prototype.objects.mockClear();
@@ -37,11 +34,11 @@ test("init() - creates and saves initial BGLStandard and BGLSafeRange objects to
     db.init();
 
     expect(Realm.prototype.write).toHaveBeenCalled();
-    expect(Realm.prototype.create).toHaveBeenCalledWith(standardObjName, {standard: standardUS});
+    expect(Realm.prototype.create).toHaveBeenCalledWith(standardObjName, {standard: readingUnitStandards.US});
     expect(Realm.prototype.create).toHaveBeenCalledWith(dataSyncObjName, {syncEnabledGFit: false});
     expect(Realm.prototype.create).toHaveBeenCalledWith(safeRangeObjName, {
-        minValue: defaultSafeRangeMin,
-        maxValue: defaultSafeRangeMax
+        minValue: defaultSafeRange.min,
+        maxValue: defaultSafeRange.max
     });
 });
 
@@ -67,7 +64,7 @@ test('updateBGLSafeRangeMin(minValue)_withStandardUS - updates minValue of BGLSa
     const oldMinValue = '85';
     const newMinValue = '135';
     const safeRange = {minValue: oldMinValue};
-    const standardObj = {standard: standardUS};
+    const standardObj = {standard: readingUnitStandards.US};
     Realm.prototype.objects = jest.fn((objectName) => {
         return objectName === safeRangeObjName ? [safeRange] : [standardObj]
     });
@@ -87,7 +84,7 @@ test('updateBGLSafeRangeMin(minValue)_withStandardUK - updates minValue of BGLSa
     const newMinValue = '13.5';
     const expectedMinValue = '135';
     const safeRange = {minValue: oldMinValue};
-    const standardObj = {standard: standardUK};
+    const standardObj = {standard: readingUnitStandards.UK};
     Realm.prototype.objects = jest.fn((objectName) => {
         return objectName === safeRangeObjName ? [safeRange] : [standardObj]
     });
@@ -106,7 +103,7 @@ test('updateBGLSafeRangeMax(maxValue)_withStandardUS - updates maxValue of BGLSa
     const oldMaxValue = '85';
     const newMaxValue = '135';
     const safeRange = {minValue: oldMaxValue};
-    const standardObj = {standard: standardUS};
+    const standardObj = {standard: readingUnitStandards.US};
     Realm.prototype.objects = jest.fn((objectName) => {
         return objectName === safeRangeObjName ? [safeRange] : [standardObj]
     });
@@ -126,7 +123,7 @@ test('updateBGLSafeRangeMax(maxValue)_withStandardUK - updates maxValue of BGLSa
     const newMaxValue = '3.5';
     const expectedMaxValue = '35';
     const safeRange = {minValue: oldMaxValue};
-    const standardObj = {standard: standardUK};
+    const standardObj = {standard: readingUnitStandards.UK};
     Realm.prototype.objects = jest.fn((objectName) => {
         return objectName === safeRangeObjName ? [safeRange] : [standardObj]
     });
@@ -141,7 +138,7 @@ test('updateBGLSafeRangeMax(maxValue)_withStandardUK - updates maxValue of BGLSa
     expect(safeRange.maxValue).toEqual(expectedMaxValue);
 });
 
-test('updateBGLSafeRangeMinToDefault() - changes BGLSafeRange minValue to default (70)', () => {
+test('updateBGLSafeRangeMinToDefault() - changes BGLSafeRange minValue to default', () => {
     const safeRange = {minValue: '100'};
     Realm.prototype.objects = jest.fn(() => {
         return [safeRange];
@@ -150,10 +147,10 @@ test('updateBGLSafeRangeMinToDefault() - changes BGLSafeRange minValue to defaul
     db.updateBGLSafeRangeMinToDefault();
 
     expect(Realm.prototype.write).toHaveBeenCalled();
-    expect(safeRange.minValue).toEqual(defaultSafeRangeMin);
+    expect(safeRange.minValue).toEqual(defaultSafeRange.min);
 });
 
-test('updateBGLSafeRangeMaxToDefault() - changes BGLSafeRange maxValue to default (130)', () => {
+test('updateBGLSafeRangeMaxToDefault() - changes BGLSafeRange maxValue to default', () => {
     const safeRange = {maxValue: '100'};
     Realm.prototype.objects = jest.fn(() => {
         return [safeRange];
@@ -162,19 +159,19 @@ test('updateBGLSafeRangeMaxToDefault() - changes BGLSafeRange maxValue to defaul
     db.updateBGLSafeRangeMaxToDefault();
 
     expect(Realm.prototype.write).toHaveBeenCalled();
-    expect(safeRange.maxValue).toEqual(defaultSafeRangeMax);
+    expect(safeRange.maxValue).toEqual(safeRange.maxValue);
 });
 
 test('updateBGLStandard(standard) - updates the BGLStandard.standard value in database to given value', () => {
-    const standardObj = {standard: standardUS};
+    const standardObj = {standard: readingUnitStandards.US};
     Realm.prototype.objects = jest.fn(() => {
         return [standardObj];
     });
 
-    db.updateBGLStandard(standardUK);
+    db.updateBGLStandard(readingUnitStandards.UK);
 
     expect(Realm.prototype.write).toHaveBeenCalled();
-    expect(standardObj.standard).toEqual(standardUK);
+    expect(standardObj.standard).toEqual(readingUnitStandards.UK);
 });
 
 test('getLatestReading()_withStandardUS - returns reading with the most recent date', () => {
@@ -184,7 +181,7 @@ test('getLatestReading()_withStandardUS - returns reading with the most recent d
         expectedReading,
         {id: '2', value: '50', date: new Date(2017, 3, 6, 22, 50, 54)}
     );
-    const standardObj = {standard: standardUS};
+    const standardObj = {standard: readingUnitStandards.US};
     Realm.prototype.objects = jest.fn((objectName) => {
         return objectName === readingObjName ? readings : [standardObj];
     });
@@ -205,7 +202,7 @@ test('getLatestReading()_withStandardUK - returns reading with the most recent d
     const readings = new ResultsMock(reading1, reading2, reading3);
     const expectedReading = Object.assign({}, reading1);
     expectedReading.value = '8.25';
-    const standardObj = {standard: standardUS};
+    const standardObj = {standard: readingUnitStandards.US};
     Realm.prototype.objects = jest.fn((objectName) => {
         return objectName === readingObjName ? readings : [standardObj];
     });
@@ -229,7 +226,7 @@ test('getBGLReadingsInDateRange(startDate, endDate)_withStandardUS - gets readin
     const reading5 = {id: '5', value: '60', date: new Date(2017, 2, 8)};
     const readings = new ResultsMock(reading1, reading2, reading3, reading4, reading5);
     const expectedReadings = [reading4, reading3, reading2];
-    const standardObj = {standard: standardUS};
+    const standardObj = {standard: readingUnitStandards.US};
     Realm.prototype.objects = jest.fn((objectName) => {
         return objectName === readingObjName ? readings : [standardObj]
     });
@@ -257,7 +254,7 @@ test('getBGLReadingsInDateRange(startDate, endDate)_withStandardUK - gets readin
         Object.assign({}, reading2)
     ];
     expectedReadings.forEach((reading) => reading.value = String(reading.value / 10));
-    const standardObj = {standard: standardUK};
+    const standardObj = {standard: readingUnitStandards.UK};
     Realm.prototype.objects = jest.fn((objectName) => {
         return objectName === readingObjName ? readings : [standardObj]
     });
@@ -271,7 +268,7 @@ test('getBGLReadingsInDateRange(startDate, endDate)_withStandardUK - gets readin
 });
 
 test('get24hBGLReadings()_withStandardUS - returns readings with date within last 24hrs', () => {
-    const standardObj = {standard: standardUS};
+    const standardObj = {standard: readingUnitStandards.US};
     const reading1 = {id: '1', value: '20', date: new Date(2017, 2, 1, 15, 29)};
     const reading2 = {id: '2', value: '30', date: new Date(2017, 2, 1, 15, 30)};
     const reading3 = {id: '3', value: '40', date: new Date(2017, 2, 2, 12)};
@@ -292,7 +289,7 @@ test('get24hBGLReadings()_withStandardUS - returns readings with date within las
 });
 
 test('get24hBGLReadings()_withStandardUK - returns readings with date within last 24hrs', () => {
-    const standardObj = {standard: standardUK};
+    const standardObj = {standard: readingUnitStandards.UK};
     const reading1 = {id: '1', value: '20', date: new Date(2017, 2, 1, 15, 29)};
     const reading2 = {id: '2', value: '30', date: new Date(2017, 2, 1, 15, 30)};
     const reading3 = {id: '3', value: '40', date: new Date(2017, 2, 2, 12)};
@@ -318,7 +315,7 @@ test('get24hBGLReadings()_withStandardUK - returns readings with date within las
 });
 
 test('get60mBGLReadings()_withStandardUS - returns readings with date within last 60 minutes', () => {
-    const standardObj = {standard: standardUS};
+    const standardObj = {standard: readingUnitStandards.US};
     const reading1 = {id: '1', value: '20', date: new Date(2017, 2, 2, 14, 29)};
     const reading2 = {id: '2', value: '30', date: new Date(2017, 2, 2, 14, 30)};
     const reading3 = {id: '3', value: '40', date: new Date(2017, 2, 2, 14, 40)};
@@ -339,7 +336,7 @@ test('get60mBGLReadings()_withStandardUS - returns readings with date within las
 });
 
 test('get60mBGLReadings()_withStandardUK - returns readings with date within last 60 minutes', () => {
-    const standardObj = {standard: standardUK};
+    const standardObj = {standard: readingUnitStandards.UK};
     const reading1 = {id: '1', value: '20', date: new Date(2017, 2, 2, 14, 29)};
     const reading2 = {id: '2', value: '30', date: new Date(2017, 2, 2, 14, 30)};
     const reading3 = {id: '3', value: '40', date: new Date(2017, 2, 2, 14, 40)};
@@ -365,8 +362,8 @@ test('get60mBGLReadings()_withStandardUK - returns readings with date within las
 });
 
 test('getBGLSafeRange()_withStandardUS - returns safe range object with current minValue and maxValue', () => {
-    const standardUS = {standard: standardUS};
-    const safeRange = {minValue: defaultSafeRangeMin, maxValue: defaultSafeRangeMax};
+    const standardUS = {standard: readingUnitStandards.US};
+    const safeRange = {minValue: defaultSafeRange.min, maxValue: defaultSafeRange.min};
     const expectedSafeRange = safeRange;
     Realm.prototype.objects = jest.fn((objectName) => {
         return objectName === standardObjName ? [standardUS] : [safeRange];
@@ -381,16 +378,16 @@ test('getBGLSafeRange()_withStandardUS - returns safe range object with current 
 });
 
 test('getBGLSafeRange()_withStandardUK - returns safe range object with current minValue and maxValue', () => {
-    const standardUK = {standard: standardUK};
+    const standardUK = {standard: readingUnitStandards.UK};
     const expectedMinUK = '1.5';
     const expectedMaxUK = '3.5';
-    const safeRange = {minValue: defaultSafeRangeMin, maxValue: defaultSafeRangeMax};
+    const safeRange = {minValue: defaultSafeRange.min, maxValue: defaultSafeRange.max};
     const expectedSafeRange = {minValue: expectedMinUK, maxValue: expectedMaxUK};
     Realm.prototype.objects = jest.fn((objectName) => {
         return objectName === standardObjName ? [standardUK] : [safeRange];
     });
     processReading.default = jest.fn((value) => {
-        return value === defaultSafeRangeMin ? expectedMinUK : expectedMaxUK;
+        return value === defaultSafeRange.min ? expectedMinUK : expectedMaxUK;
     });
 
     const actualSafeRange = db.getBGLSafeRange();
@@ -399,7 +396,7 @@ test('getBGLSafeRange()_withStandardUK - returns safe range object with current 
 });
 
 test('getBGLStandard() - returns string value of the current standard', () => {
-    const expectedStandard = standardUK;
+    const expectedStandard = readingUnitStandards.UK;
     Realm.prototype.objects = jest.fn(() => {
         return [{standard: expectedStandard}]
     });
@@ -425,7 +422,7 @@ test('initBGLReadingListener(callback) - initiates listener on BGLReading, and e
 
 test('initBGLSafeRangeListener(callback) - initiates listener on BGLSafeRange, and executes callback on changes', () => {
     const callback = jest.fn();
-    const safeRange = new ResultsMock({minValue: defaultSafeRangeMin, maxValue: defaultSafeRangeMax});
+    const safeRange = new ResultsMock({minValue: defaultSafeRange.min, maxValue: defaultSafeRange.min});
     Realm.prototype.objects = jest.fn(() => {
         return safeRange;
     });
@@ -439,7 +436,7 @@ test('initBGLSafeRangeListener(callback) - initiates listener on BGLSafeRange, a
 
 test('initBGLStandardListener(callback) - initiates listener on BGLStandard, and executes callback on changes', () => {
     const callback = jest.fn();
-    const standard = new ResultsMock({standard: standardUK});
+    const standard = new ResultsMock({standard: readingUnitStandards.UK});
     Realm.prototype.objects = jest.fn(() => {
         return standard;
     });
