@@ -3,7 +3,6 @@ import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, TextInput} from 'react-native';
 import ReadingDatePicker from "./ReadingDatePicker";
 import ReadingValueInput from "../../helpers/components/ReadingValueInput";
-import StandardSetterButton from "../../helpers/components/StandardSetterButton";
 import isInputValid from "../../helpers/util/readingValueValidator";
 import log from '../../helpers/util/logger';
 import dateUtil from '../../helpers/util/date';
@@ -11,12 +10,12 @@ import styles from './styles';
 import db from '../../data/database';
 import {ListItem} from 'native-base';
 import processReading from "../../helpers/util/readingProcessor";
+import {readingUnitStandards} from "../../helpers/util/constants";
+import ToggleButton from "../../helpers/components/ToggleButton";
 
 export default class AddReadingModal extends Component {
     constructor(props) {
         super(props);
-        this.standardUK = 'mmol/L';
-        this.standardUS = 'mg/dL';
         this.state = {
             inputValue: '',
             inputDate: new Date(),
@@ -57,8 +56,20 @@ export default class AddReadingModal extends Component {
                     </View>
 
                     <View style={styles.modalInputRow}>
-                        <StandardSetterButton type='US' onPress={this.setStandardUS} standard={this.state.standard}/>
-                        <StandardSetterButton type='UK' onPress={this.setStandardUK} standard={this.state.standard}/>
+                        <ToggleButton type={readingUnitStandards.US}
+                                      selectedType={this.state.standard}
+                                      onPress={this.setStandardUS}
+                                      onColor='royalblue'
+                                      offColor='darkgrey'
+                                      onText={readingUnitStandards.US}
+                                      offText={readingUnitStandards.US}/>
+                        <ToggleButton type={readingUnitStandards.UK}
+                                      selectedType={this.state.standard}
+                                      onPress={this.setStandardUK}
+                                      onColor='royalblue'
+                                      offColor='darkgrey'
+                                      onText={readingUnitStandards.UK}
+                                      offText={readingUnitStandards.UK}/>
                     </View>
                 </View>
 
@@ -74,13 +85,13 @@ export default class AddReadingModal extends Component {
 
     setStandardUS = () => {
         this.setState({
-            standard: this.standardUS
+            standard: readingUnitStandards.US
         });
     };
 
     setStandardUK = () => {
         this.setState({
-            standard: this.standardUK
+            standard: readingUnitStandards.UK
         });
     };
 

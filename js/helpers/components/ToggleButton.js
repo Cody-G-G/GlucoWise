@@ -9,11 +9,20 @@ export default class ToggleButton extends Component {
     }
 
     render() {
+        let buttonColor;
+        let buttonText;
+        if (this.props.selectedType === this.props.type) {
+            buttonColor = this.props.onColor;
+            buttonText = this.props.onText;
+        } else {
+            buttonColor = this.props.offColor;
+            buttonText = this.props.offText;
+        }
         return (
-            <TouchableOpacity style={StyleSheet.flatten([styles.toggleButton, {backgroundColor: this.props.buttonColor}])}
+            <TouchableOpacity style={StyleSheet.flatten([styles.toggleButton, {backgroundColor: buttonColor}])}
                               onPress={() => this.props.onPress()}>
                 <Text style={styles.standardSetterButtonText}>
-                    {this.props.buttonText}
+                    {buttonText}
                 </Text>
             </TouchableOpacity>
         );

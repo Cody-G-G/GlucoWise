@@ -4,11 +4,11 @@ import {View, Text, TextInput, TouchableOpacity, StyleSheet, Image} from 'react-
 import {ListItem} from 'native-base';
 import styles from "./styles";
 import SafeRangesRowPanel from "./SafeRangesRowPanel";
-import StandardSetterButton from "../../helpers/components/StandardSetterButton";
+import ToggleButton from "../../helpers/components/ToggleButton";
+import {readingUnitStandards} from "../../helpers/util/constants";
 import db from "../../data/database";
 import log from "../../helpers/util/logger";
 import gFit from "../../data/googleFit";
-import OnOffButton from "./OnOffButton";
 import Toast from 'react-native-root-toast';
 
 export default class SettingsScreen extends Component {
@@ -22,11 +22,16 @@ export default class SettingsScreen extends Component {
             safeRangeMax: safeRange.maxValue,
             gFitConnected: db.isGoogleFitSyncEnabled(),
         };
+        this.buttonTypes = {
+            on: "On",
+            off: "Off"
+        };
         this.gFitToggling = false;
         this.toastShowing = false;
     }
 
     render() {
+        let selectedButtonType = this.state.gFitConnected ? this.buttonTypes.on : this.buttonTypes.off;
         return (
             <View style={styles.settingsScreen}>
                 <View style={styles.safeRangesPanel}>
@@ -47,8 +52,20 @@ export default class SettingsScreen extends Component {
                 <View>
                     <ListItem itemDivider><Text style={styles.divider}>Measurement Units</Text></ListItem>
                     <View style={{flexDirection:'row'}}>
-                        <StandardSetterButton type='US' standard={this.state.standard} onPress={this.setStandardUS}/>
-                        <StandardSetterButton type='UK' standard={this.state.standard} onPress={this.setStandardUK}/>
+                        <ToggleButton type={readingUnitStandards.US}
+                                      selectedType={this.state.standard}
+                                      onPress={this.setStandardUS}
+                                      onColor='royalblue'
+                                      offColor='darkgrey'
+                                      onText={readingUnitStandards.US}
+                                      offText={readingUnitStandards.US}/>
+                        <ToggleButton type={readingUnitStandards.UK}
+                                      selectedType={this.state.standard}
+                                      onPress={this.setStandardUK}
+                                      onColor='royalblue'
+                                      offColor='darkgrey'
+                                      onText={readingUnitStandards.UK}
+                                      offText={readingUnitStandards.UK}/>
                     </View>
                 </View>
                 <View>
@@ -58,7 +75,13 @@ export default class SettingsScreen extends Component {
                             <Image source={require('../../../assets/google_fit.png')}/>
                             <Text style={styles.dataSyncDescriptionText}> Google Fit</Text>
                         </View>
-                        <OnOffButton isOn={this.state.gFitConnected} onPress={this.toggleGFitConnection}/>
+                        <ToggleButton onColor='forestgreen'
+                                      offColor='darkgrey'
+                                      onText={this.buttonTypes.on}
+                                      offText={this.buttonTypes.off}
+                                      type={this.buttonTypes.on}
+                                      selectedType={selectedButtonType}
+                                      onPress={this.toggleGFitConnection}/>
                     </View>
                 </View>
             </View>
