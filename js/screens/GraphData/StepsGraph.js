@@ -50,10 +50,9 @@ export default class StepsGraph extends Component {
             }
         };
 
-        let steps = typeof this.props.steps[0][0] === 'undefined' ? [[{x: 5, y: 5}]] : this.props.steps;
         return (
             <View style={styles.graphPanel}>
-                <Bar data={steps}
+                <Bar data={this.props.steps}
                      options={options}
                      accessorKey='y'/>
             </View>

@@ -52,10 +52,9 @@ export default class StepsGraph extends Component {
             strokeWidth: 3
         };
 
-        let calories = typeof this.props.calories[0][0] === 'undefined' ? [[{x: 0, y: 0}]] : this.props.calories;
         return (
             <View style={styles.graphPanel}>
-                <StockLine data={calories}
+                <StockLine data={this.props.calories}
                            options={options}
                            xKey='x'
                            yKey='y'/>

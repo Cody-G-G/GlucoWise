@@ -28,5 +28,9 @@ export default StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 25,
         color: 'black'
+    },
+    noDataText: {
+        fontSize: 45,
+        fontWeight: 'bold'
     }
 });

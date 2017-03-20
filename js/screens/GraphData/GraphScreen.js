@@ -16,7 +16,7 @@ export default class GraphScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            timeRange: timeRanges.lastHour,
+            timeRange: timeRanges.lastDay,
             graphData: [[]],
             safeRangeMin: '',
             safeRangeMax: '',
@@ -76,17 +76,30 @@ export default class GraphScreen extends Component {
     }
 
     getGraphToRender() {
-        switch (this.state.graphMode) {
-            case(graphModes.glucose):
-                return <ReadingsGraph readings={this.state.graphData}
-                                      safeRangeMin={this.state.safeRangeMin}
-                                      safeRangeMax={this.state.safeRangeMax}
-                                      standard={this.state.standard}/>;
-            case(graphModes.steps):
-                return <StepsGraph steps={this.state.graphData}/>;
-            case(graphModes.calories):
-                return <CaloriesGraph calories={this.state.graphData}/>;
-        }
+        let toRender;
+        if (this.state.graphData[0].length > 0)
+            switch (this.state.graphMode) {
+                case(graphModes.glucose):
+                    toRender = <ReadingsGraph readings={this.state.graphData}
+                                              safeRangeMin={this.state.safeRangeMin}
+                                              safeRangeMax={this.state.safeRangeMax}
+                                              standard={this.state.standard}/>;
+                    break;
+                case(graphModes.steps):
+                    toRender = <StepsGraph steps={this.state.graphData}/>;
+                    break;
+                case(graphModes.calories):
+                    toRender = <CaloriesGraph calories={this.state.graphData}/>;
+                    break;
+            }
+        else
+            toRender = (
+                <View style={styles.graphPanel}>
+                    <Text style={styles.noDataText}>No data to plot</Text>
+                </View>
+            );
+
+        return toRender
     }
 
     /**

@@ -70,10 +70,9 @@ export default class ReadingsGraph extends Component {
             strokeWidth: 3
         };
 
-        let readings = typeof this.props.readings[0][0] === 'undefined' ? [[{x: 0, y: 0}]] : this.props.readings;
         return (
             <View style={styles.graphPanel}>
-                <StockLine data={readings}
+                <StockLine data={this.props.readings}
                            options={options}
                            regions={regions}
                            regionStyling={regionStyling}
