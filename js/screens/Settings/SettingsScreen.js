@@ -120,21 +120,21 @@ export default class SettingsScreen extends Component {
             else
                 this.gFitToggling = false;
 
-            gFit.stepsToday().then((args) => log("Steps today: " + args.steps));
-            gFit.stepsTodayInHourBuckets().then((args) => {
-                log("Steps today in hour buckets - steps: " + args.steps + " dates: " + args.dates);
+            gFit.stepsToday().then((data) => log("Steps today: " + data.values));
+            gFit.stepsTodayInHourBuckets().then((data) => {
+                log("Steps today in hour buckets - steps: " + data.values + " dates: " + data.dates);
             });
-            gFit.stepsLast24hInHourBuckets().then((args) => {
-                log("Steps last 24h in hour buckets - steps: " + args.steps + " dates: " + args.dates);
+            gFit.stepsLast24hInHourBuckets().then((data) => {
+                log("Steps last 24h in hour buckets - steps: " + data.values + " dates: " + data.dates);
             });
-            gFit.stepsLast60mInMinuteBuckets().then((args) => {
-                log("Steps last 60m in minute buckets - steps: " + args.steps + " dates: " + args.dates);
+            gFit.stepsLast60mInMinuteBuckets().then((data) => {
+                log("Steps last 60m in minute buckets - steps: " + data.values + " dates: " + data.dates);
             });
-            gFit.caloriesExpendedLast24hInHourBuckets().then((args) => {
-                log("Calories expended last 24h in hour buckets - calories: " + args.calories + " dates: " + args.dates);
+            gFit.caloriesExpendedLast24hInHourBuckets().then((data) => {
+                log("Calories expended last 24h in hour buckets - calories: " + data.values + " dates: " + data.dates);
             });
-            gFit.caloriesExpendedLast60mInMinuteBuckets().then((args) => {
-                log("Calories expended last 60m in minute buckets - calories: " + args.calories + " dates: " + args.dates);
+            gFit.caloriesExpendedLast60mInMinuteBuckets().then((data) => {
+                log("Calories expended last 60m in minute buckets - calories: " + data.values + " dates: " + data.dates);
             });
         });
     }
