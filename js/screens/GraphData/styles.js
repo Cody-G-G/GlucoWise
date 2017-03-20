@@ -16,7 +16,17 @@ export default StyleSheet.create({
     radioButtonsPanel: {
         flex: 1,
         flexDirection: 'row',
-        alignItems:'center',
+        alignItems: 'center',
         alignSelf: 'stretch'
+    },
+    totalPanel: {
+        paddingTop: 5,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    totalText: {
+        fontWeight: 'bold',
+        fontSize: 25,
+        color: 'black'
     }
 });

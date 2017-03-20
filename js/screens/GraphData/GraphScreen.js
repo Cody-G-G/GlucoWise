@@ -31,21 +31,8 @@ export default class GraphScreen extends Component {
 
     render() {
         log("Rendering GraphScreen");
-        let graphToRender;
-        switch (this.state.graphMode) {
-            case(graphModes.glucose):
-                graphToRender = <ReadingsGraph readings={this.state.graphData}
-                                               safeRangeMin={this.state.safeRangeMin}
-                                               safeRangeMax={this.state.safeRangeMax}
-                                               standard={this.state.standard}/>;
-                break;
-            case(graphModes.steps):
-                graphToRender = <StepsGraph steps={this.state.graphData}/>;
-                break;
-            case(graphModes.calories):
-                graphToRender = <CaloriesGraph calories={this.state.graphData}/>;
-                break;
-        }
+        let graphToRender = this.getGraphToRender();
+        let totalToRender = this.getTotalToRender();
 
         return (
             <View style={styles.screenContainer}>
@@ -53,6 +40,7 @@ export default class GraphScreen extends Component {
                                    types={[graphModes.glucose, graphModes.steps, graphModes.calories]}
                                    selectedType={this.state.graphMode}
                                    onPress={this.updateGraphMode}/>
+                {totalToRender}
                 {graphToRender}
                 <RadioButtonsPanel types={[timeRanges.lastHour, timeRanges.lastDay]}
                                    selectedType={this.state.timeRange}
@@ -69,6 +57,36 @@ export default class GraphScreen extends Component {
 
     componentWillUnmount() {
         log("Unmounting GraphScreen");
+    }
+
+    getTotalToRender() {
+        if (this.state.graphMode !== graphModes.glucose) {
+            const valuesSum = this.state.graphData[0].reduce((acc, curr) => {
+                return acc + curr.y;
+            }, 0);
+            const valuesUnit = this.state.graphMode === graphModes.calories ? 'kCal' : 'steps';
+            return (
+                <View style={styles.totalPanel}>
+                    <Text style={styles.totalText}>
+                        Total: {valuesSum} {valuesUnit}
+                    </Text>
+                </View>
+            );
+        }
+    }
+
+    getGraphToRender() {
+        switch (this.state.graphMode) {
+            case(graphModes.glucose):
+                return <ReadingsGraph readings={this.state.graphData}
+                                      safeRangeMin={this.state.safeRangeMin}
+                                      safeRangeMax={this.state.safeRangeMax}
+                                      standard={this.state.standard}/>;
+            case(graphModes.steps):
+                return <StepsGraph steps={this.state.graphData}/>;
+            case(graphModes.calories):
+                return <CaloriesGraph calories={this.state.graphData}/>;
+        }
     }
 
     /**

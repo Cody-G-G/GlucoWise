@@ -11,7 +11,7 @@ export default class StepsGraph extends Component {
     render() {
         const options = {
             width: 310,
-            height: 370,
+            height: 350,
             color: '#4169e1',
             margin: {
                 top: 30,
