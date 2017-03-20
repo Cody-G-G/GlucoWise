@@ -4,6 +4,7 @@ import {View, Text} from 'react-native';
 import styles from './styles';
 import ReadingsGraph from './ReadingsGraph';
 import StepsGraph from './StepsGraph';
+import CaloriesGraph from './CaloriesGraph';
 import db from "../../data/database";
 import gFit from "../../data/googleFit";
 import dateUtil from "../../helpers/util/date";
@@ -30,20 +31,29 @@ export default class GraphScreen extends Component {
 
     render() {
         log("Rendering GraphScreen");
+        let graphToRender;
+        switch (this.state.graphMode) {
+            case(graphModes.glucose):
+                graphToRender = <ReadingsGraph readings={this.state.graphData}
+                                               safeRangeMin={this.state.safeRangeMin}
+                                               safeRangeMax={this.state.safeRangeMax}
+                                               standard={this.state.standard}/>;
+                break;
+            case(graphModes.steps):
+                graphToRender = <StepsGraph steps={this.state.graphData}/>;
+                break;
+            case(graphModes.calories):
+                graphToRender = <CaloriesGraph calories={this.state.graphData}/>;
+                break;
+        }
+
         return (
             <View style={styles.screenContainer}>
                 <RadioButtonsPanel fontSize={25}
                                    types={[graphModes.glucose, graphModes.steps, graphModes.calories]}
                                    selectedType={this.state.graphMode}
                                    onPress={this.updateGraphMode}/>
-
-                {this.state.graphMode === graphModes.glucose ?
-                    <ReadingsGraph readings={this.state.graphData}
-                                   safeRangeMin={this.state.safeRangeMin}
-                                   safeRangeMax={this.state.safeRangeMax}
-                                   standard={this.state.standard}/> :
-                    <StepsGraph steps={this.state.graphData}/>
-                }
+                {graphToRender}
                 <RadioButtonsPanel types={[timeRanges.lastHour, timeRanges.lastDay]}
                                    selectedType={this.state.timeRange}
                                    onPress={this.updateState}/>
@@ -99,7 +109,7 @@ export default class GraphScreen extends Component {
             case(graphModes.steps):
                 return "name";
             case(graphModes.calories):
-                return "name";
+                return "x";
         }
     }
 
@@ -170,6 +180,7 @@ export default class GraphScreen extends Component {
                     data = this.mapValuesToDates(await (timeRange === timeRanges.lastDay ? gFit.stepsLast24hInHourBuckets() : gFit.stepsLast60mInMinuteBuckets()));
                     break;
                 case(graphModes.calories):
+                    data = this.mapValuesToDates(await (timeRange === timeRanges.lastDay ? gFit.caloriesExpendedLast24hInHourBuckets() : gFit.caloriesExpendedLast60mInMinuteBuckets()));
                     break;
             }
             resolve(data);
