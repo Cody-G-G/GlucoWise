@@ -10,12 +10,12 @@ export default class StepsGraph extends Component {
 
     render() {
         const options = {
-            width: 315,
-            height: 340,
+            width: 310,
+            height: 330,
             color: '#4169e1',
             gutter: 5,
             margin: {
-                top: 10,
+                top: 20,
                 left: 35,
                 bottom: 40,
                 right: 5
@@ -29,7 +29,7 @@ export default class StepsGraph extends Component {
                 orient: 'bottom',
                 label: {
                     fontFamily: 'Arial',
-                    fontSize: 12,
+                    fontSize: 14,
                     fontWeight: true,
                     fill: '#34495E'
                 }
@@ -43,7 +43,7 @@ export default class StepsGraph extends Component {
                 orient: 'left',
                 label: {
                     fontFamily: 'Arial',
-                    fontSize: 12,
+                    fontSize: 14,
                     fontWeight: true,
                     fill: '#34495E'
                 }

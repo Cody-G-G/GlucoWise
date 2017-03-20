@@ -26,7 +26,7 @@ export default class ReadingsGraph extends Component {
         };
 
         const options = {
-            width: 315,
+            width: 305,
             height: 370,
             color: '#4169e1',
             margin: {
