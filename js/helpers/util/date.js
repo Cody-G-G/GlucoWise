@@ -44,5 +44,21 @@ export default {
 
     toDateFromDateTimeString(dateTimeString) {
         return new Date(moment(dateTimeString, "DD-MM-YYYY HH:mm"));
+    },
+
+    hoursAgoMillis(hours) {
+        return new Date(moment().subtract(hours, 'hours')).getTime();
+    },
+
+    daysAgoMillis(days) {
+        return new Date(moment().subtract(days, 'days')).getTime();
+    },
+
+    todayStartMillis() {
+        return new Date(moment().startOf('day')).getTime();
+    },
+
+    todayEndMillis() {
+        return new Date(moment().endOf('day')).getTime();
     }
 };

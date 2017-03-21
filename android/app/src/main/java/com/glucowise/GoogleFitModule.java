@@ -23,12 +23,9 @@ import com.google.android.gms.fitness.data.Field;
 import com.google.android.gms.fitness.request.DataReadRequest;
 import com.google.android.gms.fitness.result.DataReadResult;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import static com.glucowise.DateUtil.daysAgoMillis;
-import static com.glucowise.DateUtil.hoursAgoMillis;
-import static com.glucowise.DateUtil.millisTodayAt;
 
 public class GoogleFitModule extends ReactContextBaseJavaModule {
 
@@ -39,10 +36,15 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
     private final String LOG_TAG = NAME;
     GoogleFitConnectionEventsHandler connectionEventsHandler;
     GoogleFitActivityEventListener activityEventListener;
+    HashMap<String, TimeUnit> timeUnits;
 
     public GoogleFitModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
+        this.timeUnits = new HashMap<>();
+        for (TimeUnit unit : TimeUnit.values()) {
+            timeUnits.put(unit.name(), unit);
+        }
     }
 
     @Override
@@ -51,38 +53,13 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void stepsToday(Promise promise) {
-        getStepsData(millisTodayAt(0, 0, 0, 0), millisTodayAt(23, 59, 59, 999), TimeUnit.DAYS, promise);
+    public void steps(Double from, Double to, String timeUnit, Promise promise) {
+        getStepsData(from.longValue(), to.longValue(), timeUnits.get(timeUnit.toUpperCase()), promise);
     }
 
     @ReactMethod
-    public void stepsTodayInHourBuckets(Promise promise) {
-        getStepsData(millisTodayAt(0, 0, 0, 0), millisTodayAt(23, 59, 59, 999), TimeUnit.HOURS, promise);
-    }
-
-    @ReactMethod
-    public void stepsLast24hInHourBuckets(Promise promise) {
-        getStepsData(hoursAgoMillis(24), hoursAgoMillis(0), TimeUnit.HOURS, promise);
-    }
-
-    @ReactMethod
-    public void stepsLast60mInMinuteBuckets(Promise promise) {
-        getStepsData(hoursAgoMillis(1), hoursAgoMillis(0), TimeUnit.MINUTES, promise);
-    }
-
-    @ReactMethod
-    public void caloriesExpendedLast24hInHourBuckets(Promise promise) {
-        getCaloriesExpendedData(hoursAgoMillis(24), hoursAgoMillis(0), TimeUnit.HOURS, promise);
-    }
-
-    @ReactMethod
-    public void caloriesExpendedLast60mInMinuteBuckets(Promise promise) {
-        getCaloriesExpendedData(hoursAgoMillis(1), hoursAgoMillis(0), TimeUnit.MINUTES, promise);
-    }
-
-    @ReactMethod
-    public void caloriesExpendedLast7dInDayBuckets(Promise promise) {
-        getCaloriesExpendedData(daysAgoMillis(7), daysAgoMillis(0), TimeUnit.DAYS, promise);
+    public void caloriesExpended(Double from, Double to, String timeUnit, Promise promise) {
+        getCaloriesExpendedData(from.longValue(), to.longValue(), timeUnits.get(timeUnit.toUpperCase()), promise);
     }
 
     @ReactMethod

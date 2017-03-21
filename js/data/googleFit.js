@@ -1,4 +1,5 @@
 import {NativeModules, DeviceEventEmitter} from 'react-native';
+import dateUtil from "../helpers/util/date";
 const googleFit = NativeModules.GoogleFit;
 
 class GoogleFit {
@@ -19,32 +20,40 @@ class GoogleFit {
         });
     }
 
+    steps(from, to, timeUnit) {
+        return googleFit.steps(from, to, timeUnit);
+    }
+
+    caloriesExpended(from, to, timeUnit) {
+        return googleFit.caloriesExpended(from, to, timeUnit);
+    }
+
     stepsToday() {
-        return googleFit.stepsToday();
+        return googleFit.steps(dateUtil.todayStartMillis(), dateUtil.todayEndMillis(), 'days');
     }
 
     stepsTodayInHourBuckets() {
-        return googleFit.stepsTodayInHourBuckets();
+        return googleFit.steps(dateUtil.todayStartMillis(), dateUtil.todayEndMillis(), 'hours');
     }
 
     stepsLast24hInHourBuckets() {
-        return googleFit.stepsLast24hInHourBuckets();
+        return googleFit.steps(dateUtil.hoursAgoMillis(24), new Date().getTime(), 'hours');
     }
 
     stepsLast60mInMinuteBuckets() {
-        return googleFit.stepsLast60mInMinuteBuckets();
+        return googleFit.steps(dateUtil.hoursAgoMillis(1), new Date().getTime(), 'minutes');
     }
 
     caloriesExpendedLast60mInMinuteBuckets() {
-        return googleFit.caloriesExpendedLast60mInMinuteBuckets();
+        return googleFit.caloriesExpended(dateUtil.hoursAgoMillis(1), new Date().getTime(), 'minutes');
     }
 
     caloriesExpendedLast24hInHourBuckets() {
-        return googleFit.caloriesExpendedLast24hInHourBuckets();
+        return googleFit.caloriesExpended(dateUtil.hoursAgoMillis(24), new Date().getTime(), 'hours');
     }
 
     caloriesExpendedLast7dInDayBuckets() {
-        return googleFit.caloriesExpendedLast7dInDayBuckets();
+        return googleFit.caloriesExpended(dateUtil.daysAgoMillis(7), new Date().getTime(), 'days');
     }
 
     disconnect() {
