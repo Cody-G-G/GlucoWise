@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import {View, Dimensions} from 'react-native';
+import {View} from 'react-native';
 import {Bar} from 'react-native-pathjs-charts';
 import styles from './styles';
 
-export default class StepsGraph extends Component {
+export default class BarGraph extends Component {
     constructor(props) {
         super(props);
     }
@@ -11,13 +11,13 @@ export default class StepsGraph extends Component {
     render() {
         const options = {
             width: 310,
-            height: 325,
+            height: 320,
             color: '#4169e1',
-            gutter: 5,
+            gutter: this.props.gutter,
             margin: {
-                top: 26,
+                top: 30,
                 left: 35,
-                bottom: 40,
+                bottom: 45,
                 right: 5
             },
             axisX: {
@@ -29,7 +29,7 @@ export default class StepsGraph extends Component {
                 orient: 'bottom',
                 label: {
                     fontFamily: 'Arial',
-                    fontSize: 14,
+                    fontSize: this.props.xSize,
                     fontWeight: true,
                     fill: '#34495E'
                 }
@@ -52,7 +52,7 @@ export default class StepsGraph extends Component {
 
         return (
             <View style={styles.graphPanel}>
-                <Bar data={this.props.steps}
+                <Bar data={this.props.data}
                      options={options}
                      accessorKey='y'/>
             </View>

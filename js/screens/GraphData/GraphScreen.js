@@ -3,8 +3,7 @@ import React, {Component} from 'react';
 import {View, Text} from 'react-native';
 import styles from './styles';
 import ReadingsGraph from './ReadingsGraph';
-import StepsGraph from './StepsGraph';
-import CaloriesGraph from './CaloriesGraph';
+import BarGraph from './BarGraph';
 import db from "../../data/database";
 import gFit from "../../data/googleFit";
 import dateUtil from "../../helpers/util/date";
@@ -106,10 +105,10 @@ export default class GraphScreen extends Component {
                                               standard={this.state.standard}/>;
                     break;
                 case(graphModes.steps):
-                    toRender = <StepsGraph steps={this.state.graphData}/>;
+                    toRender = <BarGraph data={this.state.graphData} gutter={5} xSize={14}/>;
                     break;
                 case(graphModes.calories):
-                    toRender = <CaloriesGraph calories={this.state.graphData}/>;
+                    toRender = <BarGraph data={this.state.graphData} gutter={2} xSize={10}/>;
                     break;
             }
         else
@@ -160,7 +159,7 @@ export default class GraphScreen extends Component {
             case(graphModes.steps):
                 return "name";
             case(graphModes.calories):
-                return "x";
+                return "name";
         }
     }
 

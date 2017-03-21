@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Dimensions} from 'react-native';
+import {View} from 'react-native';
 import {StockLine} from 'react-native-pathjs-charts';
 import styles from './styles';
 import processReading from "../../helpers/util/readingProcessor";
