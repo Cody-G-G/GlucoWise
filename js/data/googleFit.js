@@ -43,6 +43,10 @@ class GoogleFit {
         return googleFit.caloriesExpendedLast24hInHourBuckets();
     }
 
+    caloriesExpendedLast7dInDayBuckets() {
+        return googleFit.caloriesExpendedLast7dInDayBuckets();
+    }
+
     disconnect() {
         googleFit.disconnect();
     }

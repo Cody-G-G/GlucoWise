@@ -11,11 +11,11 @@ export default class BarGraph extends Component {
     render() {
         const options = {
             width: 310,
-            height: 320,
+            height: 340,
             color: '#4169e1',
             gutter: this.props.gutter,
             margin: {
-                top: 30,
+                top: 10,
                 left: 35,
                 bottom: 45,
                 right: 5

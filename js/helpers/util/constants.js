@@ -13,7 +13,8 @@ const graphModes = {
 
 const timeRanges = {
     lastHour: "60m",
-    lastDay: "24h"
+    lastDay: "24h",
+    lastWeek: "7d"
 };
 
 const defaultSafeRange = {

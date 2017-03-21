@@ -30,6 +30,10 @@ export default {
         return Math.round(Math.abs((Date.now()) - date) / 36e5);
     },
 
+    daysFromPresent(date) {
+        return Math.round(Math.abs((Date.now()) - date) / 864e5);
+    },
+
     minutesFromPresent(date) {
         return Math.round(Math.floor((Date.now()) - date) / 6e4);
     },

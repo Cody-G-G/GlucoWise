@@ -23,7 +23,26 @@ export default class GraphScreen extends Component {
             safeRangeMax: '',
             standard: '',
             graphMode: graphModes.steps
-        }
+        };
+        this.graphDataFunctions = {
+            [graphModes.steps]: {
+                [timeRanges.lastDay]: () => gFit.stepsLast24hInHourBuckets(),
+                [timeRanges.lastHour]: () => gFit.stepsLast60mInMinuteBuckets()
+            },
+            [graphModes.glucose]: {
+                [timeRanges.lastDay]: () => db.get24hBGLReadings(),
+                [timeRanges.lastHour]: () => db.get60mBGLReadings()
+            },
+            [graphModes.calories]: {
+                [timeRanges.lastDay]: () => gFit.caloriesExpendedLast24hInHourBuckets(),
+                [timeRanges.lastWeek]: () => gFit.caloriesExpendedLast7dInDayBuckets()
+            }
+        };
+        this.timeUnitsFromPresentFunctions = {
+            [timeRanges.lastHour]: (date) => dateUtil.minutesFromPresent(date),
+            [timeRanges.lastDay]: (date) => dateUtil.hoursFromPresent(date),
+            [timeRanges.lastWeek]: (date) => dateUtil.daysFromPresent(date)
+        };
     }
 
     componentWillMount() {
@@ -32,8 +51,9 @@ export default class GraphScreen extends Component {
 
     render() {
         log("Rendering GraphScreen");
-        let graphToRender = this.getGraphToRender();
-        let totalToRender = this.getTotalToRender();
+        const graphToRender = this.getGraphToRender();
+        const totalToRender = this.getTotalToRender();
+        const timeRangeTypes = Object.keys(this.graphDataFunctions[this.state.graphMode]);
 
         return (
             <View style={styles.screenContainer}>
@@ -44,7 +64,7 @@ export default class GraphScreen extends Component {
                                        onPress={this.updateGraphMode}/>
                     {totalToRender}
                     {graphToRender}
-                    <RadioButtonsPanel types={[timeRanges.lastHour, timeRanges.lastDay]}
+                    <RadioButtonsPanel types={timeRangeTypes}
                                        selectedType={this.state.timeRange}
                                        onPress={this.updateState}/>
                 </View>
@@ -130,7 +150,7 @@ export default class GraphScreen extends Component {
     getDataForGraph(data, timeRange, graphMode) {
         log("Processing data for graph: " + JSON.stringify(data));
         let graphData = [];
-        let timeUnitsFromPresent = timeRange === timeRanges.lastDay ? dateUtil.hoursFromPresent : dateUtil.minutesFromPresent;
+        let timeUnitsFromPresent = this.timeUnitsFromPresentFunctions[timeRange];
         let xAxis = this.getXAxisString(graphMode);
         data.forEach((dataPoint) => {
                 let graphDataPoint = {};
@@ -201,12 +221,15 @@ export default class GraphScreen extends Component {
      */
     updateGraphMode = (newGraphMode) => {
         const graphMode = (typeof newGraphMode !== 'undefined') ? newGraphMode : this.state.graphMode;
-        this.getData(this.state.timeRange, graphMode)
+        const timeRangesForMode = Object.keys(this.graphDataFunctions[graphMode]);
+        const timeRange = timeRangesForMode.includes(this.state.timeRange) ? this.state.timeRange : timeRangesForMode[0];
+        this.getData(timeRange, graphMode)
             .then((data) => {
-                const graphData = this.getDataForGraph(data, this.state.timeRange, newGraphMode);
+                const graphData = this.getDataForGraph(data, timeRange, newGraphMode);
                 this.setState({
                     graphMode: graphMode,
-                    graphData: graphData
+                    graphData: graphData,
+                    timeRange: timeRange
                 });
             })
             .catch((error) => log("getData for " + newGraphMode + " failed: " + error));
@@ -221,19 +244,8 @@ export default class GraphScreen extends Component {
     getData(timeRange, graphMode) {
         log("Getting data - mode: " + graphMode + " timeRange: " + timeRange);
         return new Promise(async(resolve) => {
-            let data;
-            switch (graphMode) {
-                case(graphModes.glucose):
-                    data = timeRange === timeRanges.lastDay ? db.get24hBGLReadings() : db.get60mBGLReadings();
-                    break;
-                case(graphModes.steps):
-                    data = this.mapValuesToDates(await (timeRange === timeRanges.lastDay ? gFit.stepsLast24hInHourBuckets() : gFit.stepsLast60mInMinuteBuckets()));
-                    break;
-                case(graphModes.calories):
-                    data = this.mapValuesToDates(await (timeRange === timeRanges.lastDay ? gFit.caloriesExpendedLast24hInHourBuckets() : gFit.caloriesExpendedLast60mInMinuteBuckets()));
-                    break;
-            }
-            resolve(data);
+            let data = await this.graphDataFunctions[graphMode][timeRange]();
+            resolve(graphMode === graphModes.glucose ? data : this.mapValuesToDates(data));
         });
     }
 }

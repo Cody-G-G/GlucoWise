@@ -26,6 +26,7 @@ import com.google.android.gms.fitness.result.DataReadResult;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static com.glucowise.DateUtil.daysAgoMillis;
 import static com.glucowise.DateUtil.hoursAgoMillis;
 import static com.glucowise.DateUtil.millisTodayAt;
 
@@ -79,6 +80,10 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
         getCaloriesExpendedData(hoursAgoMillis(1), hoursAgoMillis(0), TimeUnit.MINUTES, promise);
     }
 
+    @ReactMethod
+    public void caloriesExpendedLast7dInDayBuckets(Promise promise) {
+        getCaloriesExpendedData(daysAgoMillis(7), daysAgoMillis(0), TimeUnit.DAYS, promise);
+    }
 
     @ReactMethod
     public void authorizeAndConnect() {
