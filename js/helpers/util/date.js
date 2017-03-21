@@ -1,5 +1,6 @@
 'use strict';
 import moment from "moment";
+const dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 export default {
     padDate(datePortion) {
@@ -32,6 +33,10 @@ export default {
 
     daysFromPresent(date) {
         return Math.round(Math.abs((Date.now()) - date) / 864e5);
+    },
+
+    dayOfWeek(date){
+        return dayOfWeek[new Date(date).getDay()];
     },
 
     minutesFromPresent(date) {

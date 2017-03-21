@@ -41,7 +41,7 @@ export default class GraphScreen extends Component {
         this.timeUnitsFromPresentFunctions = {
             [timeRanges.lastHour]: (date) => dateUtil.minutesFromPresent(date),
             [timeRanges.lastDay]: (date) => dateUtil.hoursFromPresent(date),
-            [timeRanges.lastWeek]: (date) => dateUtil.daysFromPresent(date)
+            [timeRanges.lastWeek]: (date) => dateUtil.dayOfWeek(date)
         };
     }
 
@@ -128,9 +128,8 @@ export default class GraphScreen extends Component {
                     toRender = <BarGraph data={this.state.graphData} gutter={5} xSize={14}/>;
                     break;
                 case(graphModes.calories):
-                    let xSize = this.state.timeRange === timeRanges.lastDay ? 10 : 14;
                     let gutter = this.state.timeRange === timeRanges.lastDay ? 2 : 5;
-                    toRender = <BarGraph data={this.state.graphData} gutter={gutter} xSize={xSize}/>;
+                    toRender = <BarGraph data={this.state.graphData} gutter={gutter} xSize={10}/>;
                     break;
             }
         else
@@ -162,7 +161,8 @@ export default class GraphScreen extends Component {
                 const graphModeIsSteps = graphMode === graphModes.steps;
                 const previousDataPoint = graphData[graphData.length - 1];
                 const existsPreviousDataPoint = typeof previousDataPoint !== 'undefined';
-                const currentDataPointHasSameTimeAsPrevious = existsPreviousDataPoint ? graphDataPoint[xAxis] === previousDataPoint[xAxis] : false; // due to rounding, two datapoints might have same X
+                const currentDataPointHasSameTimeAsPrevious = existsPreviousDataPoint ? graphDataPoint[xAxis] === previousDataPoint[xAxis] : false;
+                //^ due to rounding, two data points might have same X
 
                 if (currentDataPointHasSameTimeAsPrevious && graphModeIsSteps)
                     previousDataPoint.y = previousDataPoint.y + graphDataPoint.y;
