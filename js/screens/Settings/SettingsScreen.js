@@ -31,6 +31,7 @@ export default class SettingsScreen extends Component {
     }
 
     render() {
+        log("Rendering SettingsScreen");
         let selectedButtonType = this.state.gFitConnected ? this.buttonTypes.on : this.buttonTypes.off;
         return (
             <View style={styles.settingsScreen}>

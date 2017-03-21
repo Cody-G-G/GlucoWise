@@ -1,0 +1,546 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GraphsHelpModal_isNotOpen - renders correctly 1`] = `<View />`;
+
+exports[`GraphsHelpModal_isOpen - renders correctly 1`] = `
+<View
+  onLayout={[Function]}
+  pointerEvents="box-none"
+  style={
+    Array [
+      Object {
+        "backgroundColor": "rgba(0,0,0,0)",
+      },
+      Object {
+        "bottom": 0,
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      },
+    ]
+  }
+>
+  <View
+    accessibilityComponentType={undefined}
+    accessibilityLabel={undefined}
+    accessibilityTraits={undefined}
+    accessible={true}
+    hitSlop={undefined}
+    onLayout={undefined}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "bottom": 0,
+        "height": 1334,
+        "left": 0,
+        "opacity": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+        "width": 750,
+      }
+    }
+    testID={undefined}
+  >
+    <View
+      style={
+        Array [
+          Object {
+            "bottom": 0,
+            "left": 0,
+            "position": "absolute",
+            "right": 0,
+            "top": 0,
+          },
+          Object {
+            "backgroundColor": "black",
+            "opacity": 0.5,
+          },
+        ]
+      }
+    />
+  </View>
+  <View
+    onLayout={[Function]}
+    onMoveShouldSetResponder={[Function]}
+    onMoveShouldSetResponderCapture={[Function]}
+    onResponderEnd={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderReject={[Function]}
+    onResponderRelease={[Function]}
+    onResponderStart={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    onStartShouldSetResponderCapture={[Function]}
+    style={
+      Object {
+        "backgroundColor": "aliceblue",
+        "borderWidth": 2,
+        "height": 450,
+        "transform": Array [
+          Object {
+            "translateY": 1334,
+          },
+          Object {
+            "translateX": 0,
+          },
+        ],
+        "width": 350,
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "flex": 1,
+        }
+      }
+    >
+      <View
+        accessibilityComponentType={undefined}
+        accessibilityLabel={undefined}
+        accessibilityTraits={undefined}
+        accessible={true}
+        hitSlop={undefined}
+        isTVSelectable={true}
+        onLayout={undefined}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "backgroundColor": "#ddd",
+            "borderBottomWidth": 1,
+            "borderColor": "#ddd",
+            "flexDirection": "row",
+            "height": 45,
+            "justifyContent": "flex-start",
+            "opacity": 1,
+            "padding": 12,
+          }
+        }
+        testID={undefined}
+        tvParallaxProperties={undefined}
+      >
+        <View
+          style={
+            Object {
+              "alignSelf": "stretch",
+              "flex": 1,
+              "justifyContent": "center",
+            }
+          }
+        >
+          <Text
+            accessible={true}
+            allowFontScaling={true}
+            ellipsizeMode="tail"
+            foregroundColor={undefined}
+            style={
+              Object {
+                "alignSelf": "center",
+                "fontSize": 30,
+                "fontWeight": "bold",
+              }
+            }
+          >
+            Help / Instructions
+          </Text>
+        </View>
+      </View>
+      <RCTScrollView>
+        <View>
+          <View
+            style={
+              Object {
+                "flex": 1,
+              }
+            }
+          >
+            <View
+              style={
+                Object {
+                  "alignItems": "center",
+                  "flex": 1,
+                  "justifyContent": "center",
+                  "paddingBottom": 10,
+                  "paddingLeft": 10,
+                  "paddingRight": 10,
+                }
+              }
+            >
+              <Text
+                accessible={true}
+                allowFontScaling={true}
+                ellipsizeMode="tail"
+                style={
+                  Object {
+                    "color": "black",
+                    "fontSize": 30,
+                    "fontWeight": "bold",
+                  }
+                }
+              >
+                General
+              </Text>
+              <Text
+                accessible={true}
+                allowFontScaling={true}
+                ellipsizeMode="tail"
+                style={
+                  Object {
+                    "color": "royalblue",
+                    "fontSize": 18,
+                    "fontWeight": "bold",
+                  }
+                }
+              >
+                X axis: 
+                <Text
+                  accessible={true}
+                  allowFontScaling={true}
+                  ellipsizeMode="tail"
+                  style={
+                    Object {
+                      "color": "dimgray",
+                      "fontSize": 16,
+                      "fontWeight": "normal",
+                    }
+                  }
+                >
+                  time axis, should be read as "hours ago" (for 24h) / "minutes ago" (for 60m). Therefore, the X axis values represent either hours or minutes, depending on the chosen time range.
+                </Text>
+              </Text>
+              <Text
+                accessible={true}
+                allowFontScaling={true}
+                ellipsizeMode="tail"
+                style={
+                  Object {
+                    "color": "royalblue",
+                    "fontSize": 18,
+                    "fontWeight": "bold",
+                  }
+                }
+              >
+                Y axis: 
+                <Text
+                  accessible={true}
+                  allowFontScaling={true}
+                  ellipsizeMode="tail"
+                  style={
+                    Object {
+                      "color": "dimgray",
+                      "fontSize": 16,
+                      "fontWeight": "normal",
+                    }
+                  }
+                >
+                  value axis, represents the value of the glucose reading / number of steps made / calories consumed, depending on the graph mode chosen.
+                </Text>
+              </Text>
+            </View>
+            <View
+              style={
+                Object {
+                  "alignItems": "center",
+                  "flex": 1,
+                  "justifyContent": "center",
+                  "paddingBottom": 10,
+                  "paddingLeft": 10,
+                  "paddingRight": 10,
+                }
+              }
+            >
+              <Text
+                accessible={true}
+                allowFontScaling={true}
+                ellipsizeMode="tail"
+                style={
+                  Object {
+                    "color": "black",
+                    "fontSize": 30,
+                    "fontWeight": "bold",
+                  }
+                }
+              >
+                Glucose graph
+              </Text>
+              <Text
+                accessible={true}
+                allowFontScaling={true}
+                ellipsizeMode="tail"
+                style={
+                  Object {
+                    "color": "dimgray",
+                    "fontSize": 16,
+                    "fontWeight": "normal",
+                  }
+                }
+              >
+                Shows a plot of the glucose readings received from the 
+                <Text
+                  accessible={true}
+                  allowFontScaling={true}
+                  ellipsizeMode="tail"
+                  style={
+                    Object {
+                      "color": "royalblue",
+                      "fontSize": 18,
+                      "fontWeight": "bold",
+                    }
+                  }
+                >
+                  GlucoWise
+                </Text>
+                  device for the selected time range. The green area represents the 
+                <Text
+                  accessible={true}
+                  allowFontScaling={true}
+                  ellipsizeMode="tail"
+                  style={
+                    Object {
+                      "color": "royalblue",
+                      "fontSize": 18,
+                      "fontWeight": "bold",
+                    }
+                  }
+                >
+                  Safe Range
+                </Text>
+                , which is the healthy range of values that you should aim to keep your glucose readings in. This range can be changed in 
+                <Text
+                  accessible={true}
+                  allowFontScaling={true}
+                  ellipsizeMode="tail"
+                  style={
+                    Object {
+                      "color": "royalblue",
+                      "fontSize": 18,
+                      "fontWeight": "bold",
+                    }
+                  }
+                >
+                  Settings
+                </Text>
+                .
+              </Text>
+            </View>
+            <View
+              style={
+                Object {
+                  "alignItems": "center",
+                  "flex": 1,
+                  "justifyContent": "center",
+                  "paddingBottom": 10,
+                  "paddingLeft": 10,
+                  "paddingRight": 10,
+                }
+              }
+            >
+              <Text
+                accessible={true}
+                allowFontScaling={true}
+                ellipsizeMode="tail"
+                style={
+                  Object {
+                    "color": "black",
+                    "fontSize": 30,
+                    "fontWeight": "bold",
+                  }
+                }
+              >
+                Steps graph
+              </Text>
+              <Text
+                accessible={true}
+                allowFontScaling={true}
+                ellipsizeMode="tail"
+                style={
+                  Object {
+                    "color": "dimgray",
+                    "fontSize": 16,
+                    "fontWeight": "normal",
+                  }
+                }
+              >
+                Shows a bar chart of the steps data received from 
+                <Text
+                  accessible={true}
+                  allowFontScaling={true}
+                  ellipsizeMode="tail"
+                  style={
+                    Object {
+                      "color": "royalblue",
+                      "fontSize": 18,
+                      "fontWeight": "bold",
+                    }
+                  }
+                >
+                  GoogleFit
+                </Text>
+                , if data sync with GoogleFit is enabled in 
+                <Text
+                  accessible={true}
+                  allowFontScaling={true}
+                  ellipsizeMode="tail"
+                  style={
+                    Object {
+                      "color": "royalblue",
+                      "fontSize": 18,
+                      "fontWeight": "bold",
+                    }
+                  }
+                >
+                  Settings
+                </Text>
+                . Each bar represents Y number of steps made X time units ago, where Y is the value of the Y axis corresponding to the top of the bar, X represents the value of the X axis under the bar, and the time units represent minutes or hours depending on the chosen time range. To make use of this, make sure to set sync "On" in 
+                <Text
+                  accessible={true}
+                  allowFontScaling={true}
+                  ellipsizeMode="tail"
+                  style={
+                    Object {
+                      "color": "royalblue",
+                      "fontSize": 18,
+                      "fontWeight": "bold",
+                    }
+                  }
+                >
+                  Settings
+                </Text>
+                , enable Location services, and the tracking functionality in 
+                <Text
+                  accessible={true}
+                  allowFontScaling={true}
+                  ellipsizeMode="tail"
+                  style={
+                    Object {
+                      "color": "royalblue",
+                      "fontSize": 18,
+                      "fontWeight": "bold",
+                    }
+                  }
+                >
+                  GoogleFit
+                </Text>
+              </Text>
+            </View>
+            <View
+              style={
+                Object {
+                  "alignItems": "center",
+                  "flex": 1,
+                  "justifyContent": "center",
+                  "paddingBottom": 10,
+                  "paddingLeft": 10,
+                  "paddingRight": 10,
+                }
+              }
+            >
+              <Text
+                accessible={true}
+                allowFontScaling={true}
+                ellipsizeMode="tail"
+                style={
+                  Object {
+                    "color": "black",
+                    "fontSize": 30,
+                    "fontWeight": "bold",
+                  }
+                }
+              >
+                Calories graph
+              </Text>
+              <Text
+                accessible={true}
+                allowFontScaling={true}
+                ellipsizeMode="tail"
+                style={
+                  Object {
+                    "color": "dimgray",
+                    "fontSize": 16,
+                    "fontWeight": "normal",
+                  }
+                }
+              >
+                Shows a bar chart of the calories expended / consumed data (based on chosen mode) received from 
+                <Text
+                  accessible={true}
+                  allowFontScaling={true}
+                  ellipsizeMode="tail"
+                  style={
+                    Object {
+                      "color": "royalblue",
+                      "fontSize": 18,
+                      "fontWeight": "bold",
+                    }
+                  }
+                >
+                  GoogleFit
+                </Text>
+                , if data sync with GoogleFit is enabled in 
+                <Text
+                  accessible={true}
+                  allowFontScaling={true}
+                  ellipsizeMode="tail"
+                  style={
+                    Object {
+                      "color": "royalblue",
+                      "fontSize": 18,
+                      "fontWeight": "bold",
+                    }
+                  }
+                >
+                  Settings
+                </Text>
+                . Each bar represents Y number of calories, X time units ago, where Y is the value of the Y axis corresponding to the top of the bar, X represents the value of the X axis under the bar, and the time units represent minutes or hours depending on the chosen time range. The expended calories are an estimation based on your activity throughout the day, so for the highest accuracy, ensure you carry your phone around when working out / exercising / moving around. To make use of this, make sure to set sync "On" in 
+                <Text
+                  accessible={true}
+                  allowFontScaling={true}
+                  ellipsizeMode="tail"
+                  style={
+                    Object {
+                      "color": "royalblue",
+                      "fontSize": 18,
+                      "fontWeight": "bold",
+                    }
+                  }
+                >
+                  Settings
+                </Text>
+                , enable Location services, and the tracking functionality in 
+                <Text
+                  accessible={true}
+                  allowFontScaling={true}
+                  ellipsizeMode="tail"
+                  style={
+                    Object {
+                      "color": "royalblue",
+                      "fontSize": 18,
+                      "fontWeight": "bold",
+                    }
+                  }
+                >
+                  GoogleFit
+                </Text>
+              </Text>
+            </View>
+          </View>
+        </View>
+      </RCTScrollView>
+    </View>
+  </View>
+</View>
+`;

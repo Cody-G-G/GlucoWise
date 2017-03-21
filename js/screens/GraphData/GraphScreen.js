@@ -11,6 +11,8 @@ import dateUtil from "../../helpers/util/date";
 import {graphModes, timeRanges} from "../../helpers/util/constants";
 import log from "../../helpers/util/logger";
 import RadioButtonsPanel from "./RadioButtonsPanel";
+import GraphsHelpModal from "./GraphsHelpModal";
+import emitter from "../../helpers/util/eventEmitter";
 
 export default class GraphScreen extends Component {
     constructor(props) {
@@ -36,15 +38,18 @@ export default class GraphScreen extends Component {
 
         return (
             <View style={styles.screenContainer}>
-                <RadioButtonsPanel fontSize={25}
-                                   types={[graphModes.glucose, graphModes.steps, graphModes.calories]}
-                                   selectedType={this.state.graphMode}
-                                   onPress={this.updateGraphMode}/>
-                {totalToRender}
-                {graphToRender}
-                <RadioButtonsPanel types={[timeRanges.lastHour, timeRanges.lastDay]}
-                                   selectedType={this.state.timeRange}
-                                   onPress={this.updateState}/>
+                <View style={styles.mainPanel}>
+                    <RadioButtonsPanel fontSize={25}
+                                       types={[graphModes.glucose, graphModes.steps, graphModes.calories]}
+                                       selectedType={this.state.graphMode}
+                                       onPress={this.updateGraphMode}/>
+                    {totalToRender}
+                    {graphToRender}
+                    <RadioButtonsPanel types={[timeRanges.lastHour, timeRanges.lastDay]}
+                                       selectedType={this.state.timeRange}
+                                       onPress={this.updateState}/>
+                </View>
+                <GraphsHelpModal helpOpen={this.state.helpOpen} onClose={this.closeHelpModal}/>
             </View>
         );
     }
@@ -52,12 +57,27 @@ export default class GraphScreen extends Component {
     componentDidMount() {
         db.initBGLReadingListener(this.updateState);
         db.initBGLSafeRangeListener(this.updateState);
-        db.initBGLStandardListener(this.updateState)
+        db.initBGLStandardListener(this.updateState);
+        this.initGraphsHelpListener();
     }
 
     componentWillUnmount() {
         log("Unmounting GraphScreen");
     }
+
+    initGraphsHelpListener() {
+        emitter.addGraphsHelpListener(() => {
+            this.setState({
+                helpOpen: true
+            });
+        });
+    }
+
+    closeHelpModal = () => {
+        this.setState({
+            helpOpen: false
+        });
+    };
 
     getTotalToRender() {
         if (this.state.graphMode !== graphModes.glucose) {

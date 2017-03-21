@@ -6,30 +6,35 @@ import ConnectionScreen from '../screens/Connection/ConnectionScreen';
 import ReadingsScreen from '../screens/Readings/ReadingsScreen';
 import GraphScreen from '../screens/GraphData/GraphScreen';
 import SettingsScreen from '../screens/Settings/SettingsScreen';
-import {Navigator} from 'react-native';
+import {Navigator, Image} from 'react-native';
 import db from "../data/database";
 import gFit from "../data/googleFit";
+import styles from "./styles";
+import log from "../helpers/util/logger";
+import emitter from "../helpers/util/eventEmitter";
 
 export default class App extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            drawerOpen: false
-        };
         db.init(true);
         db.isGoogleFitSyncEnabled() && gFit.authorizeAndConnect();
     }
 
     render() {
+        log("Rendering App");
         return (
             <Router getSceneStyle={getSceneStyle}
                     backAndroidHandler={() => {openDrawer(); return true}}>
-                <Scene key="drawer" component={NavigationDrawer} open={false}>
+                <Scene key="drawer" component={NavigationDrawer}>
                     <Scene key="main" tabs>
-                        <Scene key="screenConnection" title="Connection" hideTabBar component={ConnectionScreen} type={ActionConst.REFRESH} initial/>
-                        <Scene key="screenGraph" title="Graph" hideTabBar component={GraphScreen} type={ActionConst.REFRESH}/>
-                        <Scene key="screenReadings" title="Readings" hideTabBar component={ReadingsScreen} type={ActionConst.REFRESH}/>
-                        <Scene key="screenSettings" title="Settings" hideTabBar component={SettingsScreen} type={ActionConst.REFRESH}/>
+                        <Scene key="screenConnection" title="Connection" hideTabBar component={ConnectionScreen} type={ActionConst.REFRESH} titleStyle={styles.sceneTitle} initial/>
+                        <Scene key="screenGraph" title="Graphs" hideTabBar component={GraphScreen} type={ActionConst.REFRESH}
+                               rightButtonStyle={{justifyContent:'center', alignItems:'center'}}
+                               rightButtonImage={require('../../assets/help.png')}
+                               onRight={emitHelpEvent}
+                               titleStyle={styles.sceneTitle}/>
+                        <Scene key="screenReadings" title="Readings" hideTabBar component={ReadingsScreen} type={ActionConst.REFRESH} titleStyle={styles.sceneTitle}/>
+                        <Scene key="screenSettings" title="Settings" hideTabBar component={SettingsScreen} type={ActionConst.REFRESH} titleStyle={styles.sceneTitle}/>
                     </Scene>
                 </Scene>
             </Router>
@@ -37,8 +42,12 @@ export default class App extends Component {
     }
 }
 
+const emitHelpEvent = () => {
+    emitter.emitGraphsHelpEvent();
+};
+
 const openDrawer = () => {
-    Actions.refresh({key: 'drawer', open: value => !value})
+    Actions.refresh({key: 'drawer', drawerOpen: true});
 };
 
 const getSceneStyle = (props, computedProps) => {

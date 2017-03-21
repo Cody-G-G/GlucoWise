@@ -33,5 +33,10 @@ export default StyleSheet.create({
     icon: {
         color: 'royalblue',
         fontSize: 45
+    },
+    sceneTitle: {
+        fontSize: 25,
+        fontWeight: 'bold',
+        color: 'dimgray'
     }
 });
