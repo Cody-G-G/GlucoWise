@@ -53,13 +53,18 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void steps(Double from, Double to, String timeUnit, Promise promise) {
-        getStepsData(from.longValue(), to.longValue(), timeUnits.get(timeUnit.toUpperCase()), promise);
+    public void steps(Double from, Double to, int bucketDuration, String bucketUnit, Promise promise) {
+        getStepsData(from.longValue(), to.longValue(), bucketDuration, timeUnits.get(bucketUnit.toUpperCase()), promise);
     }
 
     @ReactMethod
-    public void caloriesExpended(Double from, Double to, String timeUnit, Promise promise) {
-        getCaloriesExpendedData(from.longValue(), to.longValue(), timeUnits.get(timeUnit.toUpperCase()), promise);
+    public void caloriesExpended(Double from, Double to, int bucketDuration, String bucketUnit, Promise promise) {
+        getCaloriesExpendedData(from.longValue(), to.longValue(), bucketDuration, timeUnits.get(bucketUnit.toUpperCase()), promise);
+    }
+
+    @ReactMethod
+    public void weight(Double from, Double to, int bucketDuration, String bucketUnit, Promise promise) {
+        getWeightData(from.longValue(), to.longValue(), bucketDuration, timeUnits.get(bucketUnit.toUpperCase()), promise);
     }
 
     @ReactMethod
@@ -115,70 +120,57 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
         activityEventListener.setGoogleApiClient(mClient);
     }
 
-    private void getCaloriesExpendedData(long from, long to, final TimeUnit bucketUnit, final Promise promise) {
-        DataReadRequest readRequest = new DataReadRequest.Builder()
-                .aggregate(DataType.TYPE_CALORIES_EXPENDED, DataType.AGGREGATE_CALORIES_EXPENDED)
-                .setTimeRange(from, to, TimeUnit.MILLISECONDS)
-                .bucketByTime(1, bucketUnit)
-                .enableServerQueries()
-                .build();
-
-        Fitness.HistoryApi.readData(mClient, readRequest).setResultCallback(new ResultCallback<DataReadResult>() {
-            @Override
-            public void onResult(@NonNull DataReadResult readResult) {
-                Log.i(LOG_TAG, "Finished reading expended calories data in " + bucketUnit.toString() + " buckets");
-                List<Bucket> buckets = readResult.getBuckets();
-                WritableMap data = Arguments.createMap();
-                WritableArray values = Arguments.createArray();
-                WritableArray dates = Arguments.createArray();
-
-                for (Bucket bucket : buckets) {
-                    List<DataPoint> dataPoints = bucket.getDataSet(DataType.AGGREGATE_CALORIES_EXPENDED).getDataPoints();
-                    for (DataPoint dataPoint : dataPoints) {
-                        long startTime = dataPoint.getStartTime(TimeUnit.MILLISECONDS);
-                        long endTime = dataPoint.getEndTime(TimeUnit.MILLISECONDS);
-                        long midwayTime = startTime + (endTime - startTime);
-                        int value = (int) dataPoint.getValue(Field.FIELD_CALORIES).asFloat();
-
-
-                        if (value != 0) {
-                            values.pushInt(value);
-                            dates.pushDouble(midwayTime);
-                        }
-                    }
-                }
-
-                data.putArray("values", values);
-                data.putArray("dates", dates);
-                promise.resolve(data);
-            }
-        });
+    private void getCaloriesExpendedData(long from, long to, int bucketDuration, final TimeUnit bucketUnit, final Promise promise) {
+        DataReadRequest readRequest = constructDataReadRequest(from, to, bucketDuration, bucketUnit, DataType.TYPE_CALORIES_EXPENDED, DataType.AGGREGATE_CALORIES_EXPENDED);
+        resolvePromiseWithReadData(readRequest, promise, DataType.AGGREGATE_CALORIES_EXPENDED, Field.FIELD_CALORIES);
     }
 
-    private void getStepsData(long from, long to, final TimeUnit bucketUnit, final Promise promise) {
-        DataReadRequest readRequest = new DataReadRequest.Builder()
-                .aggregate(DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA)
+    private void getStepsData(long from, long to, int bucketDuration, final TimeUnit bucketUnit, final Promise promise) {
+        DataReadRequest readRequest = constructDataReadRequest(from, to, bucketDuration, bucketUnit, DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA);
+        resolvePromiseWithReadData(readRequest, promise, DataType.AGGREGATE_STEP_COUNT_DELTA, Field.FIELD_STEPS);
+    }
+
+    private void getWeightData(long from, long to, int bucketDuration, final TimeUnit bucketUnit, final Promise promise) {
+        DataReadRequest readRequest = constructDataReadRequest(from, to, bucketDuration, bucketUnit, DataType.TYPE_WEIGHT, DataType.AGGREGATE_WEIGHT_SUMMARY);
+        resolvePromiseWithReadData(readRequest, promise, DataType.AGGREGATE_WEIGHT_SUMMARY, Field.FIELD_AVERAGE);
+    }
+
+    private DataReadRequest constructDataReadRequest(long from, long to, int bucketDuration, TimeUnit bucketUnit, DataType dataSource, DataType outputDataType) {
+        return new DataReadRequest.Builder()
+                .aggregate(dataSource, outputDataType)
                 .setTimeRange(from, to, TimeUnit.MILLISECONDS)
-                .bucketByTime(1, bucketUnit)
+                .bucketByTime(bucketDuration, bucketUnit)
                 .enableServerQueries()
                 .build();
+    }
 
+    private void resolvePromiseWithReadData(final DataReadRequest readRequest, final Promise promise, final DataType outputDataType, final Field dataPointField) {
         Fitness.HistoryApi.readData(mClient, readRequest).setResultCallback(new ResultCallback<DataReadResult>() {
             @Override
             public void onResult(@NonNull DataReadResult readResult) {
-                Log.i(LOG_TAG, "Finished reading steps data in " + bucketUnit.toString() + " buckets");
+                Log.i(LOG_TAG, "Finished reading " + dataPointField.getName() + " data");
+
                 List<Bucket> buckets = readResult.getBuckets();
                 WritableMap data = Arguments.createMap();
                 WritableArray values = Arguments.createArray();
                 WritableArray dates = Arguments.createArray();
 
                 for (Bucket bucket : buckets) {
-                    List<DataPoint> dataPoints = bucket.getDataSet(DataType.AGGREGATE_STEP_COUNT_DELTA).getDataPoints();
+                    List<DataPoint> dataPoints = bucket.getDataSet(outputDataType).getDataPoints();
                     for (DataPoint dataPoint : dataPoints) {
                         long startTime = dataPoint.getStartTime(TimeUnit.MILLISECONDS);
                         long endTime = dataPoint.getEndTime(TimeUnit.MILLISECONDS);
                         long midwayTime = startTime + (endTime - startTime);
-                        int value = dataPoint.getValue(Field.FIELD_STEPS).asInt();
+
+                        int value = 0;
+                        switch (dataPoint.getValue(dataPointField).getFormat()) {
+                            case Field.FORMAT_FLOAT:
+                                value = (int) dataPoint.getValue(dataPointField).asFloat();
+                                break;
+                            case Field.FORMAT_INT32:
+                                value = dataPoint.getValue(dataPointField).asInt();
+                                break;
+                        }
 
                         if (value != 0) {
                             values.pushInt(value);

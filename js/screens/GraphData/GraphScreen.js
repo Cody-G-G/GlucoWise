@@ -36,12 +36,20 @@ export default class GraphScreen extends Component {
             [graphModes.calories]: {
                 [timeRanges.lastDay]: () => gFit.caloriesExpendedLast24hInHourBuckets(),
                 [timeRanges.lastWeek]: () => gFit.caloriesExpendedLast7dInDayBuckets()
+            },
+            [graphModes.weight]: {
+                [timeRanges.lastMonth]: () => gFit.weightLast30dInDayBuckets(),
+                [timeRanges.lastHalfYear]: () => gFit.weightLast6MInWeekBuckets(),
+                [timeRanges.lastYear]: () => gFit.weightLast1yInMonthBuckets()
             }
         };
-        this.timeUnitsFromPresentFunctions = {
+        this.timeRangeDataFunctions = {
             [timeRanges.lastHour]: (date) => dateUtil.minutesFromPresent(date),
             [timeRanges.lastDay]: (date) => dateUtil.hoursFromPresent(date),
-            [timeRanges.lastWeek]: (date) => dateUtil.dayOfWeek(date)
+            [timeRanges.lastWeek]: (date) => dateUtil.dayOfWeek(date),
+            [timeRanges.lastMonth]: (date) => dateUtil.daysFromPresent(date),
+            [timeRanges.lastHalfYear]: (date) => dateUtil.weeksFromPresent(date),
+            [timeRanges.lastYear]: (date) => dateUtil.monthsFromPresent(date)
         };
     }
 
@@ -54,12 +62,13 @@ export default class GraphScreen extends Component {
         const graphToRender = this.getGraphToRender();
         const totalToRender = this.getTotalToRender();
         const timeRangeTypes = Object.keys(this.graphDataFunctions[this.state.graphMode]);
+        const graphModeTypes = Object.values(graphModes);
 
         return (
             <View style={styles.screenContainer}>
                 <View style={styles.mainPanel}>
-                    <RadioButtonsPanel fontSize={25}
-                                       types={[graphModes.glucose, graphModes.steps, graphModes.calories]}
+                    <RadioButtonsPanel fontSize={20}
+                                       types={graphModeTypes}
                                        selectedType={this.state.graphMode}
                                        onPress={this.updateGraphMode}/>
                     {totalToRender}
@@ -99,7 +108,7 @@ export default class GraphScreen extends Component {
     };
 
     getTotalToRender() {
-        if (this.state.graphMode !== graphModes.glucose) {
+        if (this.state.graphMode === graphModes.calories || this.state.graphMode === graphModes.steps) {
             const valuesSum = this.state.graphData[0].reduce((acc, curr) => {
                 return acc + curr.y;
             }, 0);
@@ -131,6 +140,9 @@ export default class GraphScreen extends Component {
                 case(graphModes.calories):
                     let gutter = this.state.timeRange === timeRanges.lastDay ? 2 : 5;
                     toRender = <BarGraph data={this.state.graphData} gutter={gutter} xSize={10}/>;
+                    break;
+                case(graphModes.weight):
+                    toRender = <BarGraph data={this.state.graphData} gutter={2} xSize={10}/>;
                     break;
             }
         else
@@ -179,15 +191,24 @@ export default class GraphScreen extends Component {
     }
 
     getXValue(timeRange, graphMode, date) {
-        const timeUnitsFromPresent = this.timeUnitsFromPresentFunctions[timeRange](date);
-        const graphModeIsGlucose = graphMode === graphModes.glucose;
+        const computedTimeUnits = this.timeRangeDataFunctions[timeRange](date);
         const timeRangeIs24h = timeRange === timeRanges.lastDay;
         let xValue;
-        if (graphModeIsGlucose) {
-            xValue = timeRangeIs24h ? (24 - timeUnitsFromPresent) : (60 - timeUnitsFromPresent);
-        } else {
-            xValue = timeRangeIs24h ? dateUtil.hourOfDayHoursAgo(timeUnitsFromPresent) : timeUnitsFromPresent;
+        switch (graphMode) {
+            case(graphModes.glucose):
+                xValue = timeRangeIs24h ? (24 - computedTimeUnits) : (60 - computedTimeUnits);
+                break;
+            case(graphModes.steps):
+                xValue = timeRangeIs24h ? dateUtil.hourOfDayHoursAgo(computedTimeUnits) : computedTimeUnits;
+                break;
+            case(graphModes.calories):
+                xValue = timeRangeIs24h ? dateUtil.hourOfDayHoursAgo(computedTimeUnits) : computedTimeUnits;
+                break;
+            case(graphModes.weight):
+                xValue = computedTimeUnits;
+                break;
         }
+
         return xValue;
     }
 
@@ -198,6 +219,8 @@ export default class GraphScreen extends Component {
             case(graphModes.steps):
                 return "name";
             case(graphModes.calories):
+                return "name";
+            case(graphModes.weight):
                 return "name";
         }
     }
@@ -241,6 +264,7 @@ export default class GraphScreen extends Component {
     updateGraphMode = (newGraphMode) => {
         const graphMode = (typeof newGraphMode !== 'undefined') ? newGraphMode : this.state.graphMode;
         const timeRange = this.getTimeRangeForMode(graphMode);
+
         this.getData(timeRange, graphMode)
             .then((data) => {
                 const graphData = this.getDataForGraph(data, timeRange, newGraphMode);

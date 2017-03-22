@@ -8,13 +8,17 @@ const readingUnitStandards = {
 const graphModes = {
     glucose: "Glucose",
     steps: "Steps",
-    calories: "Calories"
+    calories: "Calories",
+    weight: "Weight"
 };
 
 const timeRanges = {
     lastHour: "60m",
     lastDay: "24h",
-    lastWeek: "7d"
+    lastWeek: "7d",
+    lastMonth: "30d",
+    lastHalfYear: "6M",
+    lastYear: "1y"
 };
 
 const defaultSafeRange = {

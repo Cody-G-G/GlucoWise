@@ -20,40 +20,56 @@ class GoogleFit {
         });
     }
 
-    steps(from, to, timeUnit) {
-        return googleFit.steps(from, to, timeUnit);
+    steps(from, to, bucketDuration, bucketUnit) {
+        return googleFit.steps(from, to, bucketDuration, bucketUnit);
     }
 
-    caloriesExpended(from, to, timeUnit) {
-        return googleFit.caloriesExpended(from, to, timeUnit);
+    caloriesExpended(from, to, bucketDuration, bucketUnit) {
+        return googleFit.caloriesExpended(from, to, bucketDuration, bucketUnit);
+    }
+
+    weight(from, to, bucketDuration, bucketUnit) {
+        return googleFit.weight(from, to, bucketDuration, bucketUnit);
+    }
+
+    weightLast30dInDayBuckets() {
+        return googleFit.weight(dateUtil.daysAgoMillis(30), Date.now(), 1, 'days');
+    }
+
+    weightLast6MInWeekBuckets() {
+        return googleFit.weight(dateUtil.monthsAgoMillis(6), Date.now(), 7, 'days');
+    }
+
+    weightLast1yInMonthBuckets() {
+        return googleFit.weight(dateUtil.monthsAgoMillis(12), Date.now(), 30, 'days');
     }
 
     stepsToday() {
-        return googleFit.steps(dateUtil.todayStartMillis(), dateUtil.todayEndMillis(), 'days');
+        return googleFit.steps(dateUtil.todayStartMillis(), dateUtil.todayEndMillis(), 1, 'days');
     }
 
     stepsTodayInHourBuckets() {
-        return googleFit.steps(dateUtil.todayStartMillis(), dateUtil.todayEndMillis(), 'hours');
+        return googleFit.steps(dateUtil.todayStartMillis(), dateUtil.todayEndMillis(), 1, 'hours');
     }
 
     stepsLast24hInHourBuckets() {
-        return googleFit.steps(dateUtil.hoursAgoMillis(24), new Date().getTime(), 'hours');
+        return googleFit.steps(dateUtil.hoursAgoMillis(24), Date.now(), 1, 'hours');
     }
 
     stepsLast60mInMinuteBuckets() {
-        return googleFit.steps(dateUtil.hoursAgoMillis(1), new Date().getTime(), 'minutes');
+        return googleFit.steps(dateUtil.hoursAgoMillis(1), Date.now(), 1, 'minutes');
     }
 
     caloriesExpendedLast60mInMinuteBuckets() {
-        return googleFit.caloriesExpended(dateUtil.hoursAgoMillis(1), new Date().getTime(), 'minutes');
+        return googleFit.caloriesExpended(dateUtil.hoursAgoMillis(1), Date.now(), 1, 'minutes');
     }
 
     caloriesExpendedLast24hInHourBuckets() {
-        return googleFit.caloriesExpended(dateUtil.hoursAgoMillis(24), new Date().getTime(), 'hours');
+        return googleFit.caloriesExpended(dateUtil.hoursAgoMillis(24), Date.now(), 1, 'hours');
     }
 
     caloriesExpendedLast7dInDayBuckets() {
-        return googleFit.caloriesExpended(dateUtil.daysAgoMillis(7), new Date().getTime(), 'days');
+        return googleFit.caloriesExpended(dateUtil.daysAgoMillis(7), Date.now(), 1, 'days');
     }
 
     disconnect() {
