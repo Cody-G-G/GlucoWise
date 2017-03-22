@@ -58,6 +58,7 @@ const database = {
         realm.create('BGLReading', {id: uuid(), value: '50', date: (new Date(Date.now() - 1200 * 6e4))});
         realm.create('BGLReading', {id: uuid(), value: '210', date: (new Date(Date.now() - 600 * 6e4))});
         realm.create('BGLReading', {id: uuid(), value: '90', date: (new Date(Date.now() - 300 * 6e4))});
+        realm.create('BGLReading', {id: uuid(), value: '140', date: (new Date(Date.now() - 70 * 6e4))});
         realm.create('BGLReading', {id: uuid(), value: '155', date: (new Date(Date.now() - 65 * 6e4))});
         realm.create('BGLReading', {id: uuid(), value: '70', date: (new Date(Date.now() - 62 * 6e4))});
         realm.create('BGLReading', {id: uuid(), value: '90', date: (new Date(Date.now() - 55 * 6e4))});

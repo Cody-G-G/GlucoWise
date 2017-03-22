@@ -65,5 +65,9 @@ export default {
 
     todayEndMillis() {
         return new Date(moment().endOf('day')).getTime();
+    },
+
+    hourOfDayHoursAgo(hoursAgo) {
+        return new Date(this.hoursAgoMillis(hoursAgo)).getHours();
     }
 };

@@ -3,6 +3,8 @@ import {View} from 'react-native';
 import {StockLine} from 'react-native-pathjs-charts';
 import styles from './styles';
 import processReading from "../../helpers/util/readingProcessor";
+import {timeRanges} from "../../helpers/util/constants";
+import dateUtil from "../../helpers/util/date";
 
 export default class ReadingsGraph extends Component {
     constructor(props) {
@@ -42,6 +44,9 @@ export default class ReadingsGraph extends Component {
                 showTicks: true,
                 zeroAxis: false,
                 orient: 'bottom',
+                labelFunction: (v) => {
+                    return this.props.timeRange === timeRanges.lastDay ? dateUtil.hourOfDayHoursAgo(24 - v) : 60 - v;
+                },
                 label: {
                     fontFamily: 'Arial',
                     fontSize: 14,
@@ -56,7 +61,7 @@ export default class ReadingsGraph extends Component {
                 showTicks: true,
                 zeroAxis: false,
                 orient: 'left',
-                tickValues: this.getTickValues(),
+                tickValues: this.getYTickValues(),
                 label: {
                     fontFamily: 'Arial',
                     fontSize: 14,
@@ -82,7 +87,7 @@ export default class ReadingsGraph extends Component {
         );
     }
 
-    getTickValues() {
+    getYTickValues() {
         return [
             {value: 40},
             {value: 55},

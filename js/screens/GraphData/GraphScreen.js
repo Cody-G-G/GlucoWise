@@ -120,6 +120,7 @@ export default class GraphScreen extends Component {
             switch (this.state.graphMode) {
                 case(graphModes.glucose):
                     toRender = <ReadingsGraph readings={this.state.graphData}
+                                              timeRange={this.state.timeRange}
                                               safeRangeMin={this.state.safeRangeMin}
                                               safeRangeMax={this.state.safeRangeMax}
                                               standard={this.state.standard}/>;
@@ -150,13 +151,13 @@ export default class GraphScreen extends Component {
      */
     getDataForGraph(data, timeRange, graphMode) {
         log("Processing data for graph: " + JSON.stringify(data));
-        let graphData = [];
-        let timeUnitsFromPresent = this.timeUnitsFromPresentFunctions[timeRange];
-        let xAxis = this.getXAxisString(graphMode);
+        const graphData = [];
+        const xAxis = this.getXAxisString(graphMode);
         data.forEach((dataPoint) => {
-                let graphDataPoint = {};
-                graphDataPoint[xAxis] = timeUnitsFromPresent(dataPoint.date);
-                graphDataPoint["y"] = dataPoint.value;
+                const graphDataPoint = {
+                    [xAxis]: this.getXValue(timeRange, graphMode, dataPoint.date),
+                    y: dataPoint.value
+                };
 
                 const graphModeIsSteps = graphMode === graphModes.steps;
                 const previousDataPoint = graphData[graphData.length - 1];
@@ -170,8 +171,24 @@ export default class GraphScreen extends Component {
                     graphData.push(graphDataPoint);
             }
         );
+
+        //for time to progress to the right (having present as rightmost point)
+        graphData.reverse();
         log("Processed data for graph: " + JSON.stringify(graphData));
         return [graphData];
+    }
+
+    getXValue(timeRange, graphMode, date) {
+        const timeUnitsFromPresent = this.timeUnitsFromPresentFunctions[timeRange](date);
+        const graphModeIsGlucose = graphMode === graphModes.glucose;
+        const timeRangeIs24h = timeRange === timeRanges.lastDay;
+        let xValue;
+        if (graphModeIsGlucose) {
+            xValue = timeRangeIs24h ? (24 - timeUnitsFromPresent) : (60 - timeUnitsFromPresent);
+        } else {
+            xValue = timeRangeIs24h ? dateUtil.hourOfDayHoursAgo(timeUnitsFromPresent) : timeUnitsFromPresent;
+        }
+        return xValue;
     }
 
     getXAxisString(graphMode) {
@@ -223,8 +240,7 @@ export default class GraphScreen extends Component {
      */
     updateGraphMode = (newGraphMode) => {
         const graphMode = (typeof newGraphMode !== 'undefined') ? newGraphMode : this.state.graphMode;
-        const timeRangesForMode = Object.keys(this.graphDataFunctions[graphMode]);
-        const timeRange = timeRangesForMode.includes(this.state.timeRange) ? this.state.timeRange : timeRangesForMode[0];
+        const timeRange = this.getTimeRangeForMode(graphMode);
         this.getData(timeRange, graphMode)
             .then((data) => {
                 const graphData = this.getDataForGraph(data, timeRange, newGraphMode);
@@ -236,6 +252,11 @@ export default class GraphScreen extends Component {
             })
             .catch((error) => log("getData for " + newGraphMode + " failed: " + error));
     };
+
+    getTimeRangeForMode(graphMode) {
+        const timeRangesForMode = Object.keys(this.graphDataFunctions[graphMode]);
+        return timeRangesForMode.includes(this.state.timeRange) ? this.state.timeRange : timeRangesForMode[0]
+    }
 
     /**
      *
