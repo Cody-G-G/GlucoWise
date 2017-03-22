@@ -35,8 +35,14 @@ export default class GraphsHelpModal extends Component {
                                 <Text style={styles.emphasizedHelpText}>
                                     X axis:&nbsp;
                                     <Text style={styles.normalHelpText}>
-                                        time axis, should be read as "hours ago" (for 24h) / "minutes ago" (for 60m). Therefore,
-                                        the X axis values represent either hours or minutes, depending on the chosen time range.
+                                        time axis, should be read as the hours of the day, in a 24 hour system, when in&nbsp;
+                                        <Text style={styles.emphasizedHelpText}>24h</Text>&nbsp;
+                                        time range, or "minutes ago" for&nbsp;
+                                        <Text style={styles.emphasizedHelpText}>60m</Text>&nbsp;
+                                        time range. The far right of the graph represents the
+                                        present time, and so the rightmost X axis label will always be the present hour of the day,
+                                        and going to the left towards the Y axis are the times of day in the past 24 hours for which
+                                        data is available.
                                     </Text>
                                 </Text>
                                 <Text style={styles.emphasizedHelpText}>
@@ -71,9 +77,12 @@ export default class GraphsHelpModal extends Component {
                                     <Text style={styles.emphasizedHelpText}>GoogleFit</Text>
                                     , if data sync with GoogleFit is enabled in&nbsp;
                                     <Text style={styles.emphasizedHelpText}>Settings</Text>
-                                    . Each bar represents Y number of steps made X time units ago, where Y is the value of the Y axis corresponding to
-                                    the top of the bar, X represents the value of the X axis under the bar, and the time units represent minutes or hours
-                                    depending on the chosen time range. To make use of this, make sure to set sync "On" in&nbsp;
+                                    . Each bar represents Y number of steps made at hour X when&nbsp;
+                                    <Text style={styles.emphasizedHelpText}>24h</Text>&nbsp;
+                                    time range is chosen, or Y number of steps made X minutes ago when&nbsp;
+                                    <Text style={styles.emphasizedHelpText}>60m</Text>&nbsp;
+                                    time range is chosen. Y is the value on the Y axis corresponding to the top
+                                    of the bar. To make use of this graph, make sure to set sync "On" in&nbsp;
                                     <Text style={styles.emphasizedHelpText}>Settings</Text>
                                     , enable Location services, and the tracking functionality in&nbsp;
                                     <Text style={styles.emphasizedHelpText}>GoogleFit</Text>
@@ -89,11 +98,13 @@ export default class GraphsHelpModal extends Component {
                                     <Text style={styles.emphasizedHelpText}>GoogleFit</Text>
                                     , if data sync with GoogleFit is enabled in&nbsp;
                                     <Text style={styles.emphasizedHelpText}>Settings</Text>
-                                    . Each bar represents Y number of calories, X time units ago, where Y is the value of the Y axis corresponding to
-                                    the top of the bar, X represents the value of the X axis under the bar, and the time units represent minutes or hours
-                                    depending on the chosen time range. The expended calories are an estimation based on your activity throughout the day,
-                                    so for the highest accuracy, ensure you carry your phone around when working out / exercising / moving around.
-                                    To make use of this, make sure to set sync "On" in&nbsp;
+                                    . Each bar represents Y number of calories, at hour X in a 24 hour system when&nbsp;
+                                    <Text style={styles.emphasizedHelpText}>24h</Text>&nbsp;
+                                    time range is chosen, or Y number of calories expended / consumed X minutes ago when&nbsp;
+                                    <Text style={styles.emphasizedHelpText}>60m</Text>&nbsp;
+                                    time range is chosen. Y is the value on the Y axis corresponding to the top of the bar, X represents the value of the X axis under
+                                    the bar. The expended calories are an estimation based on your activity throughout the day, so for the highest accuracy, ensure you
+                                    carry your phone around when working out / exercising / moving around. To make use of this, make sure to set sync "On" in&nbsp;
                                     <Text style={styles.emphasizedHelpText}>Settings</Text>
                                     , enable Location services, and the tracking functionality in&nbsp;
                                     <Text style={styles.emphasizedHelpText}>GoogleFit</Text>
