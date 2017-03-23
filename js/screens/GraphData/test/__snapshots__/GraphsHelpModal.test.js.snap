@@ -219,7 +219,37 @@ exports[`GraphsHelpModal_isOpen - renders correctly 1`] = `
                     }
                   }
                 >
-                  time axis, should be read as "hours ago" (for 24h) / "minutes ago" (for 60m). Therefore, the X axis values represent either hours or minutes, depending on the chosen time range.
+                  time axis, should be read as the hours of the day, in a 24 hour system, when in 
+                  <Text
+                    accessible={true}
+                    allowFontScaling={true}
+                    ellipsizeMode="tail"
+                    style={
+                      Object {
+                        "color": "royalblue",
+                        "fontSize": 18,
+                        "fontWeight": "bold",
+                      }
+                    }
+                  >
+                    24h
+                  </Text>
+                    time range, or "minutes ago" for 
+                  <Text
+                    accessible={true}
+                    allowFontScaling={true}
+                    ellipsizeMode="tail"
+                    style={
+                      Object {
+                        "color": "royalblue",
+                        "fontSize": 18,
+                        "fontWeight": "bold",
+                      }
+                    }
+                  >
+                    60m
+                  </Text>
+                    time range. The far right of the graph represents the present time, and so the rightmost X axis label will always be the present hour of the day, and going to the left towards the Y axis are the times of day in the past 24 hours for which data is available.
                 </Text>
               </Text>
               <Text
@@ -405,7 +435,37 @@ exports[`GraphsHelpModal_isOpen - renders correctly 1`] = `
                 >
                   Settings
                 </Text>
-                . Each bar represents Y number of steps made X time units ago, where Y is the value of the Y axis corresponding to the top of the bar, X represents the value of the X axis under the bar, and the time units represent minutes or hours depending on the chosen time range. To make use of this, make sure to set sync "On" in 
+                . Each bar represents Y number of steps made at hour X when 
+                <Text
+                  accessible={true}
+                  allowFontScaling={true}
+                  ellipsizeMode="tail"
+                  style={
+                    Object {
+                      "color": "royalblue",
+                      "fontSize": 18,
+                      "fontWeight": "bold",
+                    }
+                  }
+                >
+                  24h
+                </Text>
+                  time range is chosen, or Y number of steps made X minutes ago when 
+                <Text
+                  accessible={true}
+                  allowFontScaling={true}
+                  ellipsizeMode="tail"
+                  style={
+                    Object {
+                      "color": "royalblue",
+                      "fontSize": 18,
+                      "fontWeight": "bold",
+                    }
+                  }
+                >
+                  60m
+                </Text>
+                  time range is chosen. Y is the value on the Y axis corresponding to the top of the bar. To make use of this graph, make sure to set sync "On" in 
                 <Text
                   accessible={true}
                   allowFontScaling={true}
@@ -505,7 +565,37 @@ exports[`GraphsHelpModal_isOpen - renders correctly 1`] = `
                 >
                   Settings
                 </Text>
-                . Each bar represents Y number of calories, X time units ago, where Y is the value of the Y axis corresponding to the top of the bar, X represents the value of the X axis under the bar, and the time units represent minutes or hours depending on the chosen time range. The expended calories are an estimation based on your activity throughout the day, so for the highest accuracy, ensure you carry your phone around when working out / exercising / moving around. To make use of this, make sure to set sync "On" in 
+                . Each bar represents Y number of calories, at hour X in a 24 hour system when 
+                <Text
+                  accessible={true}
+                  allowFontScaling={true}
+                  ellipsizeMode="tail"
+                  style={
+                    Object {
+                      "color": "royalblue",
+                      "fontSize": 18,
+                      "fontWeight": "bold",
+                    }
+                  }
+                >
+                  24h
+                </Text>
+                  time range is chosen, or Y number of calories expended / consumed X minutes ago when 
+                <Text
+                  accessible={true}
+                  allowFontScaling={true}
+                  ellipsizeMode="tail"
+                  style={
+                    Object {
+                      "color": "royalblue",
+                      "fontSize": 18,
+                      "fontWeight": "bold",
+                    }
+                  }
+                >
+                  60m
+                </Text>
+                  time range is chosen. Y is the value on the Y axis corresponding to the top of the bar, X represents the value of the X axis under the bar. The expended calories are an estimation based on your activity throughout the day, so for the highest accuracy, ensure you carry your phone around when working out / exercising / moving around. To make use of this, make sure to set sync "On" in 
                 <Text
                   accessible={true}
                   allowFontScaling={true}
