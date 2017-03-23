@@ -132,6 +132,15 @@ export default {
     },
 
     /**
+     * @param minutes
+     * @param date
+     * @returns {number}
+     */
+    minutesAgoMillis(minutes, date) {
+        return new Date(moment(date).subtract(minutes, 'minutes')).getTime();
+    },
+
+    /**
      * @param days
      * @param date
      * @returns {number}
