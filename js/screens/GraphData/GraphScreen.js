@@ -18,7 +18,7 @@ export default class GraphScreen extends Component {
         super(props);
         this.state = {
             timeRange: timeRanges.lastDay,
-            graphData: [[]],
+            graphData: [],
             safeRangeMin: '',
             safeRangeMax: '',
             standard: '',
@@ -60,7 +60,7 @@ export default class GraphScreen extends Component {
     render() {
         log("Rendering GraphScreen");
         const graphToRender = this.getGraphToRender();
-        const totalToRender = this.getTotalToRender();
+        const summaryInfoToRender = this.getSummaryInfoToRender();
         const timeRangeTypes = Object.keys(this.graphDataFunctions[this.state.graphMode]);
         const graphModeTypes = Object.values(graphModes);
 
@@ -71,7 +71,7 @@ export default class GraphScreen extends Component {
                                        types={graphModeTypes}
                                        selectedType={this.state.graphMode}
                                        onPress={this.updateGraphMode}/>
-                    {totalToRender}
+                    {summaryInfoToRender}
                     {graphToRender}
                     <RadioButtonsPanel types={timeRangeTypes}
                                        selectedType={this.state.timeRange}
@@ -107,25 +107,38 @@ export default class GraphScreen extends Component {
         });
     };
 
-    getTotalToRender() {
+    getSummaryInfoToRender() {
+        let toRender;
         if (this.state.graphMode === graphModes.calories || this.state.graphMode === graphModes.steps) {
-            const valuesSum = this.state.graphData[0].reduce((acc, curr) => {
+            const valuesSum = this.state.graphData.reduce((acc, curr) => {
                 return acc + curr.y;
             }, 0);
             const valuesUnit = this.state.graphMode === graphModes.calories ? 'kCal' : 'steps';
-            return (
-                <View style={styles.totalPanel}>
-                    <Text style={styles.totalText}>
+            toRender = (
+                <View style={styles.summaryInfoPanel}>
+                    <Text style={styles.summaryInfoText}>
                         Total: {valuesSum} {valuesUnit}
                     </Text>
                 </View>
             );
+        } else if (this.state.graphMode === graphModes.weight) {
+            const maxWeight = this.state.graphData.reduce((acc, curr) => Math.max(acc, curr.y), this.state.graphData[0].y);
+            const minWeight = this.state.graphData.reduce((acc, curr) => Math.min(acc, curr.y), this.state.graphData[0].y);
+
+            toRender = (
+                <View style={styles.summaryInfoPanel}>
+                    <Text style={styles.summaryInfoText}>
+                        Min: {minWeight}kg     Max: {maxWeight}kg
+                    </Text>
+                </View>
+            );
         }
+        return toRender;
     }
 
     getGraphToRender() {
         let toRender;
-        if (this.state.graphData[0].length > 0)
+        if (this.state.graphData.length > 0)
             switch (this.state.graphMode) {
                 case(graphModes.glucose):
                     toRender = <ReadingsGraph readings={this.state.graphData}
@@ -187,7 +200,7 @@ export default class GraphScreen extends Component {
         //for time to progress to the right (having present as rightmost point)
         graphData.reverse();
         log("Processed data for graph: " + JSON.stringify(graphData));
-        return [graphData];
+        return graphData;
     }
 
     getXValue(timeRange, graphMode, date) {

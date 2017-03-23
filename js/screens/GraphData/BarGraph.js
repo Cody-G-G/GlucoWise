@@ -15,7 +15,7 @@ export default class BarGraph extends Component {
             color: '#4169e1',
             gutter: this.props.gutter,
             margin: {
-                top: 20,
+                top: 22,
                 left: 35,
                 bottom: 45,
                 right: 5
@@ -52,7 +52,7 @@ export default class BarGraph extends Component {
 
         return (
             <View style={styles.graphPanel}>
-                <Bar data={this.props.data}
+                <Bar data={[this.props.data]}
                      options={options}
                      accessorKey='y'/>
             </View>

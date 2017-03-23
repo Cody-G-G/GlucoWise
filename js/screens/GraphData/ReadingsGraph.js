@@ -77,7 +77,7 @@ export default class ReadingsGraph extends Component {
 
         return (
             <View style={styles.graphPanel}>
-                <StockLine data={this.props.readings}
+                <StockLine data={[this.props.readings]}
                            options={options}
                            regions={regions}
                            regionStyling={regionStyling}

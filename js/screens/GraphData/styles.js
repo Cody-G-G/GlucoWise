@@ -22,12 +22,12 @@ export default StyleSheet.create({
         alignItems: 'center',
         alignSelf: 'stretch'
     },
-    totalPanel: {
+    summaryInfoPanel: {
         paddingTop: 5,
         justifyContent: 'center',
         alignItems: 'center'
     },
-    totalText: {
+    summaryInfoText: {
         fontWeight: 'bold',
         fontSize: 25,
         color: 'black'
