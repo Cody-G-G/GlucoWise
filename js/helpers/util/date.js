@@ -151,12 +151,20 @@ export default {
         return new Date(moment().startOf('hour')).getTime();
     },
 
+    minuteStartMillis() {
+        return new Date(moment().startOf('minute')).getTime();
+    },
+
     millisFromMidnight() {
         return Date.now() - this.todayStartMillis();
     },
 
     millisFromHourStart() {
         return Date.now() - this.hourStartMillis();
+    },
+
+    millisFromMinuteStart() {
+        return Date.now() - this.minuteStartMillis();
     },
 
     /**

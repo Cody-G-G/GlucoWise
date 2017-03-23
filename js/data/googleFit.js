@@ -61,7 +61,7 @@ class GoogleFit {
     }
 
     caloriesExpendedLast60mInMinuteBuckets() {
-        return googleFit.caloriesExpended(dateUtil.hoursAgoMillis(1), Date.now(), 1, 'minutes');
+        return googleFit.caloriesExpended(dateUtil.hoursAgoMillis(1) - dateUtil.millisFromMinuteStart(), Date.now(), 1, 'minutes');
     }
 
     caloriesExpendedLast24hInHourBuckets() {
