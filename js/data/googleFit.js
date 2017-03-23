@@ -8,46 +8,94 @@ class GoogleFit {
         googleFit.authorizeAndConnect();
     }
 
+    /**
+     * @param callback
+     */
     onConnected(callback) {
         DeviceEventEmitter.addListener('GoogleFitConnected', (args) => {
             callback(args);
         });
     }
 
+    /**
+     * @param callback
+     */
     onDisconnected(callback) {
         DeviceEventEmitter.addListener('GoogleFitDisconnected', (args) => {
             callback(args);
         });
     }
 
+    /**
+     * @param from
+     * @param to
+     * @param bucketDuration
+     * @param bucketUnit
+     * @returns {*}
+     */
     steps(from, to, bucketDuration, bucketUnit) {
         return googleFit.steps(from, to, bucketDuration, bucketUnit);
     }
 
+    /**
+     * @param from
+     * @param to
+     * @param bucketDuration
+     * @param bucketUnit
+     * @returns {*}
+     */
     caloriesExpended(from, to, bucketDuration, bucketUnit) {
         return googleFit.caloriesExpended(from, to, bucketDuration, bucketUnit);
     }
 
+    /**
+     * @param from
+     * @param to
+     * @param bucketDuration
+     * @param bucketUnit
+     * @returns {*}
+     */
     weight(from, to, bucketDuration, bucketUnit) {
         return googleFit.weight(from, to, bucketDuration, bucketUnit);
     }
 
+    /**
+     * @param date
+     * @returns {*}
+     */
     weightLast30dInDayBuckets(date) {
         return googleFit.weight(dateUtil.daysBeforeMillis(30, date), date, 1, 'days');
     }
 
+    /**
+     * @param date
+     * @returns {*}
+     */
     weightLast6MInWeekBuckets(date) {
         return googleFit.weight(dateUtil.monthsAgoMillis(6, date), date, 7, 'days');
     }
 
+    /**
+     * @param date
+     * @returns {*}
+     */
     weightLast1yInMonthBuckets(date) {
         return googleFit.weight(dateUtil.monthsAgoMillis(12, date), date, 30, 'days');
     }
 
+    /**
+     * @param date
+     * @returns {*}
+     */
     stepsOnDay(date) {
         return googleFit.steps(dateUtil.dayStartMillis(date), dateUtil.dayEndMillis(date), 1, 'days');
     }
 
+    /**
+     *
+     * @param date
+     * @returns {*}
+     */
     stepsOnDayInHourBuckets(date) {
         return googleFit.steps(dateUtil.dayStartMillis(date), dateUtil.dayEndMillis(date), 1, 'hours');
     }

@@ -1,6 +1,7 @@
 'use strict';
 import moment from "moment";
 const dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const monthOfYear = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "Octomber", "November", "December"];
 
 export default {
     /**
@@ -158,30 +159,58 @@ export default {
         return new Date(moment(date).subtract(months, 'months')).getTime();
     },
 
+    /**
+     * @param date
+     * @returns {number}
+     */
     dayStartMillis(date) {
         return new Date(moment(date).startOf('day')).getTime();
     },
 
+    /**
+     * @param date
+     * @returns {number}
+     */
     dayEndMillis(date) {
         return new Date(moment(date).endOf('day')).getTime();
     },
 
+    /**
+     * @param date
+     * @returns {number}
+     */
     hourStartMillis(date) {
         return new Date(moment(date).startOf('hour')).getTime();
     },
 
+    /**
+     * @param date
+     * @returns {number}
+     */
     minuteStartMillis(date) {
         return new Date(moment(date).startOf('minute')).getTime();
     },
 
+    /**
+     * @param date
+     * @returns {number}
+     */
     millisFromMidnight(date) {
         return date - this.dayStartMillis(date);
     },
 
+    /**
+     * @param date
+     * @returns {number}
+     */
     millisFromHourStart(date) {
         return date - this.hourStartMillis(date);
     },
 
+    /**
+     * @param date
+     * @returns {number}
+     */
     millisFromMinuteStart(date) {
         return date - this.minuteStartMillis(date);
     },
@@ -193,5 +222,13 @@ export default {
      */
     hourOfDayHoursAgo(hoursAgo, date) {
         return new Date(this.hoursAgoMillis(hoursAgo, date)).getHours();
+    },
+
+    /**
+     * @param date
+     * @returns {number}
+     */
+    monthOfYear(date) {
+        return monthOfYear[new Date(date).getMonth()];
     }
 };

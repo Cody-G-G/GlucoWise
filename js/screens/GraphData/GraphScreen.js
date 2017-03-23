@@ -48,8 +48,8 @@ export default class GraphScreen extends Component {
             [timeRanges.lastDay]: (from, now) => dateUtil.hoursBetween(from, now),
             [timeRanges.lastWeek]: (date) => dateUtil.dayOfWeek(date),
             [timeRanges.lastMonth]: (from, now) => dateUtil.daysBetween(from, now),
-            [timeRanges.lastHalfYear]: (from, now) => dateUtil.weeksBetween(from, now),
-            [timeRanges.lastYear]: (from, now) => dateUtil.monthsBetween(from, now)
+            [timeRanges.lastHalfYear]: (date) => dateUtil.monthOfYear(date),
+            [timeRanges.lastYear]: (date) => dateUtil.monthOfYear(date)
         };
     }
 
@@ -169,7 +169,7 @@ export default class GraphScreen extends Component {
                     toRender = <BarGraph data={graphData} gutter={gutter} xSize={10}/>;
                     break;
                 case(graphModes.weight):
-                    toRender = <BarGraph data={graphData} gutter={2} xSize={10}/>;
+                    toRender = <BarGraph data={graphData} gutter={5} xSize={14}/>;
                     break;
             }
         else
@@ -222,7 +222,7 @@ export default class GraphScreen extends Component {
                 xValue = timeRangeIs24h ? dateUtil.hourOfDayHoursAgo(computedTimeUnits, now) : computedTimeUnits;
                 break;
             case(graphModes.weight):
-                xValue = Math.round(computedTimeUnits);
+                xValue = timeRange === timeRanges.lastMonth ? Math.round(computedTimeUnits) : computedTimeUnits;
                 break;
         }
 
