@@ -109,21 +109,32 @@ export default class GraphScreen extends Component {
 
     getSummaryInfoToRender() {
         let toRender;
-        if (this.state.graphMode === graphModes.calories || this.state.graphMode === graphModes.steps) {
-            const valuesSum = this.state.graphData.reduce((acc, curr) => {
+        const graphMode = this.state.graphMode;
+        const graphData = this.state.graphData;
+        const isModeCalories = graphMode === graphModes.calories;
+        const isModeSteps = graphMode === graphModes.steps;
+        const isModeWeight = graphMode === graphModes.weight;
+        const isTimeRangeLastWeek = this.state.timeRange === timeRanges.lastWeek;
+
+        if (isModeCalories || isModeSteps) {
+            const valueSum = graphData.reduce((acc, curr) => {
                 return acc + curr.y;
             }, 0);
-            const valuesUnit = this.state.graphMode === graphModes.calories ? 'kCal' : 'steps';
+
+            const summaryInfoText = isTimeRangeLastWeek ? "Daily average:" : "Total:";
+            const valuesUnit = isModeCalories ? 'kCal' : 'steps';
+            const value = isModeCalories && isTimeRangeLastWeek ? Math.round(valueSum / graphData.length) : valueSum;
+
             toRender = (
                 <View style={styles.summaryInfoPanel}>
                     <Text style={styles.summaryInfoText}>
-                        Total: {valuesSum} {valuesUnit}
+                        {summaryInfoText} {value} {valuesUnit}
                     </Text>
                 </View>
             );
-        } else if (this.state.graphMode === graphModes.weight) {
-            const maxWeight = this.state.graphData.reduce((acc, curr) => Math.max(acc, curr.y), this.state.graphData[0].y);
-            const minWeight = this.state.graphData.reduce((acc, curr) => Math.min(acc, curr.y), this.state.graphData[0].y);
+        } else if (isModeWeight) {
+            const maxWeight = graphData.reduce((acc, curr) => Math.max(acc, curr.y), graphData[0].y);
+            const minWeight = graphData.reduce((acc, curr) => Math.min(acc, curr.y), graphData[0].y);
 
             toRender = (
                 <View style={styles.summaryInfoPanel}>
@@ -138,24 +149,27 @@ export default class GraphScreen extends Component {
 
     getGraphToRender() {
         let toRender;
-        if (this.state.graphData.length > 0)
+        const graphData = this.state.graphData;
+        const timeRange = this.state.timeRange;
+
+        if (graphData.length > 0)
             switch (this.state.graphMode) {
                 case(graphModes.glucose):
-                    toRender = <ReadingsGraph readings={this.state.graphData}
-                                              timeRange={this.state.timeRange}
+                    toRender = <ReadingsGraph readings={graphData}
+                                              timeRange={timeRange}
                                               safeRangeMin={this.state.safeRangeMin}
                                               safeRangeMax={this.state.safeRangeMax}
                                               standard={this.state.standard}/>;
                     break;
                 case(graphModes.steps):
-                    toRender = <BarGraph data={this.state.graphData} gutter={5} xSize={14}/>;
+                    toRender = <BarGraph data={graphData} gutter={5} xSize={14}/>;
                     break;
                 case(graphModes.calories):
-                    let gutter = this.state.timeRange === timeRanges.lastDay ? 2 : 5;
-                    toRender = <BarGraph data={this.state.graphData} gutter={gutter} xSize={10}/>;
+                    let gutter = timeRange === timeRanges.lastDay ? 2 : 5;
+                    toRender = <BarGraph data={graphData} gutter={gutter} xSize={10}/>;
                     break;
                 case(graphModes.weight):
-                    toRender = <BarGraph data={this.state.graphData} gutter={2} xSize={10}/>;
+                    toRender = <BarGraph data={graphData} gutter={2} xSize={10}/>;
                     break;
             }
         else
@@ -256,19 +270,21 @@ export default class GraphScreen extends Component {
      */
     updateState = (newTimeRange) => {
         const timeRange = (typeof newTimeRange !== 'undefined') ? newTimeRange : this.state.timeRange;
-        this.getData(timeRange, this.state.graphMode)
+        const graphMode = this.state.graphMode;
+
+        this.getData(timeRange, graphMode)
             .then((data) => {
                 const safeRange = db.getBGLSafeRange();
                 this.setState({
                     standard: db.getBGLStandard(),
                     data: data,
-                    graphData: this.getDataForGraph(data, timeRange, this.state.graphMode),
+                    graphData: this.getDataForGraph(data, timeRange, graphMode),
                     safeRangeMin: safeRange.minValue,
                     safeRangeMax: safeRange.maxValue,
                     timeRange: timeRange
                 });
             })
-            .catch((error) => log("getData for " + this.state.graphMode + " failed: " + error));
+            .catch((error) => log("getData for " + graphMode + " failed: " + error));
     };
 
     /**
