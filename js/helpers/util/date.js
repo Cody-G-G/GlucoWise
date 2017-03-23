@@ -147,8 +147,16 @@ export default {
         return new Date(moment().endOf('day')).getTime();
     },
 
+    hourStartMillis() {
+        return new Date(moment().startOf('hour')).getTime();
+    },
+
     millisFromMidnight() {
         return Date.now() - this.todayStartMillis();
+    },
+
+    millisFromHourStart() {
+        return Date.now() - this.hourStartMillis();
     },
 
     /**
