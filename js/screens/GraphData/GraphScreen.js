@@ -199,12 +199,14 @@ export default class GraphScreen extends Component {
                 };
 
                 const graphModeIsSteps = graphMode === graphModes.steps;
+                const graphModeIsCalories = graphMode === graphModes.calories;
+                const timeRangeIs24h = timeRange === timeRanges.lastDay;
                 const previousDataPoint = graphData[graphData.length - 1];
                 const existsPreviousDataPoint = typeof previousDataPoint !== 'undefined';
                 const currentDataPointHasSameTimeAsPrevious = existsPreviousDataPoint ? graphDataPoint[xAxis] === previousDataPoint[xAxis] : false;
                 //^ due to rounding, two data points might have same X
 
-                if (currentDataPointHasSameTimeAsPrevious && graphModeIsSteps)
+                if (currentDataPointHasSameTimeAsPrevious && (graphModeIsSteps || (graphModeIsCalories && timeRangeIs24h)))
                     previousDataPoint.y = previousDataPoint.y + graphDataPoint.y;
                 else
                     graphData.push(graphDataPoint);
