@@ -69,7 +69,7 @@ class GoogleFit {
     }
 
     caloriesExpendedLast7dInDayBuckets() {
-        return googleFit.caloriesExpended(dateUtil.daysAgoMillis(7), Date.now(), 1, 'days');
+        return googleFit.caloriesExpended(dateUtil.daysAgoMillis(7) - dateUtil.millisFromMidnight(), Date.now(), 1, 'days');
     }
 
     disconnect() {

@@ -147,6 +147,10 @@ export default {
         return new Date(moment().endOf('day')).getTime();
     },
 
+    millisFromMidnight() {
+        return Date.now() - this.todayStartMillis();
+    },
+
     /**
      * @param hoursAgo
      * @returns {number}
