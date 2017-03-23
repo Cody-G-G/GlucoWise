@@ -45,7 +45,7 @@ export default class ReadingsGraph extends Component {
                 zeroAxis: false,
                 orient: 'bottom',
                 labelFunction: (v) => {
-                    return this.props.timeRange === timeRanges.lastDay ? dateUtil.hourOfDayHoursAgo(24 - v) : 60 - v;
+                    return this.props.timeRange === timeRanges.lastDay ? dateUtil.hourOfDayHoursAgo((24 - v), Date.now()) : 60 - v;
                 },
                 label: {
                     fontFamily: 'Arial',

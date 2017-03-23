@@ -26,30 +26,30 @@ export default class GraphScreen extends Component {
         };
         this.graphDataFunctions = {
             [graphModes.steps]: {
-                [timeRanges.lastDay]: () => gFit.stepsLast24hInHourBuckets(),
-                [timeRanges.lastHour]: () => gFit.stepsLast60mInMinuteBuckets()
+                [timeRanges.lastDay]: (now) => gFit.stepsLast24hInHourBuckets(now),
+                [timeRanges.lastHour]: (now) => gFit.stepsLast60mInMinuteBuckets(now)
             },
             [graphModes.glucose]: {
                 [timeRanges.lastDay]: () => db.get24hBGLReadings(),
                 [timeRanges.lastHour]: () => db.get60mBGLReadings()
             },
             [graphModes.calories]: {
-                [timeRanges.lastDay]: () => gFit.caloriesExpendedLast24hInHourBuckets(),
-                [timeRanges.lastWeek]: () => gFit.caloriesExpendedLast7dInDayBuckets()
+                [timeRanges.lastDay]: (now) => gFit.caloriesExpendedPrevious24hInHourBuckets(now),
+                [timeRanges.lastWeek]: (now) => gFit.caloriesExpendedPrevious7dInDayBuckets(now)
             },
             [graphModes.weight]: {
-                [timeRanges.lastMonth]: () => gFit.weightLast30dInDayBuckets(),
-                [timeRanges.lastHalfYear]: () => gFit.weightLast6MInWeekBuckets(),
-                [timeRanges.lastYear]: () => gFit.weightLast1yInMonthBuckets()
+                [timeRanges.lastMonth]: (now) => gFit.weightLast30dInDayBuckets(now),
+                [timeRanges.lastHalfYear]: (now) => gFit.weightLast6MInWeekBuckets(now),
+                [timeRanges.lastYear]: (now) => gFit.weightLast1yInMonthBuckets(now)
             }
         };
         this.timeRangeDataFunctions = {
-            [timeRanges.lastHour]: (date) => dateUtil.minutesFromPresent(date),
-            [timeRanges.lastDay]: (date) => dateUtil.hoursFromPresent(date),
+            [timeRanges.lastHour]: (from, now) => dateUtil.minutesBetween(from, now),
+            [timeRanges.lastDay]: (from, now) => dateUtil.hoursBetween(from, now),
             [timeRanges.lastWeek]: (date) => dateUtil.dayOfWeek(date),
-            [timeRanges.lastMonth]: (date) => dateUtil.daysFromPresent(date),
-            [timeRanges.lastHalfYear]: (date) => dateUtil.weeksFromPresent(date),
-            [timeRanges.lastYear]: (date) => dateUtil.monthsFromPresent(date)
+            [timeRanges.lastMonth]: (from, now) => dateUtil.daysBetween(from, now),
+            [timeRanges.lastHalfYear]: (from, now) => dateUtil.weeksBetween(from, now),
+            [timeRanges.lastYear]: (from, now) => dateUtil.monthsBetween(from, now)
         };
     }
 
@@ -186,30 +186,18 @@ export default class GraphScreen extends Component {
      * @param data
      * @param timeRange
      * @param graphMode
+     * @param now
      * @returns {[*]}
      */
-    getDataForGraph(data, timeRange, graphMode) {
+    getDataForGraph(data, timeRange, graphMode, now) {
         log("Processing data for graph: " + JSON.stringify(data));
         const graphData = [];
         const xAxis = this.getXAxisString(graphMode);
         data.forEach((dataPoint) => {
-                const graphDataPoint = {
-                    [xAxis]: this.getXValue(timeRange, graphMode, dataPoint.date),
+                graphData.push({
+                    [xAxis]: this.getXValue(timeRange, graphMode, dataPoint.date, now),
                     y: dataPoint.value
-                };
-
-                const graphModeIsSteps = graphMode === graphModes.steps;
-                const graphModeIsCalories = graphMode === graphModes.calories;
-                const timeRangeIs24h = timeRange === timeRanges.lastDay;
-                const previousDataPoint = graphData[graphData.length - 1];
-                const existsPreviousDataPoint = typeof previousDataPoint !== 'undefined';
-                const currentDataPointHasSameTimeAsPrevious = existsPreviousDataPoint ? graphDataPoint[xAxis] === previousDataPoint[xAxis] : false;
-                //^ due to rounding, two data points might have same X
-
-                if (currentDataPointHasSameTimeAsPrevious && (graphModeIsSteps || (graphModeIsCalories && timeRangeIs24h)))
-                    previousDataPoint.y = previousDataPoint.y + graphDataPoint.y;
-                else
-                    graphData.push(graphDataPoint);
+                });
             }
         );
 
@@ -219,22 +207,22 @@ export default class GraphScreen extends Component {
         return graphData;
     }
 
-    getXValue(timeRange, graphMode, date) {
-        const computedTimeUnits = this.timeRangeDataFunctions[timeRange](date);
+    getXValue(timeRange, graphMode, date, now) {
+        const computedTimeUnits = this.timeRangeDataFunctions[timeRange](date, now);
         const timeRangeIs24h = timeRange === timeRanges.lastDay;
         let xValue;
         switch (graphMode) {
             case(graphModes.glucose):
-                xValue = timeRangeIs24h ? (24 - computedTimeUnits) : (60 - computedTimeUnits);
+                xValue = timeRangeIs24h ? Math.round(24 - computedTimeUnits) : Math.round(60 - computedTimeUnits);
                 break;
             case(graphModes.steps):
-                xValue = timeRangeIs24h ? dateUtil.hourOfDayHoursAgo(computedTimeUnits) : computedTimeUnits;
+                xValue = timeRangeIs24h ? dateUtil.hourOfDayHoursAgo(computedTimeUnits, now) : Math.round(computedTimeUnits);
                 break;
             case(graphModes.calories):
-                xValue = timeRangeIs24h ? dateUtil.hourOfDayHoursAgo(computedTimeUnits) : computedTimeUnits;
+                xValue = timeRangeIs24h ? dateUtil.hourOfDayHoursAgo(computedTimeUnits, now) : computedTimeUnits;
                 break;
             case(graphModes.weight):
-                xValue = computedTimeUnits;
+                xValue = Math.round(computedTimeUnits);
                 break;
         }
 
@@ -271,16 +259,17 @@ export default class GraphScreen extends Component {
      * @param newTimeRange
      */
     updateState = (newTimeRange) => {
+        const now = Date.now();
         const timeRange = (typeof newTimeRange !== 'undefined') ? newTimeRange : this.state.timeRange;
         const graphMode = this.state.graphMode;
 
-        this.getData(timeRange, graphMode)
+        this.getData(timeRange, graphMode, now)
             .then((data) => {
                 const safeRange = db.getBGLSafeRange();
                 this.setState({
                     standard: db.getBGLStandard(),
                     data: data,
-                    graphData: this.getDataForGraph(data, timeRange, graphMode),
+                    graphData: this.getDataForGraph(data, timeRange, graphMode, now),
                     safeRangeMin: safeRange.minValue,
                     safeRangeMax: safeRange.maxValue,
                     timeRange: timeRange
@@ -293,12 +282,13 @@ export default class GraphScreen extends Component {
      * @param newGraphMode
      */
     updateGraphMode = (newGraphMode) => {
+        const now = Date.now();
         const graphMode = (typeof newGraphMode !== 'undefined') ? newGraphMode : this.state.graphMode;
         const timeRange = this.getTimeRangeForMode(graphMode);
 
-        this.getData(timeRange, graphMode)
+        this.getData(timeRange, graphMode, now)
             .then((data) => {
-                const graphData = this.getDataForGraph(data, timeRange, newGraphMode);
+                const graphData = this.getDataForGraph(data, timeRange, newGraphMode, now);
                 this.setState({
                     graphMode: graphMode,
                     graphData: graphData,
@@ -317,12 +307,13 @@ export default class GraphScreen extends Component {
      *
      * @param timeRange
      * @param graphMode
+     * @param now
      * @returns {*}
      */
-    getData(timeRange, graphMode) {
+    getData(timeRange, graphMode, now) {
         log("Getting data - mode: " + graphMode + " timeRange: " + timeRange);
         return new Promise(async(resolve) => {
-            let data = await this.graphDataFunctions[graphMode][timeRange]();
+            let data = await this.graphDataFunctions[graphMode][timeRange](now);
             resolve(graphMode === graphModes.glucose ? data : this.mapValuesToDates(data));
         });
     }

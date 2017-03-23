@@ -158,9 +158,6 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
                 for (Bucket bucket : buckets) {
                     List<DataPoint> dataPoints = bucket.getDataSet(outputDataType).getDataPoints();
                     for (DataPoint dataPoint : dataPoints) {
-                        long startTime = dataPoint.getStartTime(TimeUnit.MILLISECONDS);
-                        long endTime = dataPoint.getEndTime(TimeUnit.MILLISECONDS);
-                        long midwayTime = startTime + (endTime - startTime);
 
                         int value = 0;
                         switch (dataPoint.getValue(dataPointField).getFormat()) {
@@ -174,7 +171,7 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
 
                         if (value != 0) {
                             values.pushInt(value);
-                            dates.pushDouble(midwayTime);
+                            dates.pushDouble(dataPoint.getStartTime(TimeUnit.MILLISECONDS));
                         }
                     }
                 }

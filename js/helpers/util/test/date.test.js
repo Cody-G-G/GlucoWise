@@ -32,29 +32,29 @@ test("isWithin24Hours(date) - returns boolean indicating whether date is within 
     expect(dateUtil.isWithin24Hours(stubDateNotWithin24Hrs)).toEqual(false);
 });
 
-test("isWithin60Minutes(date) - returns boolean indicating whether date is within last 60 minutes", () => {
+test("areWithin60Minutes(date) - returns boolean indicating whether date is within last 60 minutes", () => {
     const stubNowMillis = (new Date(2016, 3, 2, 15, 30, 30)).getTime();
     const stubDateWithin60M = new Date(2016, 3, 2, 14, 30, 30);
     const stubDateNotWithin60M = new Date(2016, 3, 2, 14, 30, 29, 999);
     Date.now = jest.genMockFunction().mockReturnValue(stubNowMillis);
-    expect(dateUtil.isWithin60Minutes(stubDateWithin60M)).toEqual(true);
-    expect(dateUtil.isWithin60Minutes(stubDateNotWithin60M)).toEqual(false);
+    expect(dateUtil.areWithin60Minutes(stubDateWithin60M)).toEqual(true);
+    expect(dateUtil.areWithin60Minutes(stubDateNotWithin60M)).toEqual(false);
 });
 
-test("hoursFromPresent(date) - returns the number of hours the given date is in the past from present time", () => {
+test("hoursBetween(date) - returns the number of hours the given date is in the past from present time", () => {
     const stubNowMillis = (new Date(2016, 3, 2, 17)).getTime();
     const stubDate = new Date(2016, 3, 2, 14, 30);
     Date.now = jest.genMockFunction().mockReturnValue(stubNowMillis);
-    expect(dateUtil.hoursFromPresent(stubDate)).toEqual(3);
-    expect(dateUtil.hoursFromPresent(new Date(stubNowMillis))).toEqual(0);
+    expect(dateUtil.hoursBetween(stubDate)).toEqual(3);
+    expect(dateUtil.hoursBetween(new Date(stubNowMillis))).toEqual(0);
 });
 
-test("minutesFromPresent(date) - returns the number of minutes the given date is in the past from present time", () => {
+test("minutesBetween(date) - returns the number of minutes the given date is in the past from present time", () => {
     const stubNowMillis = (new Date(2016, 3, 2, 15, 2, 30)).getTime();
     const stubDate = new Date(2016, 3, 2, 14, 30);
     Date.now = jest.genMockFunction().mockReturnValue(stubNowMillis);
-    expect(dateUtil.minutesFromPresent(stubDate)).toEqual(33);
-    expect(dateUtil.minutesFromPresent(new Date(stubNowMillis))).toEqual(0);
+    expect(dateUtil.minutesBetween(stubDate)).toEqual(33);
+    expect(dateUtil.minutesBetween(new Date(stubNowMillis))).toEqual(0);
 });
 
 test("toDateFromDateString(dateString, hour, minute, second, millisecond) - returns Date corresponding to given string in DD-MM-YYYY format, with time as specified with parameters", () => {

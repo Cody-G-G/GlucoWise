@@ -120,23 +120,6 @@ export default class SettingsScreen extends Component {
                 });
             else
                 this.gFitToggling = false;
-
-            gFit.stepsToday().then((data) => log("Steps today: " + data.values));
-            gFit.stepsTodayInHourBuckets().then((data) => {
-                log("Steps today in hour buckets - steps: " + data.values + " dates: " + data.dates);
-            });
-            gFit.stepsLast24hInHourBuckets().then((data) => {
-                log("Steps last 24h in hour buckets - steps: " + data.values + " dates: " + data.dates);
-            });
-            gFit.stepsLast60mInMinuteBuckets().then((data) => {
-                log("Steps last 60m in minute buckets - steps: " + data.values + " dates: " + data.dates);
-            });
-            gFit.caloriesExpendedLast24hInHourBuckets().then((data) => {
-                log("Calories expended last 24h in hour buckets - calories: " + data.values + " dates: " + data.dates);
-            });
-            gFit.caloriesExpendedLast60mInMinuteBuckets().then((data) => {
-                log("Calories expended last 60m in minute buckets - calories: " + data.values + " dates: " + data.dates);
-            });
         });
     }
 

@@ -32,19 +32,21 @@ export default {
     },
 
     /**
-     * @param date
+     * @param from
+     * @param to
      * @returns {boolean}
      */
-    isWithin24Hours(date) {
-        return (Math.abs((Date.now()) - date) / 36e5) <= 24;
+    isWithin24Hours(from, to) {
+        return (Math.abs(from - to) / 36e5) <= 24;
     },
 
     /**
-     * @param date
      * @returns {boolean}
+     * @param from
+     * @param to
      */
-    isWithin60Minutes(date) {
-        return (Math.abs((Date.now()) - date) / 36e5) <= 1;
+    areWithin60Minutes(from, to) {
+        return (Math.abs(from - to) / 36e5) <= 1;
     },
 
     /**
@@ -56,43 +58,48 @@ export default {
     },
 
     /**
-     * @param date
+     * @param from
+     * @param to
      * @returns {number}
      */
-    hoursFromPresent(date) {
-        return Math.round(Math.abs((Date.now()) - date) / 36e5);
+    hoursBetween(from, to) {
+        return Math.abs(from - to) / 36e5;
     },
 
     /**
-     * @param date
+     * @param from
+     * @param to
      * @returns {number}
      */
-    daysFromPresent(date) {
-        return Math.round(Math.abs((Date.now()) - date) / 864e5);
+    daysBetween(from, to) {
+        return Math.abs(from - to) / 864e5;
     },
 
     /**
-     * @param date
+     * @param from
+     * @param to
      * @returns {number}
      */
-    minutesFromPresent(date) {
-        return Math.round(Math.floor((Date.now()) - date) / 6e4);
+    minutesBetween(from, to) {
+        return Math.abs(from - to) / 6e4;
     },
 
     /**
-     * @param date
+     * @param from
+     * @param to
      * @returns {number}
      */
-    weeksFromPresent(date) {
-        return Math.round(Math.floor((Date.now()) - date) / 6048e5);
+    weeksBetween(from, to) {
+        return Math.abs(from - to) / 6048e5;
     },
 
     /**
-     * @param date
+     * @param from
+     * @param to
      * @returns {number}
      */
-    monthsFromPresent(date) {
-        return Math.round(Math.floor((Date.now()) - date) / 2628e6);
+    monthsBetween(from, to) {
+        return Math.abs(from - to) / 2628e6;
     },
 
     /**
@@ -117,61 +124,65 @@ export default {
 
     /**
      * @param hours
+     * @param date
      * @returns {number}
      */
-    hoursAgoMillis(hours) {
-        return new Date(moment().subtract(hours, 'hours')).getTime();
+    hoursAgoMillis(hours, date) {
+        return new Date(moment(date).subtract(hours, 'hours')).getTime();
     },
 
     /**
      * @param days
+     * @param date
      * @returns {number}
      */
-    daysAgoMillis(days) {
-        return new Date(moment().subtract(days, 'days')).getTime();
+    daysBeforeMillis(days, date) {
+        return new Date(moment(date).subtract(days, 'days')).getTime();
     },
 
     /**
      * @param months
+     * @param date
      * @returns {number}
      */
-    monthsAgoMillis(months) {
-        return new Date(moment().subtract(months, 'months')).getTime();
+    monthsAgoMillis(months, date) {
+        return new Date(moment(date).subtract(months, 'months')).getTime();
     },
 
-    todayStartMillis() {
-        return new Date(moment().startOf('day')).getTime();
+    dayStartMillis(date) {
+        return new Date(moment(date).startOf('day')).getTime();
     },
 
-    todayEndMillis() {
-        return new Date(moment().endOf('day')).getTime();
+    dayEndMillis(date) {
+        return new Date(moment(date).endOf('day')).getTime();
     },
 
-    hourStartMillis() {
-        return new Date(moment().startOf('hour')).getTime();
+    hourStartMillis(date) {
+        return new Date(moment(date).startOf('hour')).getTime();
     },
 
-    minuteStartMillis() {
-        return new Date(moment().startOf('minute')).getTime();
+    minuteStartMillis(date) {
+        return new Date(moment(date).startOf('minute')).getTime();
     },
 
-    millisFromMidnight() {
-        return Date.now() - this.todayStartMillis();
+    millisFromMidnight(date) {
+        return date - this.dayStartMillis(date);
     },
 
-    millisFromHourStart() {
-        return Date.now() - this.hourStartMillis();
+    millisFromHourStart(date) {
+        return date - this.hourStartMillis(date);
     },
 
-    millisFromMinuteStart() {
-        return Date.now() - this.minuteStartMillis();
+    millisFromMinuteStart(date) {
+        return date - this.minuteStartMillis(date);
     },
 
     /**
      * @param hoursAgo
+     * @param date
      * @returns {number}
      */
-    hourOfDayHoursAgo(hoursAgo) {
-        return new Date(this.hoursAgoMillis(hoursAgo)).getHours();
+    hourOfDayHoursAgo(hoursAgo, date) {
+        return new Date(this.hoursAgoMillis(hoursAgo, date)).getHours();
     }
 };
