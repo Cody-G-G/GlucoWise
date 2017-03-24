@@ -10,6 +10,7 @@ import log from "../../helpers/util/logger";
 import AddButton from "./AddButton";
 import AddReadingModal from "./AddReadingModal";
 import {dataModes} from "../../helpers/util/constants";
+import ToggleButtonsGroup from "../../helpers/components/ToggleButtonsGroup";
 
 export default class LogbookScreen extends Component {
     constructor(props) {
@@ -21,7 +22,7 @@ export default class LogbookScreen extends Component {
             endDate: this.today,
             standard: '',
             addModalOpen: false,
-            modes: {
+            logModes: {
                 [dataModes.glucose]: true,
                 [dataModes.calories]: true
             }
@@ -34,6 +35,9 @@ export default class LogbookScreen extends Component {
 
     render() {
         log("Rendering LogbookScreen");
+        const modeTypes = Object.keys(this.state.logModes);
+        const selectedModeTypes = modeTypes.filter(mode => this.state.logModes[mode]);
+
         return (
             <View style={styles.screenContainer}>
                 <View style={styles.screenTopPanel}>
@@ -63,6 +67,10 @@ export default class LogbookScreen extends Component {
                          standard={this.state.standard}
                          delete={db.delete}/>
 
+                <ToggleButtonsGroup types={modeTypes}
+                                    selectedTypes={selectedModeTypes}
+                                    onPress={this.updateState}/>
+
                 <AddReadingModal opened={this.state.addModalOpen} finished={this.finishedAdding}/>
             </View>
         );
@@ -79,10 +87,11 @@ export default class LogbookScreen extends Component {
     }
 
     updateState = (mode) => {
-        const modes = this.state.modes;
-        typeof mode !== 'undefined' && (modes[mode] = !modes[mode]);
+        log("Updating LogbookScreen state with mode " + mode);
+        const logModes = this.state.logModes;
+        typeof mode !== 'undefined' && (logModes[mode] = !logModes[mode]);
 
-        if (modes[dataModes.glucose] && modes[dataModes.calories]) {
+        if (logModes[dataModes.glucose] && logModes[dataModes.calories]) {
             const glucoseData = db.getBGLReadingsInDateRange(this.state.startDate, this.state.endDate);
             const foodData = db.getConsumedFoodItemsInDateRange(this.state.startDate, this.state.endDate);
             const data = [...glucoseData, ...foodData].sort((a, b) => b.date - a.date);
@@ -90,18 +99,23 @@ export default class LogbookScreen extends Component {
             this.setState({
                 standard: db.getBGLStandard(),
                 data: data,
-                modes: modes
+                logModes: logModes
             });
-        } else if (modes[dataModes.glucose]) {
+        } else if (logModes[dataModes.glucose]) {
             this.setState({
                 standard: db.getBGLStandard(),
                 data: db.getBGLReadingsInDateRange(this.state.startDate, this.state.endDate),
-                modes: modes
+                logModes: logModes
             });
-        } else if (modes[dataModes.calories]) {
+        } else if (logModes[dataModes.calories]) {
             this.setState({
                 data: db.getConsumedFoodItemsInDateRange(this.state.startDate, this.state.endDate),
-                modes: modes
+                logModes: logModes
+            });
+        } else {
+            this.setState({
+                data: [],
+                logModes: logModes
             });
         }
     };

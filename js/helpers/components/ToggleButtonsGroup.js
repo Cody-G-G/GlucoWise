@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import {View} from 'react-native';
-import ToggleButton from "../../helpers/components/ToggleButton";
+import ToggleButton from "./ToggleButton";
 import styles from "./styles";
 
-export default class RadioButtonsPanel extends Component {
+export default class ToggleButtonsGroup extends Component {
     constructor(props) {
         super(props);
     }
@@ -13,13 +13,13 @@ export default class RadioButtonsPanel extends Component {
             return <ToggleButton fontSize={this.props.fontSize}
                                  key={i}
                                  type={type}
-                                 selectedType={this.props.selectedType}
+                                 selectedTypes={this.props.selectedTypes}
                                  onPress={() => this.props.onPress(type)}
                                  onText={type}
                                  offText={type}/>
         });
         return (
-            <View style={styles.radioButtonsPanel}>
+            <View style={styles.toggleButtonsGroup}>
                 {buttons}
             </View>
         );

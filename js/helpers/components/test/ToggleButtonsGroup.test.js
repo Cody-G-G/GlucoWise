@@ -2,16 +2,16 @@
 import React from 'react';
 import 'react-native';
 import renderer from 'react-test-renderer';
-import RadioButtonsPanel from "../RadioButtonsPanel";
-import {timeRanges} from "../../../helpers/util/constants";
+import ToggleButtonsGroup from "../ToggleButtonsGroup";
+import {timeRanges} from "../../util/constants";
 
 
-test('RadioButtonsPanel - renders correctly', () => {
+test('ToggleButtonsGroup - renders correctly', () => {
     let timeRange = timeRanges.lastHour;
     let types = [timeRanges.lastDay, timeRanges.lastHour];
 
     const tree = renderer.create(
-        <RadioButtonsPanel
+        <ToggleButtonsGroup
             types={types}
             timeRange={timeRange}/>
     ).toJSON();

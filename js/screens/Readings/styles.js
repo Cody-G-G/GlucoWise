@@ -126,7 +126,7 @@ export default StyleSheet.create({
         paddingLeft: 15,
         paddingTop: 3,
         paddingBottom: 3,
-        backgroundColor: 'cornflowerblue'
+        backgroundColor: 'olive'
     },
     logRowText: {
         color: 'white',

@@ -14,7 +14,7 @@ export default class ToggleButton extends Component {
 
         let buttonColor;
         let buttonText;
-        if (this.props.selectedType === this.props.type) {
+        if (typeof this.props.selectedTypes !== 'undefined' && this.props.selectedTypes.includes(this.props.type)) {
             buttonColor = hasOnColorProp ? this.props.onColor : 'royalblue';
             buttonText = this.props.onText;
         } else {

@@ -16,12 +16,6 @@ export default StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    radioButtonsPanel: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        alignSelf: 'stretch'
-    },
     summaryInfoPanel: {
         paddingTop: 5,
         justifyContent: 'center',

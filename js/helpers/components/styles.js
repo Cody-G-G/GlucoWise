@@ -13,5 +13,11 @@ export default StyleSheet.create({
         fontSize: 35,
         color: 'white',
         fontWeight: 'bold'
+    },
+    toggleButtonsGroup: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        alignSelf: 'stretch'
     }
 });

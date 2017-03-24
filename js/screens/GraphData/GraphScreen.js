@@ -9,7 +9,7 @@ import gFit from "../../data/googleFit";
 import dateUtil from "../../helpers/util/date";
 import {dataModes, timeRanges} from "../../helpers/util/constants";
 import log from "../../helpers/util/logger";
-import RadioButtonsPanel from "./RadioButtonsPanel";
+import ToggleButtonsGroup from "../../helpers/components/ToggleButtonsGroup";
 import GraphsHelpModal from "./GraphsHelpModal";
 import emitter from "../../helpers/util/eventEmitter";
 
@@ -67,15 +67,15 @@ export default class GraphScreen extends Component {
         return (
             <View style={styles.screenContainer}>
                 <View style={styles.mainPanel}>
-                    <RadioButtonsPanel fontSize={20}
-                                       types={graphModeTypes}
-                                       selectedType={this.state.graphMode}
-                                       onPress={this.updateGraphMode}/>
+                    <ToggleButtonsGroup fontSize={20}
+                                        types={graphModeTypes}
+                                        selectedTypes={[this.state.graphMode]}
+                                        onPress={this.updateGraphMode}/>
                     {summaryInfoToRender}
                     {graphToRender}
-                    <RadioButtonsPanel types={timeRangeTypes}
-                                       selectedType={this.state.timeRange}
-                                       onPress={this.updateState}/>
+                    <ToggleButtonsGroup types={timeRangeTypes}
+                                        selectedTypes={[this.state.timeRange]}
+                                        onPress={this.updateState}/>
                 </View>
                 <GraphsHelpModal helpOpen={this.state.helpOpen} onClose={this.closeHelpModal}/>
             </View>
