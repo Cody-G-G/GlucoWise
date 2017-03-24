@@ -72,7 +72,7 @@ class GoogleFit {
      * @returns {*}
      */
     weightLast6MInWeekBuckets(date) {
-        return googleFit.weight(dateUtil.monthsAgoMillis(6, date), date, 7, 'days');
+        return googleFit.weight(dateUtil.monthsBeforeMillis(6, date), date, 7, 'days');
     }
 
     /**
@@ -80,7 +80,7 @@ class GoogleFit {
      * @returns {*}
      */
     weightLast1yInMonthBuckets(date) {
-        return googleFit.weight(dateUtil.monthsAgoMillis(12, date), date, 30, 'days');
+        return googleFit.weight(dateUtil.monthsBeforeMillis(12, date), date, 30, 'days');
     }
 
     /**
@@ -105,7 +105,7 @@ class GoogleFit {
      * @returns {*}
      */
     stepsLast24hInHourBuckets(date) {
-        return googleFit.steps(dateUtil.hoursAgoMillis(23, date) - dateUtil.millisFromHourStart(date), date, 1, 'hours');
+        return googleFit.steps(dateUtil.hoursBeforeMillis(23, date) - dateUtil.millisFromHourStart(date), date, 1, 'hours');
     }
 
     /**
@@ -113,7 +113,7 @@ class GoogleFit {
      * @returns {*}
      */
     stepsLast60mInMinuteBuckets(date) {
-        return googleFit.steps(dateUtil.minutesAgoMillis(59, date) - dateUtil.millisFromMinuteStart(date), date, 1, 'minutes');
+        return googleFit.steps(dateUtil.minutesBeforeMillis(59, date) - dateUtil.millisFromMinuteStart(date), date, 1, 'minutes');
     }
 
     /**
@@ -121,7 +121,7 @@ class GoogleFit {
      * @returns {*}
      */
     caloriesExpendedPrevious24hInHourBuckets(date) {
-        return googleFit.caloriesExpended(dateUtil.hoursAgoMillis(23, date) - dateUtil.millisFromHourStart(date), date, 1, 'hours');
+        return googleFit.caloriesExpended(dateUtil.hoursBeforeMillis(23, date) - dateUtil.millisFromHourStart(date), date, 1, 'hours');
     }
 
     /**
@@ -129,7 +129,7 @@ class GoogleFit {
      * @returns {*}
      */
     caloriesExpendedPrevious7dInDayBuckets(date) {
-        return googleFit.caloriesExpended(dateUtil.daysBeforeMillis(6, date) - dateUtil.millisFromMidnight(date), date, 1, 'days');
+        return googleFit.caloriesExpended(dateUtil.daysBeforeMillis(6, date) - dateUtil.millisFromDayStart(date), date, 1, 'days');
     }
 
     disconnect() {

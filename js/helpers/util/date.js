@@ -1,7 +1,6 @@
 'use strict';
 import moment from "moment";
-const dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const monthOfYear = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "Octomber", "November", "December"];
+import {daysOfWeek, monthsOfYear} from "../../helpers/util/constants";
 
 export default {
     /**
@@ -37,7 +36,7 @@ export default {
      * @param to
      * @returns {boolean}
      */
-    isWithin24Hours(from, to) {
+    areWithin24Hours(from, to) {
         return (Math.abs(from - to) / 36e5) <= 24;
     },
 
@@ -55,7 +54,7 @@ export default {
      * @returns {string}
      */
     dayOfWeek(date){
-        return dayOfWeek[new Date(date).getDay()];
+        return daysOfWeek[new Date(date).getDay()];
     },
 
     /**
@@ -128,7 +127,7 @@ export default {
      * @param date
      * @returns {number}
      */
-    hoursAgoMillis(hours, date) {
+    hoursBeforeMillis(hours, date) {
         return new Date(moment(date).subtract(hours, 'hours')).getTime();
     },
 
@@ -137,7 +136,7 @@ export default {
      * @param date
      * @returns {number}
      */
-    minutesAgoMillis(minutes, date) {
+    minutesBeforeMillis(minutes, date) {
         return new Date(moment(date).subtract(minutes, 'minutes')).getTime();
     },
 
@@ -155,7 +154,7 @@ export default {
      * @param date
      * @returns {number}
      */
-    monthsAgoMillis(months, date) {
+    monthsBeforeMillis(months, date) {
         return new Date(moment(date).subtract(months, 'months')).getTime();
     },
 
@@ -195,7 +194,7 @@ export default {
      * @param date
      * @returns {number}
      */
-    millisFromMidnight(date) {
+    millisFromDayStart(date) {
         return date - this.dayStartMillis(date);
     },
 
@@ -221,7 +220,7 @@ export default {
      * @returns {number}
      */
     hourOfDayHoursAgo(hoursAgo, date) {
-        return new Date(this.hoursAgoMillis(hoursAgo, date)).getHours();
+        return new Date(this.hoursBeforeMillis(hoursAgo, date)).getHours();
     },
 
     /**
@@ -229,6 +228,6 @@ export default {
      * @returns {number}
      */
     monthOfYear(date) {
-        return monthOfYear[new Date(date).getMonth()];
+        return monthsOfYear[new Date(date).getMonth()];
     }
 };

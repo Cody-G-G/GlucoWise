@@ -26,4 +26,7 @@ const defaultSafeRange = {
     max: '130'
 };
 
-export {readingUnitStandards, graphModes, timeRanges, defaultSafeRange};
+const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const monthsOfYear = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "Octomber", "November", "December"];
+
+export {readingUnitStandards, graphModes, timeRanges, defaultSafeRange, daysOfWeek, monthsOfYear};

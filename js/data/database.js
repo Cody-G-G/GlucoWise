@@ -164,7 +164,7 @@ const database = {
         let filteredReadings = [];
         const standard = this.getBGLStandard();
         realm.objects('BGLReading').sorted('date', true).forEach((reading) => {
-            dateUtil.isWithin24Hours(reading.date, Date.now()) && filteredReadings.push({
+            dateUtil.areWithin24Hours(reading.date, Date.now()) && filteredReadings.push({
                 id: reading.id,
                 value: processReading(reading.value, standard),
                 date: reading.date
