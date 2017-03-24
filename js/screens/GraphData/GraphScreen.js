@@ -133,8 +133,8 @@ export default class GraphScreen extends Component {
                 </View>
             );
         } else if (isModeWeight) {
-            const maxWeight = graphData.reduce((acc, curr) => Math.max(acc, curr.y), graphData[0].y);
-            const minWeight = graphData.reduce((acc, curr) => Math.min(acc, curr.y), graphData[0].y);
+            const maxWeight = graphData.length > 0 ? graphData.reduce((acc, curr) => Math.max(acc, curr.y), graphData[0].y) : '- ';
+            const minWeight = graphData.length > 0 ? graphData.reduce((acc, curr) => Math.min(acc, curr.y), graphData[0].y) : '- ';
 
             toRender = (
                 <View style={styles.summaryInfoPanel}>
@@ -313,8 +313,14 @@ export default class GraphScreen extends Component {
     getData(timeRange, graphMode, now) {
         log("Getting data - mode: " + graphMode + " timeRange: " + timeRange);
         return new Promise(async(resolve) => {
-            let data = await this.graphDataFunctions[graphMode][timeRange](now);
-            resolve(graphMode === dataModes.glucose ? data : this.mapValuesToDates(data));
+            let data;
+            try {
+                data = await this.graphDataFunctions[graphMode][timeRange](now);
+                resolve(graphMode === dataModes.glucose ? data : this.mapValuesToDates(data));
+            } catch (error) {
+                log("Error on getting data: " + error);
+                resolve([]);
+            }
         });
     }
 }

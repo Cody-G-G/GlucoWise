@@ -145,41 +145,44 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
     }
 
     private void resolvePromiseWithReadData(final DataReadRequest readRequest, final Promise promise, final DataType outputDataType, final Field dataPointField) {
-        Fitness.HistoryApi.readData(mClient, readRequest).setResultCallback(new ResultCallback<DataReadResult>() {
-            @Override
-            public void onResult(@NonNull DataReadResult readResult) {
-                Log.i(LOG_TAG, "Finished reading " + dataPointField.getName() + " data");
+        if (mClient == null) promise.reject("GoogleClientAPI not initialized.");
+        else {
+            Fitness.HistoryApi.readData(mClient, readRequest).setResultCallback(new ResultCallback<DataReadResult>() {
+                @Override
+                public void onResult(@NonNull DataReadResult readResult) {
+                    Log.i(LOG_TAG, "Finished reading " + dataPointField.getName() + " data");
 
-                List<Bucket> buckets = readResult.getBuckets();
-                WritableMap data = Arguments.createMap();
-                WritableArray values = Arguments.createArray();
-                WritableArray dates = Arguments.createArray();
+                    List<Bucket> buckets = readResult.getBuckets();
+                    WritableMap data = Arguments.createMap();
+                    WritableArray values = Arguments.createArray();
+                    WritableArray dates = Arguments.createArray();
 
-                for (Bucket bucket : buckets) {
-                    List<DataPoint> dataPoints = bucket.getDataSet(outputDataType).getDataPoints();
-                    for (DataPoint dataPoint : dataPoints) {
+                    for (Bucket bucket : buckets) {
+                        List<DataPoint> dataPoints = bucket.getDataSet(outputDataType).getDataPoints();
+                        for (DataPoint dataPoint : dataPoints) {
 
-                        int value = 0;
-                        switch (dataPoint.getValue(dataPointField).getFormat()) {
-                            case Field.FORMAT_FLOAT:
-                                value = (int) dataPoint.getValue(dataPointField).asFloat();
-                                break;
-                            case Field.FORMAT_INT32:
-                                value = dataPoint.getValue(dataPointField).asInt();
-                                break;
-                        }
+                            int value = 0;
+                            switch (dataPoint.getValue(dataPointField).getFormat()) {
+                                case Field.FORMAT_FLOAT:
+                                    value = (int) dataPoint.getValue(dataPointField).asFloat();
+                                    break;
+                                case Field.FORMAT_INT32:
+                                    value = dataPoint.getValue(dataPointField).asInt();
+                                    break;
+                            }
 
-                        if (value != 0) {
-                            values.pushInt(value);
-                            dates.pushDouble(dataPoint.getStartTime(TimeUnit.MILLISECONDS));
+                            if (value != 0) {
+                                values.pushInt(value);
+                                dates.pushDouble(dataPoint.getStartTime(TimeUnit.MILLISECONDS));
+                            }
                         }
                     }
-                }
 
-                data.putArray("values", values);
-                data.putArray("dates", dates);
-                promise.resolve(data);
-            }
-        });
+                    data.putArray("values", values);
+                    data.putArray("dates", dates);
+                    promise.resolve(data);
+                }
+            });
+        }
     }
 }
