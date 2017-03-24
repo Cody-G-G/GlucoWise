@@ -7,7 +7,7 @@ import BarGraph from './BarGraph';
 import db from "../../data/database";
 import gFit from "../../data/googleFit";
 import dateUtil from "../../helpers/util/date";
-import {graphModes, timeRanges} from "../../helpers/util/constants";
+import {dataModes, timeRanges} from "../../helpers/util/constants";
 import log from "../../helpers/util/logger";
 import RadioButtonsPanel from "./RadioButtonsPanel";
 import GraphsHelpModal from "./GraphsHelpModal";
@@ -22,22 +22,22 @@ export default class GraphScreen extends Component {
             safeRangeMin: '',
             safeRangeMax: '',
             standard: '',
-            graphMode: graphModes.steps
+            graphMode: dataModes.steps
         };
         this.graphDataFunctions = {
-            [graphModes.steps]: {
+            [dataModes.steps]: {
                 [timeRanges.lastDay]: (now) => gFit.stepsLast24hInHourBuckets(now),
                 [timeRanges.lastHour]: (now) => gFit.stepsLast60mInMinuteBuckets(now)
             },
-            [graphModes.glucose]: {
+            [dataModes.glucose]: {
                 [timeRanges.lastDay]: () => db.get24hBGLReadings(),
                 [timeRanges.lastHour]: () => db.get60mBGLReadings()
             },
-            [graphModes.calories]: {
+            [dataModes.calories]: {
                 [timeRanges.lastDay]: (now) => gFit.caloriesExpendedPrevious24hInHourBuckets(now),
                 [timeRanges.lastWeek]: (now) => gFit.caloriesExpendedPrevious7dInDayBuckets(now)
             },
-            [graphModes.weight]: {
+            [dataModes.weight]: {
                 [timeRanges.lastMonth]: (now) => gFit.weightLast30dInDayBuckets(now),
                 [timeRanges.lastHalfYear]: (now) => gFit.weightLast6MInWeekBuckets(now),
                 [timeRanges.lastYear]: (now) => gFit.weightLast1yInMonthBuckets(now)
@@ -62,7 +62,7 @@ export default class GraphScreen extends Component {
         const graphToRender = this.getGraphToRender();
         const summaryInfoToRender = this.getSummaryInfoToRender();
         const timeRangeTypes = Object.keys(this.graphDataFunctions[this.state.graphMode]);
-        const graphModeTypes = Object.values(graphModes);
+        const graphModeTypes = Object.values(dataModes);
 
         return (
             <View style={styles.screenContainer}>
@@ -111,9 +111,9 @@ export default class GraphScreen extends Component {
         let toRender;
         const graphMode = this.state.graphMode;
         const graphData = this.state.graphData;
-        const isModeCalories = graphMode === graphModes.calories;
-        const isModeSteps = graphMode === graphModes.steps;
-        const isModeWeight = graphMode === graphModes.weight;
+        const isModeCalories = graphMode === dataModes.calories;
+        const isModeSteps = graphMode === dataModes.steps;
+        const isModeWeight = graphMode === dataModes.weight;
         const isTimeRangeLastWeek = this.state.timeRange === timeRanges.lastWeek;
 
         if (isModeCalories || isModeSteps) {
@@ -154,21 +154,21 @@ export default class GraphScreen extends Component {
 
         if (graphData.length > 0)
             switch (this.state.graphMode) {
-                case(graphModes.glucose):
+                case(dataModes.glucose):
                     toRender = <ReadingsGraph readings={graphData}
                                               timeRange={timeRange}
                                               safeRangeMin={this.state.safeRangeMin}
                                               safeRangeMax={this.state.safeRangeMax}
                                               standard={this.state.standard}/>;
                     break;
-                case(graphModes.steps):
+                case(dataModes.steps):
                     toRender = <BarGraph data={graphData} gutter={5} xSize={14}/>;
                     break;
-                case(graphModes.calories):
+                case(dataModes.calories):
                     let gutter = timeRange === timeRanges.lastDay ? 2 : 5;
                     toRender = <BarGraph data={graphData} gutter={gutter} xSize={10}/>;
                     break;
-                case(graphModes.weight):
+                case(dataModes.weight):
                     toRender = <BarGraph data={graphData} gutter={5} xSize={14}/>;
                     break;
             }
@@ -212,16 +212,16 @@ export default class GraphScreen extends Component {
         const timeRangeIs24h = timeRange === timeRanges.lastDay;
         let xValue;
         switch (graphMode) {
-            case(graphModes.glucose):
+            case(dataModes.glucose):
                 xValue = timeRangeIs24h ? Math.round(24 - computedTimeUnits) : Math.round(60 - computedTimeUnits);
                 break;
-            case(graphModes.steps):
+            case(dataModes.steps):
                 xValue = timeRangeIs24h ? dateUtil.hourOfDayHoursAgo(computedTimeUnits, now) : Math.round(computedTimeUnits);
                 break;
-            case(graphModes.calories):
+            case(dataModes.calories):
                 xValue = timeRangeIs24h ? dateUtil.hourOfDayHoursAgo(computedTimeUnits, now) : computedTimeUnits;
                 break;
-            case(graphModes.weight):
+            case(dataModes.weight):
                 xValue = timeRange === timeRanges.lastMonth ? Math.round(computedTimeUnits) : computedTimeUnits;
                 break;
         }
@@ -231,13 +231,13 @@ export default class GraphScreen extends Component {
 
     getXAxisString(graphMode) {
         switch (graphMode) {
-            case(graphModes.glucose):
+            case(dataModes.glucose):
                 return "x";
-            case(graphModes.steps):
+            case(dataModes.steps):
                 return "name";
-            case(graphModes.calories):
+            case(dataModes.calories):
                 return "name";
-            case(graphModes.weight):
+            case(dataModes.weight):
                 return "name";
         }
     }
@@ -314,7 +314,7 @@ export default class GraphScreen extends Component {
         log("Getting data - mode: " + graphMode + " timeRange: " + timeRange);
         return new Promise(async(resolve) => {
             let data = await this.graphDataFunctions[graphMode][timeRange](now);
-            resolve(graphMode === graphModes.glucose ? data : this.mapValuesToDates(data));
+            resolve(graphMode === dataModes.glucose ? data : this.mapValuesToDates(data));
         });
     }
 }

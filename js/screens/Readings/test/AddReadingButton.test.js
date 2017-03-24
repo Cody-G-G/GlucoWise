@@ -2,11 +2,11 @@
 import React from 'react';
 import 'react-native';
 import renderer from 'react-test-renderer';
-import AddReadingButton from "../AddReadingButton";
+import AddButton from "../AddButton";
 
-test('AddReadingButton - renders correctly', () => {
+test('AddButton - renders correctly', () => {
     const tree = renderer.create(
-        <AddReadingButton/>
+        <AddButton/>
     ).toJSON();
 
     expect(tree).toMatchSnapshot();

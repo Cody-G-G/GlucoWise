@@ -9,17 +9,17 @@ export default StyleSheet.create({
         backgroundColor: 'aliceblue',
         fontWeight: 'bold'
     },
-    addReadingButton: {
+    addButton: {
         flex: 1,
         backgroundColor: 'forestgreen',
         alignItems: 'center',
         justifyContent: 'center'
     },
-    addReadingButtonIcon: {
+    addButtonIcon: {
         color: 'white',
         fontSize: 40
     },
-    addButton: {
+    addModalButton: {
         backgroundColor: 'royalblue',
         paddingRight: 20,
         paddingLeft: 20,
@@ -39,7 +39,7 @@ export default StyleSheet.create({
         borderWidth: 2,
         backgroundColor: 'aliceblue'
     },
-    addButtonText: {
+    addModalButtonText: {
         color: 'white',
         fontSize: 25,
         fontWeight: 'bold'
@@ -89,7 +89,7 @@ export default StyleSheet.create({
         width: 190,
         borderWidth: 1
     },
-    readingsDatePicker: {
+    customDatePicker: {
         flex: 1,
         borderWidth: 1
     },
@@ -105,5 +105,52 @@ export default StyleSheet.create({
     screenContainer: {
         flex: 1,
         backgroundColor: 'aliceblue'
+    },
+    logRow: {
+        flex: 1,
+        flexDirection: 'row',
+        borderColor: 'black',
+        borderWidth: 1
+    },
+    logRowFoodDescription: {
+        flex: 6,
+        justifyContent: 'center',
+        paddingLeft: 15,
+        paddingTop: 3,
+        paddingBottom: 3,
+        backgroundColor: 'teal'
+    },
+    logRowReadingDescription: {
+        flex: 6,
+        justifyContent: 'center',
+        paddingLeft: 15,
+        paddingTop: 3,
+        paddingBottom: 3,
+        backgroundColor: 'cornflowerblue'
+    },
+    logRowText: {
+        color: 'white',
+        fontSize: 16,
+    },
+    logRowReadingHeaderText: {
+        color: 'white',
+        fontSize: 18,
+        alignSelf: 'center'
+    },
+    logRowFoodHeaderText: {
+        color: 'white',
+        fontSize: 18,
+        alignSelf: 'center'
+    },
+    trashIcon: {
+        color: 'white',
+        fontSize: 30
+    },
+    trashButton: {
+        flex: 1,
+        alignSelf: 'stretch',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'firebrick'
     }
 });

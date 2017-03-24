@@ -2,10 +2,10 @@
 import React from 'react';
 import 'react-native';
 import renderer from 'react-test-renderer';
-import ReadingDatePicker from "../ReadingDatePicker";
+import CustomDatePicker from "../CustomDatePicker";
 import styles from "../styles";
 
-test('ReadingDatePicker - renders correctly', () => {
+test('CustomDatePicker - renders correctly', () => {
     const maxDate = "08-03-2017";
     const date = "07-03-2017";
     const backgroundColor = 'dimgray';
@@ -13,12 +13,12 @@ test('ReadingDatePicker - renders correctly', () => {
     const minDate = "31-08-1994";
 
     const tree = renderer.create(
-        <ReadingDatePicker style={styles.readingsDatePicker}
-                           backgroundColor={backgroundColor}
-                           minDate={minDate}
-                           type={type}
-                           maxDate={maxDate}
-                           date={date}/>
+        <CustomDatePicker style={styles.customDatePicker}
+                          backgroundColor={backgroundColor}
+                          minDate={minDate}
+                          type={type}
+                          maxDate={maxDate}
+                          date={date}/>
     ).toJSON();
 
     expect(tree).toMatchSnapshot();

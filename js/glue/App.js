@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {Router, Scene, Actions, ActionConst} from 'react-native-router-flux';
 import NavigationDrawer from './NavigationDrawer';
 import ConnectionScreen from '../screens/Connection/ConnectionScreen';
-import ReadingsScreen from '../screens/Readings/ReadingsScreen';
+import LogbookScreen from '../screens/Readings/LogbookScreen';
 import GraphScreen from '../screens/GraphData/GraphScreen';
 import SettingsScreen from '../screens/Settings/SettingsScreen';
 import {Navigator, Image} from 'react-native';
@@ -33,7 +33,7 @@ export default class App extends Component {
                                rightButtonImage={require('../../assets/help.png')}
                                onRight={emitHelpEvent}
                                titleStyle={styles.sceneTitle}/>
-                        <Scene key="screenReadings" title="Readings" hideTabBar component={ReadingsScreen} type={ActionConst.REFRESH} titleStyle={styles.sceneTitle}/>
+                        <Scene key="screenLogbook" title="Logbook" hideTabBar component={LogbookScreen} type={ActionConst.REFRESH} titleStyle={styles.sceneTitle}/>
                         <Scene key="screenSettings" title="Settings" hideTabBar component={SettingsScreen} type={ActionConst.REFRESH} titleStyle={styles.sceneTitle}/>
                     </Scene>
                 </Scene>

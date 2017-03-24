@@ -2,17 +2,31 @@
 import log from "../helpers/util/logger";
 import dateUtil from "../helpers/util/date";
 import processReading from "../helpers/util/readingProcessor";
-import {readingUnitStandards, defaultSafeRange} from "../helpers/util/constants";
+import {readingUnitStandards, defaultSafeRange, dbObjects} from "../helpers/util/constants";
 const uuid = require('uuid/v1');
 const Realm = require('realm');
 
 const key = new Int8Array(64);
 let realm = new Realm({
     schema: [
-        {name: 'BGLReading', properties: {id: 'string', value: 'string', date: 'date'}},
-        {name: 'BGLSafeRange', properties: {minValue: 'string', maxValue: 'string'}},
-        {name: 'BGLStandard', properties: {standard: 'string'}},
-        {name: 'DataSyncSettings', properties: {syncEnabledGFit: 'bool'}}
+        {name: dbObjects.reading, properties: {objectName: 'string', id: 'string', value: 'string', date: 'date'}},
+        {name: dbObjects.safeRange, properties: {minValue: 'string', maxValue: 'string'}},
+        {name: dbObjects.standard, properties: {standard: 'string'}},
+        {name: dbObjects.dataSync, properties: {syncEnabledGFit: 'bool'}},
+        {
+            name: dbObjects.foodItem,
+            properties: {
+                objectName: 'string',
+                id: 'string',
+                name: 'string',
+                date: 'date',
+                calories: 'string',
+                carbohydrates: 'string',
+                protein: 'string',
+                fats: 'string',
+                weight: 'string'
+            }
+        }
     ],
     schemaVersion: 1,
     // migration: (oldRealm, newRealm) => {
@@ -55,18 +69,60 @@ const database = {
 
     addMockData() {
         realm.delete(realm.objects('BGLReading'));
-        realm.create('BGLReading', {id: uuid(), value: '50', date: (new Date(Date.now() - 1200 * 6e4))});
-        realm.create('BGLReading', {id: uuid(), value: '210', date: (new Date(Date.now() - 600 * 6e4))});
-        realm.create('BGLReading', {id: uuid(), value: '90', date: (new Date(Date.now() - 300 * 6e4))});
-        realm.create('BGLReading', {id: uuid(), value: '140', date: (new Date(Date.now() - 70 * 6e4))});
-        realm.create('BGLReading', {id: uuid(), value: '155', date: (new Date(Date.now() - 65 * 6e4))});
-        realm.create('BGLReading', {id: uuid(), value: '70', date: (new Date(Date.now() - 62 * 6e4))});
-        realm.create('BGLReading', {id: uuid(), value: '90', date: (new Date(Date.now() - 55 * 6e4))});
-        realm.create('BGLReading', {id: uuid(), value: '150', date: (new Date(Date.now() - 20 * 6e4))});
-        realm.create('BGLReading', {id: uuid(), value: '170', date: (new Date(Date.now() - 15 * 6e4))});
-        realm.create('BGLReading', {id: uuid(), value: '180', date: (new Date(Date.now() - 13 * 6e4))});
-        realm.create('BGLReading', {id: uuid(), value: '180', date: (new Date(Date.now() - 9.66 * 6e4))});
-        realm.create('BGLReading', {id: uuid(), value: '200', date: (new Date(Date.now() - 8 * 6e4))});
+        realm.delete(realm.objects('ConsumedFoodItem'));
+
+        const now = Date.now();
+
+        this.createBGLReading(uuid(), '50', dateUtil.hoursBeforeMillis(20, now));
+        this.createBGLReading(uuid(), '210', dateUtil.hoursBeforeMillis(10, now));
+        this.createBGLReading(uuid(), '90', dateUtil.hoursBeforeMillis(5, now));
+        this.createBGLReading(uuid(), '140', dateUtil.minutesBeforeMillis(70, now));
+        this.createBGLReading(uuid(), '155', dateUtil.minutesBeforeMillis(65, now));
+        this.createBGLReading(uuid(), '70', dateUtil.minutesBeforeMillis(62, now));
+        this.createBGLReading(uuid(), '90', dateUtil.minutesBeforeMillis(55, now));
+        this.createBGLReading(uuid(), '150', dateUtil.minutesBeforeMillis(20, now));
+        this.createBGLReading(uuid(), '170', dateUtil.minutesBeforeMillis(15, now));
+        this.createBGLReading(uuid(), '180', dateUtil.minutesBeforeMillis(13, now));
+        this.createBGLReading(uuid(), '180', dateUtil.minutesBeforeMillis(9.68, now));
+        this.createBGLReading(uuid(), '200', dateUtil.minutesBeforeMillis(8, now));
+
+        this.createConsumedFoodItem(uuid(), 'Roasted Peanuts', dateUtil.minutesBeforeMillis(10, now), '550', '55', '10', '23', '125');
+        this.createConsumedFoodItem(uuid(), 'Cashews', dateUtil.minutesBeforeMillis(25, now), '400', '35', '10', '23', '80');
+        this.createConsumedFoodItem(uuid(), 'Olives', dateUtil.minutesBeforeMillis(15, now), '150', '20', '', '', '');
+        this.createConsumedFoodItem(uuid(), 'Cheese & Ham Sandwich', dateUtil.minutesBeforeMillis(14, now), '375', '20', '', '', '');
+    },
+
+    /**
+     * @param id
+     * @param value
+     * @param dateMillis
+     */
+    createBGLReading(id, value, dateMillis) {
+        realm.create('BGLReading', {objectName: dbObjects.reading, id: id, value: value, date: new Date(dateMillis)});
+    },
+
+    /**
+     * @param id
+     * @param name
+     * @param date
+     * @param calories
+     * @param carbohydrates
+     * @param protein
+     * @param fats
+     * @param weight
+     */
+    createConsumedFoodItem(id, name, date, calories, carbohydrates, protein, fats, weight) {
+        realm.create('ConsumedFoodItem', {
+            objectName: dbObjects.foodItem,
+            id: id,
+            name: name,
+            date: typeof date === 'number' ? new Date(date) : date,
+            calories: calories,
+            carbohydrates: carbohydrates,
+            protein: protein,
+            fats: fats,
+            weight: weight
+        });
     },
 
     /**
@@ -75,13 +131,120 @@ const database = {
      */
     saveBGLReading(value, date) {
         log("Saving BGLReading: " + value + " " + date);
-        realm.write(() => {
-            realm.create('BGLReading', {
-                id: uuid(),
-                value: value,
-                date: date
+        realm.write(() => this.createBGLReading(uuid(), value, date));
+    },
+
+    /**
+     * @param name
+     * @param date
+     * @param calories
+     * @param carbohydrates
+     * @param protein
+     * @param fats
+     * @param weight
+     */
+    saveConsumedFoodItem(name, date, calories, carbohydrates, protein, fats, weight) {
+        log("Saving ConsumedFoodItem: " + name + " " + date + " " + weight + " " + calories + " " + carbohydrates + " " + protein + " " + fats);
+        realm.write(() => this.createConsumedFoodItem(uuid(), name, date, calories, carbohydrates, protein, fats, weight));
+    },
+
+    /**
+     * @param startDate
+     * @param endDate
+     * @returns {Array}
+     */
+    getConsumedFoodItemsInDateRange(startDate, endDate) {
+        return this.getDbObjectsInDateRange(dbObjects.foodItem, startDate, endDate);
+    },
+
+    /**
+     * @param dbObjectName
+     * @param startDate
+     * @param endDate
+     * @returns {Array}
+     */
+    getDbObjectsInDateRange(dbObjectName, startDate, endDate) {
+        log("Getting " + dbObjectName + " between " + startDate + " and " + endDate);
+        let filteredObjects = [];
+        realm.objects(dbObjectName)
+            .filtered('date < $0 AND date > $1',
+                dateUtil.toDateFromDateString(endDate, 23, 59, 59, 999),
+                dateUtil.toDateFromDateString(startDate, 0, 0, 0, 0))
+            .sorted('date', true)
+            .forEach((object) => {
+                let auxObj;
+                switch (dbObjectName) {
+                    case(dbObjects.reading):
+                        const standard = this.getBGLStandard();
+                        auxObj = {
+                            objectName: object.objectName,
+                            id: object.id,
+                            value: processReading(object.value, standard),
+                            date: object.date
+                        };
+                        break;
+                    case(dbObjects.foodItem):
+                        auxObj = {
+                            objectName: object.objectName,
+                            id: object.id,
+                            name: object.name,
+                            date: object.date,
+                            calories: object.calories,
+                            carbohydrates: object.carbohydrates,
+                            protein: object.protein,
+                            fats: object.fats,
+                            weight: object.weight
+                        };
+                        break;
+                }
+                filteredObjects.push(auxObj);
             });
+
+        return filteredObjects;
+    },
+
+    /**
+     * @param dbObjectName
+     * @returns {Array}
+     */
+    getDbObjectsLast24h(dbObjectName) {
+        log("Getting " + dbObjectName + " for last 24h");
+        let filteredObjects = [];
+        realm.objects(dbObjectName).sorted('date', true).forEach((object) => {
+            if (dateUtil.areWithin24Hours(object.date, Date.now())) {
+                let auxObj;
+                switch (dbObjectName) {
+                    case(dbObjects.reading):
+                        const standard = this.getBGLStandard();
+                        auxObj = {
+                            objectName: object.objectName,
+                            id: object.id,
+                            value: processReading(object.value, standard),
+                            date: object.date
+                        };
+                        break;
+                    case(dbObjects.foodItem):
+                        auxObj = {
+                            objectName: object.objectName,
+                            id: object.id,
+                            name: object.name,
+                            date: object.date,
+                            calories: object.calories,
+                            carbohydrates: object.carbohydrates,
+                            protein: object.protein,
+                            fats: object.fats,
+                            weight: object.weight
+                        };
+                        break;
+                }
+                filteredObjects.push(auxObj);
+            }
         });
+        return filteredObjects;
+    },
+
+    getConsumedFoodItemsLast24h() {
+        return this.getDbObjectsLast24h(dbObjects.foodItem);
     },
 
     /**
@@ -139,38 +302,17 @@ const database = {
         return latestReadingArr.length > 0 ? processReading(latestReadingArr[0].value, this.getBGLStandard()) : 0;
     },
 
+    /**
+     * @param startDate
+     * @param endDate
+     * @returns {Array}
+     */
     getBGLReadingsInDateRange(startDate, endDate) {
-        log("Getting BGLReadings between " + startDate + " and " + endDate);
-        let filteredReadings = [];
-        const standard = this.getBGLStandard();
-        realm.objects('BGLReading')
-            .filtered('date < $0 AND date > $1',
-                dateUtil.toDateFromDateString(endDate, 23, 59, 59, 999),
-                dateUtil.toDateFromDateString(startDate, 0, 0, 0, 0))
-            .sorted('date', true)
-            .forEach((reading) => {
-                filteredReadings.push({
-                    id: reading.id,
-                    value: processReading(reading.value, standard),
-                    date: reading.date
-                });
-            });
-
-        return filteredReadings;
+        return this.getDbObjectsInDateRange(dbObjects.reading, startDate, endDate);
     },
 
     get24hBGLReadings() {
-        log("Getting BGLReadings for last 24h");
-        let filteredReadings = [];
-        const standard = this.getBGLStandard();
-        realm.objects('BGLReading').sorted('date', true).forEach((reading) => {
-            dateUtil.areWithin24Hours(reading.date, Date.now()) && filteredReadings.push({
-                id: reading.id,
-                value: processReading(reading.value, standard),
-                date: reading.date
-            });
-        });
-        return filteredReadings;
+        return this.getDbObjectsLast24h(dbObjects.reading);
     },
 
     get60mBGLReadings() {
@@ -179,6 +321,7 @@ const database = {
         const standard = this.getBGLStandard();
         realm.objects('BGLReading').sorted('date', true).forEach((reading) => {
             dateUtil.areWithin60Minutes(reading.date, Date.now()) && filteredReadings.push({
+                objectName: reading.objectName,
                 id: reading.id,
                 value: processReading(reading.value, standard),
                 date: reading.date
@@ -214,6 +357,15 @@ const database = {
     /**
      * @param callback
      */
+    initConsumedFoodItemListener(callback) {
+        realm.objects('ConsumedFoodItem').addListener((objects, changes) => {
+            existChanges(changes) && callback();
+        });
+    },
+
+    /**
+     * @param callback
+     */
     initBGLSafeRangeListener(callback) {
         realm.objects('BGLSafeRange').addListener((objects, changes) => {
             existChanges(changes) && callback();
@@ -230,13 +382,21 @@ const database = {
     },
 
     /**
-     * @param reading
+     * @param object
+     * @param objectName
      */
-    deleteReading(reading) {
-        log("Deleting reading " + JSON.stringify(reading));
+    delete(object, objectName) {
+        log("Deleting " + objectName + " " + JSON.stringify(object));
         realm.write(() => {
-            realm.delete(realm.objects('BGLReading').filtered('id = $0', reading.id));
+            realm.delete(realm.objects(objectName).filtered('id = $0', object.id));
         });
+    },
+
+    /**
+     * @param object
+     */
+    deleteReading(object) {
+        this.delete(object, dbObjects.reading);
     },
 
     isGoogleFitSyncEnabled() {
@@ -261,6 +421,10 @@ const database = {
     }
 };
 
+/**
+ * @param changes
+ * @returns {boolean}
+ */
 function existChanges(changes) {
     let isModification = changes.modifications.length > 0;
     let isDeletion = changes.deletions.length > 0;

@@ -1,7 +1,7 @@
 import Modal from 'react-native-modalbox';
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, TextInput} from 'react-native';
-import ReadingDatePicker from "./ReadingDatePicker";
+import CustomDatePicker from "./CustomDatePicker";
 import ReadingValueInput from "../../helpers/components/ReadingValueInput";
 import isInputValid from "../../helpers/util/readingValueValidator";
 import log from '../../helpers/util/logger';
@@ -46,13 +46,13 @@ export default class AddReadingModal extends Component {
                     </View>
                     <View style={styles.modalInputRow}>
                         <Text style={styles.inputLabel}>Date: </Text>
-                        <ReadingDatePicker style={styles.modalDatePicker}
-                                           backgroundColor='royalblue'
-                                           minDate={"31-08-1994"}
-                                           type={'datetime'}
-                                           maxDate={new Date()}
-                                           date={this.state.inputDate}
-                                           handleDateChange={this.updateInputDate}/>
+                        <CustomDatePicker style={styles.modalDatePicker}
+                                          backgroundColor='royalblue'
+                                          minDate={"31-08-1994"}
+                                          type={'datetime'}
+                                          maxDate={new Date()}
+                                          date={this.state.inputDate}
+                                          handleDateChange={this.updateInputDate}/>
                     </View>
 
                     <View style={styles.modalInputRow}>
@@ -70,8 +70,8 @@ export default class AddReadingModal extends Component {
                 </View>
 
                 <View style={styles.modalBottomPanel}>
-                    <TouchableOpacity style={styles.addButton} onPress={this.saveAndClose}>
-                        <Text style={styles.addButtonText}>Add</Text>
+                    <TouchableOpacity style={styles.addModalButton} onPress={this.saveAndClose}>
+                        <Text style={styles.addModalButtonText}>Add</Text>
                     </TouchableOpacity>
                 </View>
 

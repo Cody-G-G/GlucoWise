@@ -5,7 +5,7 @@ const readingUnitStandards = {
     US: 'mg/dL'
 };
 
-const graphModes = {
+const dataModes = {
     glucose: "Glucose",
     steps: "Steps",
     calories: "Calories",
@@ -26,7 +26,15 @@ const defaultSafeRange = {
     max: '130'
 };
 
+const dbObjects = {
+    reading: "BGLReading",
+    safeRange: "BGLSafeRange",
+    standard: "BGLStandard",
+    dataSync: "DataSyncSettings",
+    foodItem: "ConsumedFoodItem"
+};
+
 const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const monthsOfYear = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "Octomber", "November", "December"];
 
-export {readingUnitStandards, graphModes, timeRanges, defaultSafeRange, daysOfWeek, monthsOfYear};
+export {readingUnitStandards, dataModes, timeRanges, defaultSafeRange, daysOfWeek, monthsOfYear, dbObjects};
