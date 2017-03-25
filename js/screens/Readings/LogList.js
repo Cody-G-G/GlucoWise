@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {ListView, Text, TouchableOpacity, View, StyleSheet} from 'react-native';
 import {Icon} from 'native-base';
 import LogReadingRow from "./LogReadingRow";
-import LogConsumedFoodItemRow from "./LogConsumedFoodItemRow";
+import LogFoodRow from "./LogFoodRow";
 import styles from "./styles";
 import {dbObjects} from "../../helpers/util/constants";
 
@@ -16,12 +16,12 @@ export default class LogList extends Component {
     render() {
         const dataSource = this.ds.cloneWithRows(this.props.data);
         return (
-            <View style={this.props.style}>
+            <View style={{flex: 10}}>
                 <ListView dataSource={dataSource} enableEmptySections={true} renderRow={(rowData) =>
                     <View style={styles.logRow}>
                         {rowData.objectName === dbObjects.reading ?
                         <LogReadingRow data={rowData} standard = {this.props.standard}/>:
-                        <LogConsumedFoodItemRow data={rowData}/>}
+                        <LogFoodRow data={rowData}/>}
 
                         <TouchableOpacity
                             style={styles.trashButton}

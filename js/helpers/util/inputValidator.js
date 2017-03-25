@@ -1,6 +1,6 @@
 'use strict';
 
-export default (input) => {
+const isNumberValid = (input) => {
     let numbers = '0123456789.';
     let decimalPoints = 0;
     let valid = true;
@@ -21,4 +21,6 @@ export default (input) => {
     (isInputEmpty || isLastCharDecimalPoint) && (valid = false);
 
     return valid;
-}
+};
+
+export default isNumberValid;

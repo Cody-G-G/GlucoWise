@@ -31,11 +31,11 @@ export default StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        margin: 20
+        marginBottom: 10
     },
-    addReadingModal: {
-        height: 400,
-        width: 300,
+    addLogEntryModal: {
+        height: 500,
+        width: 320,
         borderWidth: 2,
         backgroundColor: 'aliceblue'
     },
@@ -45,10 +45,9 @@ export default StyleSheet.create({
         fontWeight: 'bold'
     },
     valueInput: {
-        fontSize: 25,
         color: 'black',
         fontWeight: 'bold',
-        flex: 2.5,
+        flex: 1,
         textAlign: 'center'
     },
     dateText: {
@@ -71,21 +70,21 @@ export default StyleSheet.create({
     modalInputRow: {
         flex: 1,
         flexDirection: 'row',
-        margin: 10
+        marginLeft: 10,
+        marginRight: 10,
+        marginBottom: 5
     },
     modalMainPanel: {
-        flex: 5,
-        alignItems: 'center'
+        flex: 8
     },
     inputLabel: {
         flex: 1,
         color: 'black',
         alignSelf: 'center',
         fontWeight: 'bold',
-        fontSize: 25
     },
     modalDatePicker: {
-        flex: 2.5,
+        flex: 1.75,
         width: 190,
         borderWidth: 1
     },
