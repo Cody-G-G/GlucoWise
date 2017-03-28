@@ -197,4 +197,3 @@ test("monthOfYear(date) - returns the month of the year as a string, correspondi
 
     expect(dateUtil.monthOfYear(date)).toEqual(expected);
 });
-

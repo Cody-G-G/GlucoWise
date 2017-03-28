@@ -109,41 +109,56 @@ export default class GraphScreen extends Component {
 
     getSummaryInfoToRender() {
         let toRender;
-        const graphMode = this.state.graphMode;
         const graphData = this.state.graphData;
-        const isModeCalories = graphMode === dataModes.calories;
-        const isModeSteps = graphMode === dataModes.steps;
-        const isModeWeight = graphMode === dataModes.weight;
-        const isTimeRangeLastWeek = this.state.timeRange === timeRanges.lastWeek;
 
-        if (isModeCalories || isModeSteps) {
-            const valueSum = graphData.reduce((acc, curr) => {
-                return acc + curr.y;
-            }, 0);
+        switch (this.state.graphMode) {
+            case dataModes.calories: {
+                const isTimeRangeLastWeek = this.state.timeRange === timeRanges.lastWeek;
+                const valueSum = graphData.reduce((acc, curr) => {
+                    return acc + curr.y;
+                }, 0);
+                const valueAvg6d = (valueSum - graphData[graphData.length - 1].y) / (graphData.length - 1);
+                const summaryInfoText = isTimeRangeLastWeek ? "Daily average:" : "Total:";
+                const value = isTimeRangeLastWeek ? Math.round(valueAvg6d) : valueSum;
 
-            const summaryInfoText = isTimeRangeLastWeek ? "Daily average:" : "Total:";
-            const valuesUnit = isModeCalories ? 'kCal' : 'steps';
-            const value = isModeCalories && isTimeRangeLastWeek ? Math.round(valueSum / graphData.length) : valueSum;
+                toRender = (
+                    <View style={styles.summaryInfoPanel}>
+                        <Text style={styles.summaryInfoText}>
+                            {summaryInfoText} {value} kCal
+                        </Text>
+                    </View>
+                );
+                break;
+            }
+            case dataModes.steps: {
+                const valueSum = graphData.reduce((acc, curr) => {
+                    return acc + curr.y;
+                }, 0);
 
-            toRender = (
-                <View style={styles.summaryInfoPanel}>
-                    <Text style={styles.summaryInfoText}>
-                        {summaryInfoText} {value} {valuesUnit}
-                    </Text>
-                </View>
-            );
-        } else if (isModeWeight) {
-            const maxWeight = graphData.length > 0 ? graphData.reduce((acc, curr) => Math.max(acc, curr.y), graphData[0].y) : '- ';
-            const minWeight = graphData.length > 0 ? graphData.reduce((acc, curr) => Math.min(acc, curr.y), graphData[0].y) : '- ';
+                toRender = (
+                    <View style={styles.summaryInfoPanel}>
+                        <Text style={styles.summaryInfoText}>
+                            Total: {valueSum} steps
+                        </Text>
+                    </View>
+                );
+                break;
+            }
+            case dataModes.weight: {
+                const maxWeight = graphData.length > 0 ? graphData.reduce((acc, curr) => Math.max(acc, curr.y), graphData[0].y) : '- ';
+                const minWeight = graphData.length > 0 ? graphData.reduce((acc, curr) => Math.min(acc, curr.y), graphData[0].y) : '- ';
 
-            toRender = (
-                <View style={styles.summaryInfoPanel}>
-                    <Text style={styles.summaryInfoText}>
-                        Min: {minWeight}kg     Max: {maxWeight}kg
-                    </Text>
-                </View>
-            );
+                toRender = (
+                    <View style={styles.summaryInfoPanel}>
+                        <Text style={styles.summaryInfoText}>
+                            Min: {minWeight}kg     Max: {maxWeight}kg
+                        </Text>
+                    </View>
+                );
+                break;
+            }
         }
+
         return toRender;
     }
 

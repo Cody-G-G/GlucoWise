@@ -6,15 +6,15 @@ import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
+import com.horcrux.svg.RNSvgPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.react.rnspinkit.RNSpinkitPackage;
 import com.showlocationservicesdialogbox.LocationServicesDialogBoxPackage;
-import com.horcrux.svg.RNSvgPackage;
-import io.realm.react.RealmReactPackage;
 
 import java.util.Arrays;
 import java.util.List;
 
+import io.realm.react.RealmReactPackage;
 import it.innove.BleManagerPackage;
 
 public class MainApplication extends Application implements ReactApplication {
