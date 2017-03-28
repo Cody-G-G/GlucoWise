@@ -15,7 +15,7 @@ export default class BarGraph extends Component {
             color: '#4169e1',
             gutter: this.props.gutter,
             margin: {
-                top: 22,
+                top: this.props.marginTop,
                 left: 35,
                 bottom: 45,
                 right: 5

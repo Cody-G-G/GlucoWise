@@ -162,14 +162,14 @@ export default class GraphScreen extends Component {
                                               standard={this.state.standard}/>;
                     break;
                 case(dataModes.steps):
-                    toRender = <BarGraph data={graphData} gutter={5} xSize={14}/>;
+                    toRender = <BarGraph data={graphData} gutter={5} xSize={14} marginTop={31}/>;
                     break;
                 case(dataModes.calories):
                     let gutter = timeRange === timeRanges.lastDay ? 2 : 5;
-                    toRender = <BarGraph data={graphData} gutter={gutter} xSize={10}/>;
+                    toRender = <BarGraph data={graphData} gutter={gutter} xSize={10} marginTop={31}/>;
                     break;
                 case(dataModes.weight):
-                    toRender = <BarGraph data={graphData} gutter={5} xSize={14}/>;
+                    toRender = <BarGraph data={graphData} gutter={5} xSize={14} marginTop={26}/>;
                     break;
             }
         else
