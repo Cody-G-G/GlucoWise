@@ -16,9 +16,10 @@ export default class ModalValueInputRow extends Component {
         const inputLabelStyle = StyleSheet.flatten([styles.inputLabel, {fontSize: fontSize}]);
         const valueInputStyle = StyleSheet.flatten([styles.valueInput, {fontSize: fontSize}]);
         const inputRowStyle = StyleSheet.flatten([styles.modalInputRow, {margin: rowMargin}]);
+        const requiredAsterisk = this.props.required && (<Text style={{color:'red'}}>*</Text>);
         return (
             <View style={inputRowStyle}>
-                <Text style={inputLabelStyle}>{this.props.inputLabel}: </Text>
+                <Text style={inputLabelStyle}>{requiredAsterisk}{this.props.inputLabel}: </Text>
                 <TextInput style={valueInputStyle}
                            value={this.props.inputValue}
                            keyboardType={keyboardType}

@@ -14,10 +14,11 @@ export default class ModalValueInputRow extends Component {
         const rowMargin = typeof this.props.rowMargin !== 'undefined' ? this.props.rowMargin : 0;
         const labelStyle = StyleSheet.flatten([styles.inputLabel, {fontSize: fontSize}]);
         const inputRowStyle = StyleSheet.flatten([styles.modalInputRow, {margin: rowMargin}]);
+        const requiredAsterisk = this.props.required && (<Text style={{color:'red'}}>*</Text>);
 
         return (
             <View style={inputRowStyle}>
-                <Text style={labelStyle}>Date: </Text>
+                <Text style={labelStyle}>{requiredAsterisk}Date: </Text>
                 <CustomDatePicker style={styles.modalDatePicker}
                                   backgroundColor='royalblue'
                                   minDate={"31-08-1994"}

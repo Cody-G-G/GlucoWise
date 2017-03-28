@@ -168,7 +168,7 @@ export default class AddLogEntryModal extends Component {
     };
 
     saveConsumedFoodItem = () => {
-        if (isNumberValid(this.state.inputCalories) && isNumberValid(this.state.inputWeight))
+        if (isNumberValid(this.state.inputCalories) && isNumberValid(this.state.inputCarbohydrates))
             db.saveConsumedFoodItem(
                 this.state.inputName,
                 dateUtil.toDateFromDateTimeString(this.state.inputDate),
@@ -178,6 +178,6 @@ export default class AddLogEntryModal extends Component {
                 this.state.inputFats,
                 this.state.inputWeight);
         else
-            alert("Please input valid calories and weight values, which are mandatory.");
+            alert("Please input valid date, calories, and carbohydrate values, which are mandatory.");
     };
 }
