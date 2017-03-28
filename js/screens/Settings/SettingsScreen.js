@@ -5,6 +5,7 @@ import {ListItem} from 'native-base';
 import styles from "./styles";
 import SafeRangesRowPanel from "./SafeRangesRowPanel";
 import ToggleButton from "../../helpers/components/ToggleButton";
+import ToggleButtonsGroup from "../../helpers/components/ToggleButtonsGroup";
 import {readingUnitStandards} from "../../helpers/util/constants";
 import db from "../../data/database";
 import log from "../../helpers/util/logger";
@@ -32,7 +33,8 @@ export default class SettingsScreen extends Component {
 
     render() {
         log("Rendering SettingsScreen");
-        let selectedButtonType = this.state.gFitConnected ? this.buttonTypes.on : this.buttonTypes.off;
+        const selectedGfitType = this.state.gFitConnected ? this.buttonTypes.on : this.buttonTypes.off;
+        const unitButtonTypes = Object.values(readingUnitStandards);
         return (
             <View style={styles.settingsScreen}>
                 <View style={styles.safeRangesPanel}>
@@ -53,16 +55,10 @@ export default class SettingsScreen extends Component {
                 <View>
                     <ListItem itemDivider><Text style={styles.divider}>Measurement Units</Text></ListItem>
                     <View style={{flexDirection:'row'}}>
-                        <ToggleButton type={readingUnitStandards.US}
-                                      selectedType={this.state.standard}
-                                      onPress={this.setStandardUS}
-                                      onText={readingUnitStandards.US}
-                                      offText={readingUnitStandards.US}/>
-                        <ToggleButton type={readingUnitStandards.UK}
-                                      selectedType={this.state.standard}
-                                      onPress={this.setStandardUK}
-                                      onText={readingUnitStandards.UK}
-                                      offText={readingUnitStandards.UK}/>
+                        <ToggleButtonsGroup
+                            types={unitButtonTypes}
+                            selectedTypes={[this.state.standard]}
+                            onPress={this.switchStandard}/>
                     </View>
                 </View>
                 <View>
@@ -76,7 +72,7 @@ export default class SettingsScreen extends Component {
                                       onText={this.buttonTypes.on}
                                       offText={this.buttonTypes.off}
                                       type={this.buttonTypes.on}
-                                      selectedType={selectedButtonType}
+                                      selectedTypes={[selectedGfitType]}
                                       onPress={this.toggleGFitConnection}/>
                     </View>
                 </View>
@@ -143,15 +139,9 @@ export default class SettingsScreen extends Component {
         });
     }
 
-    setStandardUS = () => {
+    switchStandard = () => {
         this.setState({
-            standard: readingUnitStandards.US
-        }, this.saveStandard);
-    };
-
-    setStandardUK = () => {
-        this.setState({
-            standard: readingUnitStandards.UK
+            standard: readingUnitStandards.US === this.state.standard ? readingUnitStandards.UK : readingUnitStandards.US
         }, this.saveStandard);
     };
 
