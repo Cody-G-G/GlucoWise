@@ -29,23 +29,6 @@ let realm = new Realm({
         }
     ],
     schemaVersion: 1,
-    // migration: (oldRealm, newRealm) => {
-    //     if (oldRealm.schemaVersion < 2) {
-    //         let oldReadings = oldRealm.objects('BGLReading');
-    //         let oldRanges = oldRealm.objects('BGLSafeRange');
-    //         let newReadings = newRealm.objects('BGLReading');
-    //         let newRanges = newRealm.objects('BGLSafeRange');
-    //
-    //         for (let i = 0; i < oldRanges.length; i++) {
-    //             newRanges[i].minValue = oldRanges[i].minValue + "";
-    //             newRanges[i].maxValue = oldRanges[i].maxValue + "";
-    //         }
-    //         for (let i = 0; i < oldReadings.length; i++) {
-    //             newReadings[i].value = oldReadings[i].value + "";
-    //             newReadings[i].date = oldReadings[i].date;
-    //         }
-    //     }
-    // },
     encryptionKey: key
 });
 
@@ -90,6 +73,12 @@ const database = {
         this.createConsumedFoodItem(uuid(), 'Cashews', dateUtil.minutesBeforeMillis(25, now), '400', '35', '10', '23', '80');
         this.createConsumedFoodItem(uuid(), 'Olives', dateUtil.minutesBeforeMillis(15, now), '150', '20', '', '', '');
         this.createConsumedFoodItem(uuid(), 'Cheese & Ham Sandwich', dateUtil.minutesBeforeMillis(14, now), '375', '20', '', '', '');
+        this.createConsumedFoodItem(uuid(), 'Sweet & Sour Chicken', dateUtil.hoursBeforeMillis(5, now), '450', '20', '', '', '');
+        this.createConsumedFoodItem(uuid(), 'Chicken Wrap', dateUtil.hoursBeforeMillis(9, now), '500', '20', '', '', '');
+        this.createConsumedFoodItem(uuid(), 'Oreo Biscuits', dateUtil.hoursBeforeMillis(19, now), '200', '20', '', '', '');
+        this.createConsumedFoodItem(uuid(), 'Cheese & Ham Sandwich', dateUtil.daysBeforeMillis(3, now), '375', '20', '', '', '');
+        this.createConsumedFoodItem(uuid(), 'Cashews', dateUtil.daysBeforeMillis(3, now), '400', '35', '10', '23', '80');
+        this.createConsumedFoodItem(uuid(), 'Sweet & Sour Chicken', dateUtil.daysBeforeMillis(5, now), '450', '20', '', '', '');
     },
 
     /**
@@ -172,79 +161,48 @@ const database = {
                 dateUtil.toDateFromDateString(startDate, 0, 0, 0, 0))
             .sorted('date', true)
             .forEach((object) => {
-                let auxObj;
-                switch (dbObjectName) {
-                    case(dbObjects.reading):
-                        const standard = this.getBGLStandard();
-                        auxObj = {
-                            objectName: object.objectName,
-                            id: object.id,
-                            value: processReading(object.value, standard),
-                            date: object.date
-                        };
-                        break;
-                    case(dbObjects.foodItem):
-                        auxObj = {
-                            objectName: object.objectName,
-                            id: object.id,
-                            name: object.name,
-                            date: object.date,
-                            calories: object.calories,
-                            carbohydrates: object.carbohydrates,
-                            protein: object.protein,
-                            fats: object.fats,
-                            weight: object.weight
-                        };
-                        break;
-                }
-                filteredObjects.push(auxObj);
+                filteredObjects.push(this.constructObjectFromResult(object, dbObjectName));
             });
 
         return filteredObjects;
     },
 
-    /**
-     * @param dbObjectName
-     * @returns {Array}
-     */
-    getDbObjectsLast24h(dbObjectName) {
-        log("Getting " + dbObjectName + " for last 24h");
-        let filteredObjects = [];
-        realm.objects(dbObjectName).sorted('date', true).forEach((object) => {
-            if (dateUtil.areWithin24Hours(object.date, Date.now())) {
-                let auxObj;
-                switch (dbObjectName) {
-                    case(dbObjects.reading):
-                        const standard = this.getBGLStandard();
-                        auxObj = {
-                            objectName: object.objectName,
-                            id: object.id,
-                            value: processReading(object.value, standard),
-                            date: object.date
-                        };
-                        break;
-                    case(dbObjects.foodItem):
-                        auxObj = {
-                            objectName: object.objectName,
-                            id: object.id,
-                            name: object.name,
-                            date: object.date,
-                            calories: object.calories,
-                            carbohydrates: object.carbohydrates,
-                            protein: object.protein,
-                            fats: object.fats,
-                            weight: object.weight
-                        };
-                        break;
-                }
-                filteredObjects.push(auxObj);
-            }
-        });
-        return filteredObjects;
+    getConsumedFoodItemsLast24h() {
+        return this.getDbObjectsForCondition(dbObjects.foodItem, dateUtil.areWithin24Hours);
     },
 
-    getConsumedFoodItemsLast24h() {
-        return this.getDbObjectsLast24h(dbObjects.foodItem);
+    /**
+     * @param resultObj
+     * @param dbObjectName
+     * @returns {*}
+     */
+    constructObjectFromResult(resultObj, dbObjectName) {
+        let auxObj;
+        switch (dbObjectName) {
+            case(dbObjects.reading):
+                const standard = this.getBGLStandard();
+                auxObj = {
+                    objectName: resultObj.objectName,
+                    id: resultObj.id,
+                    value: processReading(resultObj.value, standard),
+                    date: resultObj.date
+                };
+                break;
+            case(dbObjects.foodItem):
+                auxObj = {
+                    objectName: resultObj.objectName,
+                    id: resultObj.id,
+                    name: resultObj.name,
+                    date: resultObj.date,
+                    calories: resultObj.calories,
+                    carbohydrates: resultObj.carbohydrates,
+                    protein: resultObj.protein,
+                    fats: resultObj.fats,
+                    weight: resultObj.weight
+                };
+                break;
+        }
+        return auxObj;
     },
 
     /**
@@ -312,22 +270,46 @@ const database = {
     },
 
     get24hBGLReadings() {
-        return this.getDbObjectsLast24h(dbObjects.reading);
+        return this.getDbObjectsForCondition(dbObjects.reading, dateUtil.areWithin24Hours);
     },
 
     get60mBGLReadings() {
-        log("Getting BGLReadings for last 60m");
-        let filteredReadings = [];
-        const standard = this.getBGLStandard();
-        realm.objects('BGLReading').sorted('date', true).forEach((reading) => {
-            dateUtil.areWithin60Minutes(reading.date, Date.now()) && filteredReadings.push({
-                objectName: reading.objectName,
-                id: reading.id,
-                value: processReading(reading.value, standard),
-                date: reading.date
-            });
+        return this.getDbObjectsForCondition(dbObjects.reading, dateUtil.areWithin60Minutes);
+    },
+
+    get24hCaloriesIngested() {
+        return this.getCaloriesForDateConditionFunction(dateUtil.areWithin24Hours);
+    },
+
+    get7dCaloriesIngested() {
+        return this.getCaloriesForDateConditionFunction(dateUtil.areWithin7Days);
+    },
+
+    /**
+     * @param dateConditionFunc
+     * @returns {Array}
+     */
+    getCaloriesForDateConditionFunction(dateConditionFunc) {
+        return this.getDbObjectsForCondition(dbObjects.foodItem, dateConditionFunc).map(item => {
+            return {
+                value: Number(item.calories),
+                date: item.date
+            }
         });
-        return filteredReadings;
+    },
+
+    /**
+     * @param dbObjectName
+     * @param dateConditionFunc
+     * @returns {Array}
+     */
+    getDbObjectsForCondition(dbObjectName, dateConditionFunc) {
+        log("Getting " + dbObjectName + " for " + dateConditionFunc.name);
+        let filteredObjects = [];
+        realm.objects(dbObjectName).sorted('date', true).forEach((object) => {
+            dateConditionFunc(object.date, Date.now()) && filteredObjects.push(this.constructObjectFromResult(object, dbObjectName));
+        });
+        return filteredObjects;
     },
 
     getBGLSafeRange() {

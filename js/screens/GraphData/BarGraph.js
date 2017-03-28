@@ -9,13 +9,18 @@ export default class BarGraph extends Component {
     }
 
     render() {
+        const marginTop = (typeof this.props.marginTop !== 'undefined') ? this.props.marginTop : 31;
+        const gutter = (typeof this.props.gutter !== 'undefined') ? this.props.gutter : 5;
+        const xSize = (typeof this.props.xSize !== 'undefined') ? this.props.xSize : 14;
+        const height = (typeof this.props.height !== 'undefined') ? this.props.height : 310;
+
         const options = {
             width: 310,
-            height: 310,
+            height: height,
             color: '#4169e1',
-            gutter: this.props.gutter,
+            gutter: gutter,
             margin: {
-                top: this.props.marginTop,
+                top: marginTop,
                 left: 35,
                 bottom: 45,
                 right: 5
@@ -29,7 +34,7 @@ export default class BarGraph extends Component {
                 orient: 'bottom',
                 label: {
                     fontFamily: 'Arial',
-                    fontSize: this.props.xSize,
+                    fontSize: xSize,
                     fontWeight: true,
                     fill: '#34495E'
                 }

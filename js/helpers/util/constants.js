@@ -12,6 +12,11 @@ const dataModes = {
     weight: "Weight"
 };
 
+const calorieModes = {
+    ingested: "Ingested",
+    expended: "Expended"
+};
+
 const timeRanges = {
     lastHour: "60m",
     lastDay: "24h",
@@ -37,4 +42,4 @@ const dbObjects = {
 const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const monthsOfYear = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "Octomber", "November", "December"];
 
-export {readingUnitStandards, dataModes, timeRanges, defaultSafeRange, daysOfWeek, monthsOfYear, dbObjects};
+export {readingUnitStandards, dataModes, timeRanges, defaultSafeRange, daysOfWeek, monthsOfYear, dbObjects, calorieModes};

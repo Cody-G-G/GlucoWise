@@ -41,6 +41,15 @@ export default {
     },
 
     /**
+     * @param from
+     * @param to
+     * @returns {boolean}
+     */
+    areWithin7Days(from, to) {
+        return (Math.abs(from - to) / 864e5 ) <= 7;
+    },
+
+    /**
      * @returns {boolean}
      * @param from
      * @param to
