@@ -81,8 +81,8 @@ export default class GraphsHelpModal extends Component {
                                     <Text style={styles.emphasizedHelpText}>24h</Text>&nbsp;
                                     time range is chosen, or Y number of steps made X minutes ago when&nbsp;
                                     <Text style={styles.emphasizedHelpText}>60m</Text>&nbsp;
-                                    time range is chosen. Y is the value on the Y axis corresponding to the top
-                                    of the bar. To make use of this graph, make sure to set sync "On" in&nbsp;
+                                    time range is chosen. Y is the value on the Y axis corresponding to the top of the bar, and X is the value
+                                    on the X axis found under each bar. To make use of this graph, make sure to set sync "On" in&nbsp;
                                     <Text style={styles.emphasizedHelpText}>Settings</Text>
                                     , enable Location services, and the tracking functionality in&nbsp;
                                     <Text style={styles.emphasizedHelpText}>GoogleFit</Text>
@@ -108,6 +108,26 @@ export default class GraphsHelpModal extends Component {
                                     <Text style={styles.emphasizedHelpText}>Settings</Text>
                                     , enable Location services, and the tracking functionality in&nbsp;
                                     <Text style={styles.emphasizedHelpText}>GoogleFit</Text>
+                                </Text>
+                            </View>
+
+                            <View style={styles.helpSection}>
+                                <Text style={styles.helpSectionTitle}>
+                                    Weight graph
+                                </Text>
+                                <Text style={styles.normalHelpText}>
+                                    Shows a bar chart of body weight measurements (in kilograms) over time, received from&nbsp;
+                                    <Text style={styles.emphasizedHelpText}>GoogleFit</Text>
+                                    , if data sync with GoogleFit is enabled in&nbsp;
+                                    <Text style={styles.emphasizedHelpText}>Settings</Text>
+                                    . Each bar represents Y kilograms, at either X days ago when&nbsp;
+                                    <Text style={styles.emphasizedHelpText}>30d</Text>&nbsp;
+                                    time range is chosen, or Y kilograms on X month of the year when&nbsp;
+                                    <Text style={styles.emphasizedHelpText}>6M / 1Y</Text>&nbsp;
+                                    time range is chosen. Y is the value on the Y axis corresponding to the top of the bar, X represents the value of the X axis under
+                                    the bar. These values are received from GoogleFit, so, in order to make use of this, make sure you update your weight in GoogleFit
+                                    whenever you weigh yourself, and ensure that data sync is set to "On" for GoogleFit in&nbsp;
+                                    <Text style={styles.emphasizedHelpText}>Settings</Text>
                                 </Text>
                             </View>
                         </View>
