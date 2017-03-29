@@ -34,8 +34,7 @@ export default StyleSheet.create({
     },
     safeRangeButtonText: {
         color: 'white',
-        fontWeight: 'bold',
-        fontSize: 23
+        fontWeight: 'bold'
     },
     valueInput: {
         flex: 1,

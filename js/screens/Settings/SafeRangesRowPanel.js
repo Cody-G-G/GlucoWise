@@ -18,10 +18,12 @@ export default class SafeRangesRowPanel extends Component {
                 <TextInput style={styles.valueInput}
                            value={this.props.inputValue}
                            keyboardType={'numeric'}
+                           underlineColorAndroid={'white'}
                            maxLength={5}
                            onChangeText={(input) => this.props.updateSafeRange(input)}/>
                 <SafeRangeButton backgroundColor={'royalblue'}
                                  buttonText={'Set'}
+                                 fontSize={30}
                                  handlePress={() => {
                                      isNumberValid(this.props.inputValue) ? this.props.saveSafeRange() : alert("Please input a valid blood glucose value");
                                  }}/>

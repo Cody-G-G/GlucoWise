@@ -9,11 +9,15 @@ export default class SafeRangeButton extends Component {
     }
 
     render() {
+        const fontSize = typeof this.props.fontSize !== 'undefined' ? this.props.fontSize : 23;
+        const safeRangeButtonStyle =StyleSheet.flatten([styles.safeRangeButton, {backgroundColor: this.props.backgroundColor}]);
+        const safeRangeButtonTextStyle = StyleSheet.flatten([styles.safeRangeButtonText, {fontSize: fontSize}]);
+
         return (
             <TouchableOpacity
-                style={StyleSheet.flatten([styles.safeRangeButton, {backgroundColor: this.props.backgroundColor}])}
+                style={safeRangeButtonStyle}
                 onPress={() => this.props.handlePress()}>
-                <Text style={styles.safeRangeButtonText}>{this.props.buttonText}</Text>
+                <Text style={safeRangeButtonTextStyle}>{this.props.buttonText}</Text>
             </TouchableOpacity>
         );
     }
