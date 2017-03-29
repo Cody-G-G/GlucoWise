@@ -14,7 +14,7 @@ test('ToggleButton_withOnColor_shouldBeOn - renders correctly', () => {
 
     const tree = renderer.create(
         <ToggleButton type={type}
-                      selectedType={selectedType}
+                      selectedTypes={[selectedType]}
                       onColor={onColor}
                       onText={onText}
                       offText={offText}/>
@@ -31,7 +31,7 @@ test('ToggleButton_withoutOnColor_shouldBeOn - renders correctly', () => {
 
     const tree = renderer.create(
         <ToggleButton type={type}
-                      selectedType={selectedType}
+                      selectedTypes={[selectedType]}
                       onText={onText}
                       offText={offText}/>
     ).toJSON();
@@ -48,10 +48,30 @@ test('ToggleButton_shouldBeOff - renders correctly', () => {
 
     const tree = renderer.create(
         <ToggleButton type={type}
-                      selectedType={selectedType}
+                      selectedTypes={[selectedType]}
                       onColor={onColor}
                       onText={onText}
                       offText={offText}/>
+    ).toJSON();
+
+    expect(tree).toMatchSnapshot();
+});
+
+test('ToggleButton_withFontSize_shouldBeOff - renders correctly', () => {
+    const type = readingUnitStandards.US;
+    const selectedType = readingUnitStandards.UK;
+    const onColor = 'royalblue';
+    const onText = "ON";
+    const offText = "OFF";
+    const fontSize = 99;
+
+    const tree = renderer.create(
+        <ToggleButton type={type}
+                      selectedTypes={[selectedType]}
+                      onColor={onColor}
+                      onText={onText}
+                      offText={offText}
+                      fontSize={fontSize}/>
     ).toJSON();
 
     expect(tree).toMatchSnapshot();
