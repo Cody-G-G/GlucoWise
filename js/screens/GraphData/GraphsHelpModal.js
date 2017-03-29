@@ -94,20 +94,25 @@ export default class GraphsHelpModal extends Component {
                                     Calories graph
                                 </Text>
                                 <Text style={styles.normalHelpText}>
-                                    Shows a bar chart of the calories expended / consumed data (based on chosen mode) received from&nbsp;
+                                    Shows a bar chart of the calories ingested / expended data (based on chosen mode). The expended calories data is received from&nbsp;
                                     <Text style={styles.emphasizedHelpText}>GoogleFit</Text>
                                     , if data sync with GoogleFit is enabled in&nbsp;
                                     <Text style={styles.emphasizedHelpText}>Settings</Text>
-                                    . Each bar represents Y number of calories, at hour X in a 24 hour system when&nbsp;
+                                    . Each bar represents Y number of calories ingested / expended, at hour X in a 24 hour system when&nbsp;
                                     <Text style={styles.emphasizedHelpText}>24h</Text>&nbsp;
-                                    time range is chosen, or Y number of calories expended / consumed X minutes ago when&nbsp;
-                                    <Text style={styles.emphasizedHelpText}>60m</Text>&nbsp;
+                                    time range is chosen, or Y number of calories ingested / expended on X day of the week when&nbsp;
+                                    <Text style={styles.emphasizedHelpText}>7d</Text>&nbsp;
                                     time range is chosen. Y is the value on the Y axis corresponding to the top of the bar, X represents the value of the X axis under
-                                    the bar. The expended calories are an estimation based on your activity throughout the day, so for the highest accuracy, ensure you
+                                    the bar. The expended calories are an estimation based on your activity throughout the day, so, for the highest accuracy, ensure you
                                     carry your phone around when working out / exercising / moving around. To make use of this, make sure to set sync "On" in&nbsp;
                                     <Text style={styles.emphasizedHelpText}>Settings</Text>
                                     , enable Location services, and the tracking functionality in&nbsp;
                                     <Text style={styles.emphasizedHelpText}>GoogleFit</Text>
+                                    . The data for Calories Ingested is based on the&nbsp;
+                                    <Text style={styles.emphasizedHelpText}>Consumed Food Items</Text>&nbsp;
+                                    that you've logged through the&nbsp;
+                                    <Text style={styles.emphasizedHelpText}>Logbook</Text>
+                                    , so, to make use of this, please make sure you input this data before or after a meal, as accurately as possible.
                                 </Text>
                             </View>
 
