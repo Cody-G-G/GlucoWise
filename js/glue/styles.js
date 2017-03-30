@@ -35,7 +35,7 @@ export default StyleSheet.create({
         fontSize: 45
     },
     sceneTitle: {
-        fontSize: 25,
+        fontSize: 24,
         fontWeight: 'bold',
         color: 'dimgray'
     }

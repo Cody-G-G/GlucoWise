@@ -25,7 +25,7 @@ export default class DrawerPanel extends Component {
         const safeRangeMin = safeRange.minValue;
         const safeRangeMax = safeRange.maxValue;
         this.state = {
-            latestReading: db.getLatestReading(),
+            latestReading: db.getLatestReadingValue(),
             standard: db.getBGLStandard(),
             safeRangeMin: safeRangeMin,
             safeRangeMax: safeRangeMax
@@ -51,6 +51,7 @@ export default class DrawerPanel extends Component {
                         </View>
                     </View>
                 </DrawerTab>
+                <DrawerTab onPress={() => {drawer.close(); Actions.screenBolus();}} icon='md-calculator' text='Bolus' iconFamily='Ionicons'/>
                 <DrawerTab onPress={() => {drawer.close(); Actions.screenSettings();}} icon='settings' text='Settings'/>
                 <DrawerTab onPress={() => {drawer.close(); Actions.screenAbout();}} icon='info' text='About'/>
             </View>
@@ -75,7 +76,7 @@ export default class DrawerPanel extends Component {
 
     updateLatestReading = () => {
         this.setState({
-            latestReading: db.getLatestReading()
+            latestReading: db.getLatestReadingValue()
         });
     };
 
@@ -87,7 +88,7 @@ export default class DrawerPanel extends Component {
             standard: db.getBGLStandard(),
             safeRangeMin: safeRangeMin,
             safeRangeMax: safeRangeMax,
-            latestReading: db.getLatestReading()
+            latestReading: db.getLatestReadingValue()
         });
     }
 }

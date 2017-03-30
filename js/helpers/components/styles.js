@@ -18,6 +18,7 @@ export default StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        alignSelf: 'stretch'
+        alignSelf: 'stretch',
+        borderTopWidth: 1
     }
 });

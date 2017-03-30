@@ -1,6 +1,6 @@
 'use strict';
 import React, {Component} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import LogList from "./LogList";
 import db from "../../data/database";
 import date from "../../helpers/util/date";
@@ -36,12 +36,13 @@ export default class LogbookScreen extends Component {
         log("Rendering LogbookScreen");
         const modeTypes = Object.keys(this.state.logModes);
         const selectedModeTypes = modeTypes.filter(mode => this.state.logModes[mode]);
-
+        const leftDatePickerStyle = StyleSheet.flatten([styles.customDatePicker, {borderRightWidth: 2}]);
+        const rightDatePickerStyle = StyleSheet.flatten([styles.customDatePicker, {borderLeftWidth: 2}]);
         return (
             <View style={styles.screenContainer}>
                 <View style={styles.screenTopPanel}>
                     <View style={styles.dateRangePickers}>
-                        <CustomDatePicker style={styles.customDatePicker}
+                        <CustomDatePicker style={leftDatePickerStyle}
                                           backgroundColor='dimgray'
                                           minDate={"31-08-1994"}
                                           type={'date'}
@@ -49,7 +50,7 @@ export default class LogbookScreen extends Component {
                                           date={this.state.startDate}
                                           handleDateChange={this.updateStartDate}/>
                         <Text style={styles.dateRangeSeparatorText}> to </Text>
-                        <CustomDatePicker style={styles.customDatePicker}
+                        <CustomDatePicker style={rightDatePickerStyle}
                                           backgroundColor='dimgray'
                                           minDate={this.state.startDate}
                                           type={'date'}

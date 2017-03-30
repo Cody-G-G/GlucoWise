@@ -3,8 +3,8 @@ import {View, Text, StyleSheet} from 'react-native';
 import styles from "./styles";
 import ToggleButtonsGroup from "../../helpers/components/ToggleButtonsGroup";
 import {readingUnitStandards} from "../../helpers/util/constants";
-import ModalDateInputRow from "./ModalDateInputRow";
-import ModalValueInputRow from "./ModalValueInputRow";
+import CustomDateInput from "./CustomDateInput";
+import CustomInput from "./CustomInput";
 
 export default class AddReadingModalPanel extends Component {
     constructor(props) {
@@ -13,17 +13,18 @@ export default class AddReadingModalPanel extends Component {
 
     render() {
         const unitButtonTypes = Object.values(readingUnitStandards);
-        const rowMargin = 35;
-        const buttonGroupRowStyle = StyleSheet.flatten([styles.modalInputRow, {margin: rowMargin, marginBottom: 50}]);
+        const margin = 35;
+        const buttonGroupRowStyle = StyleSheet.flatten([styles.customInput, {margin: margin, marginBottom: 50}]);
         return (
             <View style={{flex: 9}}>
-                <ModalValueInputRow inputLabel='Value'
-                                    inputValue={this.props.inputValue}
-                                    onChangeText={this.props.onChangeReadingValue}
-                                    rowMargin={rowMargin}/>
-                <ModalDateInputRow inputDate={this.props.inputDate}
-                                   handleDateChange={this.props.handleDateChange}
-                                   rowMargin={rowMargin}/>
+                <CustomInput inputLabel='Value'
+                             inputValue={this.props.inputValue}
+                             onChangeText={this.props.onChangeReadingValue}
+                             margin={margin}
+                             unitLabel={this.props.standard}
+                             unitLabelFlex={0.9}
+                             required/>
+                <CustomDateInput inputDate={this.props.inputDate} handleDateChange={this.props.handleDateChange} margin={margin} required/>
 
                 <View style={buttonGroupRowStyle}>
                     <ToggleButtonsGroup types={unitButtonTypes}

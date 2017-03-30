@@ -4,7 +4,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import CustomDatePicker from "./CustomDatePicker";
 import styles from "./styles";
 
-export default class ModalValueInputRow extends Component {
+export default class CustomDateInput extends Component {
     constructor(props) {
         super(props);
     }
@@ -12,8 +12,9 @@ export default class ModalValueInputRow extends Component {
     render() {
         const fontSize = typeof this.props.fontSize !== 'undefined' ? this.props.fontSize : 25;
         const rowMargin = typeof this.props.rowMargin !== 'undefined' ? this.props.rowMargin : 0;
-        const labelStyle = StyleSheet.flatten([styles.inputLabel, {fontSize: fontSize}]);
-        const inputRowStyle = StyleSheet.flatten([styles.modalInputRow, {margin: rowMargin}]);
+        const textColor = typeof this.props.textColor !== 'undefined' ? this.props.textColor : 'black';
+        const labelStyle = StyleSheet.flatten([styles.inputLabel, {fontSize: fontSize, color: textColor}]);
+        const inputRowStyle = StyleSheet.flatten([styles.customInput, {margin: rowMargin}]);
         const requiredAsterisk = this.props.required && (<Text style={{color:'red'}}>*</Text>);
 
         return (

@@ -254,10 +254,16 @@ const database = {
         });
     },
 
-    getLatestReading() {
+    getLatestReadingValue() {
         log("Getting latest BGLReading");
         const latestReadingArr = (realm.objects('BGLReading').sorted('date', true));
         return latestReadingArr.length > 0 ? processReading(latestReadingArr[0].value, this.getBGLStandard()) : 0;
+    },
+
+    getLastConsumedItem() {
+        log("Getting latest ConsumedFoodItem");
+        const latestReadingArr = (realm.objects(dbObjects.foodItem).sorted('date', true));
+        return latestReadingArr.length > 0 ? latestReadingArr[0] : {};
     },
 
     /**

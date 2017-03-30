@@ -170,7 +170,7 @@ test('updateBGLStandard(standard) - updates the BGLStandard.standard value in da
     expect(standardObj.standard).toEqual(readingUnitStandards.UK);
 });
 
-test('getLatestReading()_withStandardUS - returns reading with the most recent date', () => {
+test('getLatestReadingValue()_withStandardUS - returns reading with the most recent date', () => {
     const expectedReading = {id: '1', value: '82.5', date: new Date(2017, 3, 6, 22, 50, 55)};
     const readings = new ResultsMock(
         {id: '3', value: '120', date: new Date(2017, 3, 5, 22, 50, 55)},
@@ -185,13 +185,13 @@ test('getLatestReading()_withStandardUS - returns reading with the most recent d
         return value;
     });
 
-    const actualReadingValue = db.getLatestReading();
+    const actualReadingValue = db.getLatestReadingValue();
 
     expect(processReading.default).toHaveBeenCalledWith(expectedReading.value, standardObj.standard);
     expect(actualReadingValue).toEqual(expectedReading.value)
 });
 
-test('getLatestReading()_withStandardUK - returns reading with the most recent date', () => {
+test('getLatestReadingValue()_withStandardUK - returns reading with the most recent date', () => {
     const reading1 = {id: '3', value: '120', date: new Date(2017, 3, 5, 22, 50, 55)};
     const reading2 = {id: '1', value: '82.5', date: new Date(2017, 3, 6, 22, 50, 55)};
     const reading3 = {id: '2', value: '50', date: new Date(2017, 3, 6, 22, 50, 54)};
@@ -206,7 +206,7 @@ test('getLatestReading()_withStandardUK - returns reading with the most recent d
         return String(value / 10);
     });
 
-    const actualReadingValue = db.getLatestReading();
+    const actualReadingValue = db.getLatestReadingValue();
 
     expect(processReading.default).toHaveBeenCalledWith(String(expectedReading.value * 10), standardObj.standard);
     expect(actualReadingValue).toEqual(expectedReading.value)

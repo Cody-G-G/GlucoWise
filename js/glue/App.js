@@ -6,6 +6,7 @@ import ConnectionScreen from '../screens/Connection/ConnectionScreen';
 import LogbookScreen from '../screens/Readings/LogbookScreen';
 import GraphScreen from '../screens/GraphData/GraphScreen';
 import SettingsScreen from '../screens/Settings/SettingsScreen';
+import BolusScreen from '../screens/Bolus/BolusScreen';
 import {Navigator, Image} from 'react-native';
 import db from "../data/database";
 import gFit from "../data/googleFit";
@@ -35,6 +36,7 @@ export default class App extends Component {
                                titleStyle={styles.sceneTitle}/>
                         <Scene key="screenLogbook" title="Logbook" hideTabBar component={LogbookScreen} type={ActionConst.REFRESH} titleStyle={styles.sceneTitle}/>
                         <Scene key="screenSettings" title="Settings" hideTabBar component={SettingsScreen} type={ActionConst.REFRESH} titleStyle={styles.sceneTitle}/>
+                        <Scene key="screenBolus" title="Bolus Calculator" hideTabBar component={BolusScreen} type={ActionConst.REFRESH} titleStyle={styles.sceneTitle}/>
                     </Scene>
                 </Scene>
             </Router>

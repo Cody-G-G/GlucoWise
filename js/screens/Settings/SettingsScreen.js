@@ -7,10 +7,10 @@ import SafeRangesRowPanel from "./SafeRangesRowPanel";
 import ToggleButton from "../../helpers/components/ToggleButton";
 import ToggleButtonsGroup from "../../helpers/components/ToggleButtonsGroup";
 import {readingUnitStandards} from "../../helpers/util/constants";
+import toast from "../../helpers/util/toast";
 import db from "../../data/database";
 import log from "../../helpers/util/logger";
 import gFit from "../../data/googleFit";
-import Toast from 'react-native-root-toast';
 
 export default class SettingsScreen extends Component {
     constructor(props) {
@@ -96,7 +96,7 @@ export default class SettingsScreen extends Component {
             this.gFitToggling = true;
             this.state.gFitConnected ? gFit.disconnect() : gFit.authorizeAndConnect();
         } else {
-            !this.toastShowing && this.showToast("Google Fit is still syncing settings based on your previous action. Please wait a few more seconds before toggling sync.");
+            !this.toastShowing && toast("Google Fit is still syncing settings based on your previous action. Please wait a few more seconds before toggling sync.");
         }
     };
 
@@ -190,23 +190,6 @@ export default class SettingsScreen extends Component {
         this.setState({
             safeRangeMin: safeRange.minValue,
             safeRangeMax: safeRange.maxValue
-        });
-    }
-
-    showToast(string) {
-        Toast.show(string, {
-            duration: Toast.durations.LONG,
-            position: Toast.positions.BOTTOM,
-            shadow: true,
-            animation: true,
-            hideOnPress: true,
-            delay: 0,
-            onShow: () => {
-                this.toastShowing = true;
-            },
-            onHide: () => {
-                this.toastShowing = false;
-            }
         });
     }
 }

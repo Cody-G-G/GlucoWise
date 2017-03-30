@@ -1,6 +1,6 @@
 import Modal from 'react-native-modalbox';
 import React, {Component} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, Alert} from 'react-native';
 import isNumberValid from "../../helpers/util/inputValidator";
 import log from '../../helpers/util/logger';
 import dateUtil from '../../helpers/util/date';
@@ -29,14 +29,14 @@ export default class AddLogEntryModal extends Component {
             inputProtein: '',
             inputFats: '',
             inputWeight: '',
-            mode: this.logModes.glucose
+            mode: this.logModes.glucose,
         }
     }
 
     render() {
         log("Rendering AddLogEntryModal");
         return (
-            <Modal style={styles.addLogEntryModal}
+            <Modal style={styles.modal}
                    position='center'
                    ref='modal'
                    isOpen={this.props.opened}
@@ -164,7 +164,7 @@ export default class AddLogEntryModal extends Component {
         if (isNumberValid(this.state.inputValue))
             db.saveBGLReading(String(processReading(this.state.inputValue, this.state.standard, true)), dateUtil.toDateFromDateTimeString(this.state.inputDate));
         else
-            alert("Please input a valid blood glucose value");
+            Alert.alert("Invalid input", "Please input a valid blood glucose value");
     };
 
     saveConsumedFoodItem = () => {
@@ -178,6 +178,6 @@ export default class AddLogEntryModal extends Component {
                 this.state.inputFats,
                 this.state.inputWeight);
         else
-            alert("Please input valid date, calories, and carbohydrate values, which are mandatory.");
+            Alert.alert("Invalid input", "Please input valid date, calories, and carbohydrate values, which are mandatory.");
     };
 }

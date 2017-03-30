@@ -33,7 +33,7 @@ export default StyleSheet.create({
         alignItems: 'center',
         marginBottom: 10
     },
-    addLogEntryModal: {
+    modal: {
         height: 500,
         width: 320,
         borderWidth: 2,
@@ -45,9 +45,8 @@ export default StyleSheet.create({
         fontWeight: 'bold'
     },
     valueInput: {
-        color: 'black',
         fontWeight: 'bold',
-        flex: 1,
+        flex: 0.75,
         textAlign: 'center'
     },
     dateText: {
@@ -67,7 +66,7 @@ export default StyleSheet.create({
         fontSize: 30,
         fontWeight: 'bold'
     },
-    modalInputRow: {
+    customInput: {
         flex: 1,
         flexDirection: 'row',
         marginLeft: 10,
@@ -79,9 +78,14 @@ export default StyleSheet.create({
     },
     inputLabel: {
         flex: 1,
-        color: 'black',
         alignSelf: 'center',
         fontWeight: 'bold',
+    },
+    unitLabel: {
+        color: 'black',
+        alignSelf: 'center',
+        textAlign: 'center',
+        fontWeight: 'bold'
     },
     modalDatePicker: {
         flex: 1.75,
