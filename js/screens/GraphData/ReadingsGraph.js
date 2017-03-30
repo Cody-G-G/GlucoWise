@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {View} from 'react-native';
 import {StockLine} from 'react-native-pathjs-charts';
 import styles from './styles';
-import processReading from "../../helpers/util/readingProcessor";
+import processBGLValue from "../../helpers/util/readingProcessor";
 import {timeRanges} from "../../helpers/util/constants";
 import dateUtil from "../../helpers/util/date";
 
@@ -69,8 +69,8 @@ export default class ReadingsGraph extends Component {
                     fill: '#34495E'
                 }
             },
-            min: processReading(40, this.props.standard),
-            max: processReading(220, this.props.standard),
+            min: processBGLValue(40, this.props.standard),
+            max: processBGLValue(220, this.props.standard),
             showAreas: false,
             strokeWidth: 3
         };
@@ -101,7 +101,7 @@ export default class ReadingsGraph extends Component {
             {value: 205},
             {value: 220}
         ].map(entry => {
-            return {value: processReading(entry.value, this.props.standard)}
+            return {value: processBGLValue(entry.value, this.props.standard)}
         });
     }
 }

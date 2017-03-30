@@ -1,7 +1,7 @@
 'use strict';
 import log from "../helpers/util/logger";
 import dateUtil from "../helpers/util/date";
-import processReading from "../helpers/util/readingProcessor";
+import processBGLValue from "../helpers/util/readingProcessor";
 import {readingUnitStandards, defaultSafeRange, dbObjects} from "../helpers/util/constants";
 const uuid = require('uuid/v1');
 const Realm = require('realm');
@@ -37,7 +37,6 @@ let realm = new Realm({
 });
 
 const database = {
-
     init() {
         log("Initiating database");
         const initBGLSafeRange = realm.objects('BGLSafeRange').length === 0;
@@ -58,6 +57,9 @@ const database = {
             initDataSyncSettings && realm.create('DataSyncSettings', {syncEnabledGFit: false});
             global.DEBUG && this.addMockData();
         });
+
+        this.standard = this.getBGLStandard();
+        this.initBGLStandardListener(() => this.standard = this.getBGLStandard());
     },
 
     addMockData() {
@@ -190,11 +192,11 @@ const database = {
         let auxObj;
         switch (dbObjectName) {
             case(dbObjects.reading):
-                const standard = this.getBGLStandard();
+                const standard = this.standard;
                 auxObj = {
                     objectName: resultObj.objectName,
                     id: resultObj.id,
-                    value: processReading(resultObj.value, standard),
+                    value: processBGLValue(resultObj.value, standard),
                     date: resultObj.date
                 };
                 break;
@@ -222,7 +224,7 @@ const database = {
         log("Updating BGLSafeRange min: " + minValue);
         let savedBGLSafeRanges = realm.objects('BGLSafeRange');
         realm.write(() => {
-            savedBGLSafeRanges[0].minValue = String(processReading(minValue, this.getBGLStandard(), true));
+            savedBGLSafeRanges[0].minValue = String(processBGLValue(minValue, this.standard, true));
         });
     },
 
@@ -241,7 +243,7 @@ const database = {
         log("Saving insulin sensitivity factor");
         let savedBolusVars = realm.objects(dbObjects.bolusVars);
         realm.write(() => {
-            savedBolusVars[0].insulinSensitivity = isf;
+            savedBolusVars[0].insulinSensitivity = processBGLValue(isf, this.standard, true);
         })
     },
 
@@ -252,7 +254,7 @@ const database = {
         log("Saving targetBGL");
         let savedBolusVars = realm.objects(dbObjects.bolusVars);
         realm.write(() => {
-            savedBolusVars[0].targetBGL = targetBGL;
+            savedBolusVars[0].targetBGL = processBGLValue(targetBGL, this.standard, true);
         })
     },
 
@@ -274,7 +276,7 @@ const database = {
         log("Updating BGLSafeRange max: " + maxValue);
         let savedBGLSafeRanges = realm.objects('BGLSafeRange');
         realm.write(() => {
-            savedBGLSafeRanges[0].maxValue = String(processReading(maxValue, this.getBGLStandard(), true));
+            savedBGLSafeRanges[0].maxValue = String(processBGLValue(maxValue, this.standard, true));
         });
     },
 
@@ -300,7 +302,7 @@ const database = {
     getLatestReadingValue() {
         log("Getting latest BGLReading");
         const latestReadingArr = (realm.objects('BGLReading').sorted('date', true));
-        return latestReadingArr.length > 0 ? processReading(latestReadingArr[0].value, this.getBGLStandard()) : 0;
+        return latestReadingArr.length > 0 ? processBGLValue(latestReadingArr[0].value, this.standard) : 0;
     },
 
     getLastConsumedItem() {
@@ -364,10 +366,10 @@ const database = {
     getBGLSafeRange() {
         log("Getting BGLSafeRange");
         const safeRange = realm.objects('BGLSafeRange')[0];
-        const standard = this.getBGLStandard();
+        const standard = this.standard;
         return {
-            minValue: String(processReading(safeRange.minValue, standard)),
-            maxValue: String(processReading(safeRange.maxValue, standard))
+            minValue: String(processBGLValue(safeRange.minValue, standard)),
+            maxValue: String(processBGLValue(safeRange.maxValue, standard))
         };
     },
 
@@ -378,7 +380,13 @@ const database = {
 
     getBolusVariables() {
         log("Getting BolusVars");
-        return realm.objects(dbObjects.bolusVars)[0];
+        const bolusVars = realm.objects(dbObjects.bolusVars)[0];
+        const standard = this.standard;
+        return {
+            insulinSensitivity: String(processBGLValue(bolusVars.insulinSensitivity, standard)),
+            targetBGL: String(processBGLValue(bolusVars.targetBGL, standard)),
+            carbohydrateInsulinRatio: bolusVars.carbohydrateInsulinRatio
+        };
     },
 
     /**

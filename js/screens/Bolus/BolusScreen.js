@@ -19,7 +19,7 @@ export default class BolusScreen extends Component {
             cir: bolusVars.carbohydrateInsulinRatio,
             isf: bolusVars.insulinSensitivity,
             targetBgl: bolusVars.targetBGL,
-            standard: db.getBGLStandard(),
+            standard: db.standard,
             bolus: '',
             addModalOpen: false
         }
@@ -29,7 +29,7 @@ export default class BolusScreen extends Component {
         const fontSize = 17;
         const standard = this.state.standard;
         const bolusCalculated = this.state.bolus !== '';
-        const unitLabelFlex = 0.5;
+        const unitLabelFlex = 0.7;
         const textColor = 'white';
         const underlineColor = 'white';
         return (
@@ -108,6 +108,10 @@ export default class BolusScreen extends Component {
         );
     }
 
+    componentDidMount() {
+        db.initBGLStandardListener(this.updateStandard);
+    }
+
     onChangeCarbs = (inputCarbs) => {
         this.setState({
             carbs: inputCarbs
@@ -174,6 +178,16 @@ export default class BolusScreen extends Component {
     openAddModal = () => {
         this.setState({
             addModalOpen: true
+        });
+    };
+
+    updateStandard = () => {
+        const bolusVars = db.getBolusVariables();
+        this.setState({
+            standard: db.standard,
+            targetBgl: bolusVars.targetBGL,
+            bgl: '',
+            isf: bolusVars.insulinSensitivity
         });
     };
 

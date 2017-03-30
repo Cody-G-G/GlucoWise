@@ -15,7 +15,7 @@ import gFit from "../../data/googleFit";
 export default class SettingsScreen extends Component {
     constructor(props) {
         super(props);
-        let standard = db.getBGLStandard();
+        let standard = db.standard;
         let safeRange = db.getBGLSafeRange();
         this.state = {
             standard: standard,
@@ -28,7 +28,6 @@ export default class SettingsScreen extends Component {
             off: "Off"
         };
         this.gFitToggling = false;
-        this.toastShowing = false;
     }
 
     render() {
@@ -81,7 +80,7 @@ export default class SettingsScreen extends Component {
     }
 
     componentDidMount() {
-        db.initBGLStandardListener(this.updateBGLSafeRange.bind(this));
+        db.initBGLStandardListener(this.updateBGLSafeRange);
         this.initGFitConnectedHandler();
         this.initGFitDisconnectedHandler();
     }
@@ -96,7 +95,7 @@ export default class SettingsScreen extends Component {
             this.gFitToggling = true;
             this.state.gFitConnected ? gFit.disconnect() : gFit.authorizeAndConnect();
         } else {
-            !this.toastShowing && toast("Google Fit is still syncing settings based on your previous action. Please wait a few more seconds before toggling sync.");
+            toast("Google Fit is still syncing settings based on your previous action. Please wait a few more seconds before toggling sync.");
         }
     };
 
@@ -185,7 +184,7 @@ export default class SettingsScreen extends Component {
         db.updateBGLStandard(this.state.standard);
     }
 
-    updateBGLSafeRange() {
+    updateBGLSafeRange = () => {
         let safeRange = db.getBGLSafeRange();
         this.setState({
             safeRangeMin: safeRange.minValue,

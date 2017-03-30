@@ -351,7 +351,7 @@ export default class GraphScreen extends Component {
             .then((data) => {
                 const safeRange = db.getBGLSafeRange();
                 this.setState({
-                    standard: db.getBGLStandard(),
+                    standard: db.standard,
                     data: data,
                     graphData: this.getDataForGraph(data, timeRange, graphMode, now),
                     safeRangeMin: safeRange.minValue,

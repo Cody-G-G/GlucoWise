@@ -96,13 +96,13 @@ export default class LogbookScreen extends Component {
             const data = [...glucoseData, ...foodData].sort((a, b) => b.date - a.date);
 
             this.setState({
-                standard: db.getBGLStandard(),
+                standard: db.standard,
                 data: data,
                 logModes: logModes
             });
         } else if (logModes.Readings) {
             this.setState({
-                standard: db.getBGLStandard(),
+                standard: db.standard,
                 data: db.getBGLReadingsInDateRange(this.state.startDate, this.state.endDate),
                 logModes: logModes
             });

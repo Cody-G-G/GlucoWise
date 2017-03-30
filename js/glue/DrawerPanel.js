@@ -26,7 +26,7 @@ export default class DrawerPanel extends Component {
         const safeRangeMax = safeRange.maxValue;
         this.state = {
             latestReading: db.getLatestReadingValue(),
-            standard: db.getBGLStandard(),
+            standard: db.standard,
             safeRangeMin: safeRangeMin,
             safeRangeMax: safeRangeMax
         }
@@ -85,7 +85,7 @@ export default class DrawerPanel extends Component {
         const safeRangeMin = safeRange.minValue;
         const safeRangeMax = safeRange.maxValue;
         this.setState({
-            standard: db.getBGLStandard(),
+            standard: db.standard,
             safeRangeMin: safeRangeMin,
             safeRangeMax: safeRangeMax,
             latestReading: db.getLatestReadingValue()

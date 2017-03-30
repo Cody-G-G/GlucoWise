@@ -4,7 +4,7 @@ jest.mock('realm', () => {
 });
 jest.mock('uuid/v1');
 jest.mock('../../helpers/util/readingProcessor');
-import * as processReading from '../../helpers/util/readingProcessor';
+import * as processBGLValue from '../../helpers/util/readingProcessor';
 import ResultsMock from './mocks/realmResults.mock';
 const uuid = require('uuid/v1');
 const Realm = require('realm');
@@ -17,7 +17,7 @@ beforeEach(() => {
     Realm.prototype.write.mockClear();
     Realm.prototype.create.mockClear();
     Realm.prototype.delete.mockClear();
-    processReading.default.mockReset();
+    processBGLValue.default.mockReset();
     uuid.mockClear();
 });
 
@@ -64,14 +64,14 @@ test('updateBGLSafeRangeMin(minValue)_withStandardUS - updates minValue of BGLSa
     Realm.prototype.objects = jest.fn((objectName) => {
         return objectName === dbObjects.safeRange ? [safeRange] : [standardObj]
     });
-    processReading.default = jest.fn(() => {
+    processBGLValue.default = jest.fn(() => {
         return newMinValue;
     });
 
     db.updateBGLSafeRangeMin(newMinValue);
 
     expect(Realm.prototype.write).toHaveBeenCalled();
-    expect(processReading.default).toHaveBeenCalledWith(newMinValue, standardObj.standard, true);
+    expect(processBGLValue.default).toHaveBeenCalledWith(newMinValue, standardObj.standard, true);
     expect(safeRange.minValue).toEqual(newMinValue);
 });
 
@@ -84,14 +84,14 @@ test('updateBGLSafeRangeMin(minValue)_withStandardUK - updates minValue of BGLSa
     Realm.prototype.objects = jest.fn((objectName) => {
         return objectName === dbObjects.safeRange ? [safeRange] : [standardObj]
     });
-    processReading.default = jest.fn(() => {
+    processBGLValue.default = jest.fn(() => {
         return expectedMinValue;
     });
 
     db.updateBGLSafeRangeMin(newMinValue);
 
     expect(Realm.prototype.write).toHaveBeenCalled();
-    expect(processReading.default).toHaveBeenCalledWith(newMinValue, standardObj.standard, true);
+    expect(processBGLValue.default).toHaveBeenCalledWith(newMinValue, standardObj.standard, true);
     expect(safeRange.minValue).toEqual(expectedMinValue);
 });
 
@@ -103,14 +103,14 @@ test('updateBGLSafeRangeMax(maxValue)_withStandardUS - updates maxValue of BGLSa
     Realm.prototype.objects = jest.fn((objectName) => {
         return objectName === dbObjects.safeRange ? [safeRange] : [standardObj]
     });
-    processReading.default = jest.fn(() => {
+    processBGLValue.default = jest.fn(() => {
         return newMaxValue;
     });
 
     db.updateBGLSafeRangeMax(newMaxValue);
 
     expect(Realm.prototype.write).toHaveBeenCalled();
-    expect(processReading.default).toHaveBeenCalledWith(newMaxValue, standardObj.standard, true);
+    expect(processBGLValue.default).toHaveBeenCalledWith(newMaxValue, standardObj.standard, true);
     expect(safeRange.maxValue).toEqual(newMaxValue);
 });
 
@@ -123,14 +123,14 @@ test('updateBGLSafeRangeMax(maxValue)_withStandardUK - updates maxValue of BGLSa
     Realm.prototype.objects = jest.fn((objectName) => {
         return objectName === dbObjects.safeRange ? [safeRange] : [standardObj]
     });
-    processReading.default = jest.fn(() => {
+    processBGLValue.default = jest.fn(() => {
         return expectedMaxValue;
     });
 
     db.updateBGLSafeRangeMax(newMaxValue);
 
     expect(Realm.prototype.write).toHaveBeenCalled();
-    expect(processReading.default).toHaveBeenCalledWith(newMaxValue, standardObj.standard, true);
+    expect(processBGLValue.default).toHaveBeenCalledWith(newMaxValue, standardObj.standard, true);
     expect(safeRange.maxValue).toEqual(expectedMaxValue);
 });
 
@@ -181,13 +181,13 @@ test('getLatestReadingValue()_withStandardUS - returns reading with the most rec
     Realm.prototype.objects = jest.fn((objectName) => {
         return objectName === dbObjects.reading ? readings : [standardObj];
     });
-    processReading.default = jest.fn((value) => {
+    processBGLValue.default = jest.fn((value) => {
         return value;
     });
 
     const actualReadingValue = db.getLatestReadingValue();
 
-    expect(processReading.default).toHaveBeenCalledWith(expectedReading.value, standardObj.standard);
+    expect(processBGLValue.default).toHaveBeenCalledWith(expectedReading.value, standardObj.standard);
     expect(actualReadingValue).toEqual(expectedReading.value)
 });
 
@@ -202,13 +202,13 @@ test('getLatestReadingValue()_withStandardUK - returns reading with the most rec
     Realm.prototype.objects = jest.fn((objectName) => {
         return objectName === dbObjects.reading ? readings : [standardObj];
     });
-    processReading.default = jest.fn((value) => {
+    processBGLValue.default = jest.fn((value) => {
         return String(value / 10);
     });
 
     const actualReadingValue = db.getLatestReadingValue();
 
-    expect(processReading.default).toHaveBeenCalledWith(String(expectedReading.value * 10), standardObj.standard);
+    expect(processBGLValue.default).toHaveBeenCalledWith(String(expectedReading.value * 10), standardObj.standard);
     expect(actualReadingValue).toEqual(expectedReading.value)
 });
 
@@ -226,7 +226,7 @@ test('getBGLReadingsInDateRange(startDate, endDate)_withStandardUS - gets readin
     Realm.prototype.objects = jest.fn((objectName) => {
         return objectName === dbObjects.reading ? readings : [standardObj]
     });
-    processReading.default = jest.fn((value) => {
+    processBGLValue.default = jest.fn((value) => {
         return value;
     });
 
@@ -254,7 +254,7 @@ test('getBGLReadingsInDateRange(startDate, endDate)_withStandardUK - gets readin
     Realm.prototype.objects = jest.fn((objectName) => {
         return objectName === dbObjects.reading ? readings : [standardObj]
     });
-    processReading.default = jest.fn((value) => {
+    processBGLValue.default = jest.fn((value) => {
         return String(value / 10);
     });
 
@@ -275,7 +275,7 @@ test('get24hBGLReadings()_withStandardUS - returns readings with date within las
     Realm.prototype.objects = jest.fn((objectName) => {
         return objectName === dbObjects.reading ? readings : [standardObj]
     });
-    processReading.default = jest.fn((value) => {
+    processBGLValue.default = jest.fn((value) => {
         return value;
     });
 
@@ -301,7 +301,7 @@ test('get24hBGLReadings()_withStandardUK - returns readings with date within las
     Realm.prototype.objects = jest.fn((objectName) => {
         return objectName === dbObjects.reading ? readings : [standardObj]
     });
-    processReading.default = jest.fn((value) => {
+    processBGLValue.default = jest.fn((value) => {
         return String(value / 10);
     });
 
@@ -322,7 +322,7 @@ test('get60mBGLReadings()_withStandardUS - returns readings with date within las
     Realm.prototype.objects = jest.fn((objectName) => {
         return objectName === dbObjects.reading ? readings : [standardObj]
     });
-    processReading.default = jest.fn((value) => {
+    processBGLValue.default = jest.fn((value) => {
         return value;
     });
 
@@ -348,7 +348,7 @@ test('get60mBGLReadings()_withStandardUK - returns readings with date within las
     Realm.prototype.objects = jest.fn((objectName) => {
         return objectName === dbObjects.reading ? readings : [standardObj]
     });
-    processReading.default = jest.fn((value) => {
+    processBGLValue.default = jest.fn((value) => {
         return String(value / 10);
     });
 
@@ -364,7 +364,7 @@ test('getBGLSafeRange()_withStandardUS - returns safe range object with current 
     Realm.prototype.objects = jest.fn((objectName) => {
         return objectName === dbObjects.standard ? [standardUS] : [safeRange];
     });
-    processReading.default = jest.fn((value) => {
+    processBGLValue.default = jest.fn((value) => {
         return value;
     });
 
@@ -382,7 +382,7 @@ test('getBGLSafeRange()_withStandardUK - returns safe range object with current 
     Realm.prototype.objects = jest.fn((objectName) => {
         return objectName === dbObjects.standard ? [standardUK] : [safeRange];
     });
-    processReading.default = jest.fn((value) => {
+    processBGLValue.default = jest.fn((value) => {
         return value === defaultSafeRange.min ? expectedMinUK : expectedMaxUK;
     });
 

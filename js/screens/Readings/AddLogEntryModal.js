@@ -7,7 +7,7 @@ import dateUtil from '../../helpers/util/date';
 import styles from './styles';
 import db from '../../data/database';
 import {ListItem} from 'native-base';
-import processReading from "../../helpers/util/readingProcessor";
+import processBGLValue from "../../helpers/util/readingProcessor";
 import AddReadingModalPanel from "./AddReadingModalPanel";
 import AddFoodModalPanel from "./AddFoodModalPanel";
 import ToggleButtonsGroup from "../../helpers/components/ToggleButtonsGroup";
@@ -22,7 +22,7 @@ export default class AddLogEntryModal extends Component {
         this.state = {
             inputValue: '',
             inputDate: new Date(),
-            standard: db.getBGLStandard(),
+            standard: db.standard,
             inputName: '',
             inputCalories: '',
             inputCarbohydrates: '',
@@ -162,7 +162,7 @@ export default class AddLogEntryModal extends Component {
 
     saveReading = () => {
         if (isNumberValid(this.state.inputValue))
-            db.saveBGLReading(String(processReading(this.state.inputValue, this.state.standard, true)), dateUtil.toDateFromDateTimeString(this.state.inputDate));
+            db.saveBGLReading(String(processBGLValue(this.state.inputValue, this.state.standard, true)), dateUtil.toDateFromDateTimeString(this.state.inputDate));
         else
             Alert.alert("Invalid input", "Please input a valid blood glucose value");
     };
