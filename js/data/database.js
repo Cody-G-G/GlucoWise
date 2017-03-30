@@ -14,6 +14,10 @@ let realm = new Realm({
         {name: dbObjects.standard, properties: {standard: 'string'}},
         {name: dbObjects.dataSync, properties: {syncEnabledGFit: 'bool'}},
         {
+            name: dbObjects.bolusVars,
+            properties: {targetBGL: 'string', carbohydrateInsulinRatio: 'string', insulinSensitivity: 'string'}
+        },
+        {
             name: dbObjects.foodItem,
             properties: {
                 objectName: 'string',
@@ -39,11 +43,17 @@ const database = {
         const initBGLSafeRange = realm.objects('BGLSafeRange').length === 0;
         const initBGLStandard = realm.objects('BGLStandard').length === 0;
         const initDataSyncSettings = realm.objects('DataSyncSettings').length === 0;
+        const initBolusVars = realm.objects(dbObjects.bolusVars).length === 0;
         realm.write(() => {
             initBGLStandard && realm.create('BGLStandard', {standard: readingUnitStandards.US});
             initBGLSafeRange && realm.create('BGLSafeRange', {
                 minValue: defaultSafeRange.min,
                 maxValue: defaultSafeRange.max
+            });
+            initBolusVars && realm.create(dbObjects.bolusVars, {
+                targetBGL: '',
+                carbohydrateInsulinRatio: '',
+                insulinSensitivity: ''
             });
             initDataSyncSettings && realm.create('DataSyncSettings', {syncEnabledGFit: false});
             global.DEBUG && this.addMockData();
@@ -225,6 +235,39 @@ const database = {
     },
 
     /**
+     * @param isf
+     */
+    saveInsulinSensitivityFactor(isf) {
+        log("Saving insulin sensitivity factor");
+        let savedBolusVars = realm.objects(dbObjects.bolusVars);
+        realm.write(() => {
+            savedBolusVars[0].insulinSensitivity = isf;
+        })
+    },
+
+    /**
+     * @param targetBGL
+     */
+    saveTargetBGL(targetBGL) {
+        log("Saving targetBGL");
+        let savedBolusVars = realm.objects(dbObjects.bolusVars);
+        realm.write(() => {
+            savedBolusVars[0].targetBGL = targetBGL;
+        })
+    },
+
+    /**
+     * @param carbInsulinRatio
+     */
+    saveCarbohydrateInsulinRatio(carbInsulinRatio) {
+        log("Saving carbohydrate to insulin ratio");
+        let savedBolusVars = realm.objects(dbObjects.bolusVars);
+        realm.write(() => {
+            savedBolusVars[0].carbohydrateInsulinRatio = carbInsulinRatio;
+        })
+    },
+
+    /**
      * @param maxValue
      */
     updateBGLSafeRangeMax(maxValue) {
@@ -331,6 +374,11 @@ const database = {
     getBGLStandard() {
         log("Getting BGLStandard");
         return realm.objects('BGLStandard')[0].standard;
+    },
+
+    getBolusVariables() {
+        log("Getting BolusVars");
+        return realm.objects(dbObjects.bolusVars)[0];
     },
 
     /**

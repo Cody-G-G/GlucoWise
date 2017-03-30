@@ -36,7 +36,8 @@ const dbObjects = {
     safeRange: "BGLSafeRange",
     standard: "BGLStandard",
     dataSync: "DataSyncSettings",
-    foodItem: "ConsumedFoodItem"
+    foodItem: "ConsumedFoodItem",
+    bolusVars: "BolusVariables"
 };
 
 const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];

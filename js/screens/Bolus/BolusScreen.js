@@ -10,12 +10,13 @@ import styles from "./styles";
 export default class BolusScreen extends Component {
     constructor(props) {
         super(props);
+        const bolusVars = db.getBolusVariables();
         this.state = {
             carbs: '',
             bgl: '',
-            icr: '',
-            isf: '',
-            targetBgl: '',
+            cir: bolusVars.carbohydrateInsulinRatio,
+            isf: bolusVars.insulinSensitivity,
+            targetBgl: bolusVars.targetBGL,
             standard: db.getBGLStandard(),
             bolus: ''
         }
@@ -63,7 +64,7 @@ export default class BolusScreen extends Component {
                                     textColor={textColor}
                                     underlineColor={underlineColor}/>
                 <CalculatorInputRow inputLabel='Carb-Insulin ratio'
-                                    inputValue={this.state.icr}
+                                    inputValue={this.state.cir}
                                     onChangeText={this.onChangeICR}
                                     fontSize={fontSize}
                                     unitLabel='g/U'
@@ -113,7 +114,7 @@ export default class BolusScreen extends Component {
 
     onChangeICR = (inputICR) => {
         this.setState({
-            icr: inputICR
+            cir: inputICR
         });
     };
 
@@ -146,7 +147,7 @@ export default class BolusScreen extends Component {
     };
 
     saveCarbRatio = () => {
-        db.saveInsulinCarbohydrateRatio(this.state.icr);
+        db.saveCarbohydrateInsulinRatio(this.state.cir);
     };
 
     saveInsulinSensitivity = () => {
@@ -154,9 +155,9 @@ export default class BolusScreen extends Component {
     };
 
     calculateBolus = () => {
-        if (isNumberValid(this.state.carbs) && isNumberValid(this.state.icr) && isNumberValid(this.state.isf) && isNumberValid(this.state.bgl) && isNumberValid(this.state.targetBgl))
+        if (isNumberValid(this.state.carbs) && isNumberValid(this.state.cir) && isNumberValid(this.state.isf) && isNumberValid(this.state.bgl) && isNumberValid(this.state.targetBgl))
             this.setState({
-                bolus: ((this.state.carbs / this.state.icr) + ((this.state.bgl - this.state.targetBgl) / this.state.isf)).toFixed(1)
+                bolus: ((this.state.carbs / this.state.cir) + ((this.state.bgl - this.state.targetBgl) / this.state.isf)).toFixed(1)
             });
         else
             Alert.alert("Invalid input", "Please input valid numbers for the Meal Carbohydrates / Current Glucose / Target Glucose / Carbohydrate Ratio / Insulin Sensitivity fields. For more information tap on the help button on the top right.");
