@@ -6,6 +6,8 @@ import isNumberValid from "../../helpers/util/inputValidator";
 import {Icon} from 'native-base';
 import db from "../../data/database";
 import styles from "./styles";
+import AddLogEntryModal from "../Readings/AddLogEntryModal";
+import AddButton from "../Readings/AddButton";
 
 export default class BolusScreen extends Component {
     constructor(props) {
@@ -18,7 +20,8 @@ export default class BolusScreen extends Component {
             isf: bolusVars.insulinSensitivity,
             targetBgl: bolusVars.targetBGL,
             standard: db.getBGLStandard(),
-            bolus: ''
+            bolus: '',
+            addModalOpen: false
         }
     }
 
@@ -91,11 +94,16 @@ export default class BolusScreen extends Component {
                     <Text style={styles.resultText}>Bolus dose:&nbsp;<Text style={{color: 'royalblue'}}>{this.state.bolus}</Text>&nbsp;units</Text>}
                 </View>
 
-                <TouchableOpacity style={styles.calculateButton} onPress={this.calculateBolus}>
-                    <Text style={styles.calculateButtonText}>
-                        <Icon theme={{iconFamily: "Ionicons"}} name="md-calculator"/>&nbsp;Calculate Bolus
-                    </Text>
-                </TouchableOpacity>
+                <View style={{flex:1, flexDirection:'row', borderTopWidth: 2.25}}>
+                    <TouchableOpacity style={styles.calculateButton} onPress={this.calculateBolus}>
+                        <Text style={styles.calculateButtonText}>
+                            <Icon theme={{iconFamily: "Ionicons"}} name="md-calculator"/>&nbsp;Calculate Bolus
+                        </Text>
+                    </TouchableOpacity>
+                    <AddButton onPress={this.openAddModal}/>
+                </View>
+
+                <AddLogEntryModal opened={this.state.addModalOpen} finished={this.finishedAdding}/>
             </View>
         );
     }
@@ -161,5 +169,17 @@ export default class BolusScreen extends Component {
             });
         else
             Alert.alert("Invalid input", "Please input valid numbers for the Meal Carbohydrates / Current Glucose / Target Glucose / Carbohydrate Ratio / Insulin Sensitivity fields. For more information tap on the help button on the top right.");
-    }
+    };
+
+    openAddModal = () => {
+        this.setState({
+            addModalOpen: true
+        });
+    };
+
+    finishedAdding = () => {
+        this.setState({
+            addModalOpen: false
+        });
+    };
 }

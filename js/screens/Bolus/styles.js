@@ -13,12 +13,12 @@ export default StyleSheet.create({
         fontSize: 30
     },
     calculateButton: {
-        flex: 1,
+        flex: 5,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'royalblue',
-        borderTopWidth: 2,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        borderRightWidth: 1
     },
     calculateButtonText: {
         color: 'white',
