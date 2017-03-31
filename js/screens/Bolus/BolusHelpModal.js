@@ -15,6 +15,25 @@ export default class BolusHelpModal extends Component {
             <View style={{flex:1}}>
                 <View style={styles.helpSection}>
                     <Text style={styles.helpSectionTitle}>
+                        Disclaimer
+                    </Text>
+                    <Text style={styles.normalHelpText}>
+                        You&nbsp;
+                        <Text style={styles.alertHelpText}>MUST</Text>&nbsp;
+                        discuss the usage of a bolus calculator with your physician, and use your&nbsp;
+                        <Text style={styles.alertHelpText}>own judgement</Text>&nbsp;
+                        before accepting any recommendation made by this (or any other, for that matter)
+                        calculator. Your physician would assist you in choosing initial values for your&nbsp;
+                        <Text style={styles.emphasizedHelpText}>Target Blood Glucose</Text>,
+                        <Text style={styles.emphasizedHelpText}>Carbohydrate-to-Insulin Ratio</Text>
+                        , and&nbsp;
+                        <Text style={styles.emphasizedHelpText}>Insulin Sensitivity Factor</Text>
+                        , and would provide guidance as to how these should be adjusted over time or for
+                        different times of day, according to your own observations.
+                    </Text>
+                </View>
+                <View style={styles.helpSection}>
+                    <Text style={styles.helpSectionTitle}>
                         General
                     </Text>
                     <Text style={styles.normalHelpText}>
@@ -121,7 +140,6 @@ export default class BolusHelpModal extends Component {
                         <Text style={styles.emphasizedHelpText}>(MCA / CIR) + ((CBG - TBG) / ISF)</Text>
                     </Text>
                 </View>
-
             </View>);
 
         return (

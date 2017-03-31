@@ -142,6 +142,11 @@ export default StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold'
     },
+    alertHelpText: {
+        color: 'crimson',
+        fontSize: 18,
+        fontWeight: 'bold'
+    },
     normalHelpText: {
         color: 'dimgray',
         fontSize: 16,
