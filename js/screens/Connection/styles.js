@@ -1,5 +1,5 @@
 'use strict';
-import { StyleSheet } from "react-native";
+import {StyleSheet} from "react-native";
 
 export default StyleSheet.create({
     deviceButton: {
@@ -45,5 +45,27 @@ export default StyleSheet.create({
     screenContainer: {
         flex: 1,
         backgroundColor: 'aliceblue'
+    },
+    searchButton: {
+        marginRight: 25,
+        marginLeft: 25,
+        marginTop: 2.5,
+        marginBottom: 2.5,
+        flex: 1,
+        borderWidth: 2,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'royalblue'
+    },
+    searchButtonIcon: {
+        fontWeight: 'bold',
+        fontSize: 45,
+        color: 'white'
+    },
+    searchButtonText: {
+        fontWeight: 'bold',
+        fontSize: 32,
+        color: 'white'
     }
 });
