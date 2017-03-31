@@ -116,7 +116,7 @@ export default class BolusHelpModal extends Component {
                     </Text>
                     <Text style={styles.normalHelpText}>
                         The&nbsp;
-                        <Text style={styles.emphasizedHelpText}>Basal Dose</Text>&nbsp;
+                        <Text style={styles.emphasizedHelpText}>Bolus Dose</Text>&nbsp;
                         is calculated using the variables described above, in the formula:{'\n'}
                         <Text style={styles.emphasizedHelpText}>(MCA / CIR) + ((CBG - TBG) / ISF)</Text>
                     </Text>
