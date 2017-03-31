@@ -86,37 +86,31 @@ export default class LogbookScreen extends Component {
     }
 
     updateState = (mode) => {
-        log("Updating LogbookScreen state with mode " + mode);
+        log("Updating LogbookScreen state with mode toggled " + mode);
         const logModes = this.state.logModes;
         typeof mode !== 'undefined' && (logModes[mode] = !logModes[mode]);
 
-        if (logModes.Readings && logModes.Food) {
-            const glucoseData = db.getBGLReadingsInDateRange(this.state.startDate, this.state.endDate);
-            const foodData = db.getConsumedFoodItemsInDateRange(this.state.startDate, this.state.endDate);
-            const data = [...glucoseData, ...foodData].sort((a, b) => b.date - a.date);
+        this.setState({
+            standard: db.standard,
+            logModes: logModes,
+            data: this.getData(logModes, this.state.startDate, this.state.endDate)
+        });
+    };
 
-            this.setState({
-                standard: db.standard,
-                data: data,
-                logModes: logModes
-            });
+    getData = (logModes, startDate, endDate) => {
+        let data = [];
+
+        if (logModes.Readings && logModes.Food) {
+            const glucoseData = db.getBGLReadingsInDateRange(startDate, endDate);
+            const foodData = db.getConsumedFoodItemsInDateRange(startDate, endDate);
+            data = [...glucoseData, ...foodData].sort((a, b) => b.date - a.date);
         } else if (logModes.Readings) {
-            this.setState({
-                standard: db.standard,
-                data: db.getBGLReadingsInDateRange(this.state.startDate, this.state.endDate),
-                logModes: logModes
-            });
+            data = db.getBGLReadingsInDateRange(startDate, endDate);
         } else if (logModes.Food) {
-            this.setState({
-                data: db.getConsumedFoodItemsInDateRange(this.state.startDate, this.state.endDate),
-                logModes: logModes
-            });
-        } else {
-            this.setState({
-                data: [],
-                logModes: logModes
-            });
+            data = db.getConsumedFoodItemsInDateRange(startDate, endDate);
         }
+
+        return data;
     };
 
     /**
@@ -125,7 +119,7 @@ export default class LogbookScreen extends Component {
     updateStartDate = (startDate) => {
         this.setState({
             startDate: startDate,
-            data: db.getBGLReadingsInDateRange(startDate, this.state.endDate)
+            data: this.getData(this.state.logModes, startDate, this.state.endDate)
         });
     };
 
@@ -135,7 +129,7 @@ export default class LogbookScreen extends Component {
     updateEndDate = (endDate) => {
         this.setState({
             endDate: endDate,
-            data: db.getBGLReadingsInDateRange(this.state.startDate, endDate)
+            data: this.getData(this.state.logModes, this.state.startDate, endDate)
         });
     };
 

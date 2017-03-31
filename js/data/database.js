@@ -91,6 +91,15 @@ const database = {
         this.createConsumedFoodItem(uuid(), 'Cheese & Ham Sandwich', dateUtil.daysBeforeMillis(3, now), '375', '20', '', '', '');
         this.createConsumedFoodItem(uuid(), 'Cashews', dateUtil.daysBeforeMillis(3, now), '400', '35', '10', '23', '80');
         this.createConsumedFoodItem(uuid(), 'Sweet & Sour Chicken', dateUtil.daysBeforeMillis(5, now), '450', '20', '', '', '');
+
+        this.addStressTestMockData()
+    },
+
+    addStressTestMockData() {
+        for (let i = 0; i < 10000; i++) {
+            this.createBGLReading(uuid(), '200', dateUtil.hoursBeforeMillis(23, Date.now()));
+            this.createConsumedFoodItem(uuid(), 'STRESS TEST ' + i, dateUtil.hoursBeforeMillis(23, Date.now()), '500', '50', '', '', '');
+        }
     },
 
     /**
@@ -99,6 +108,7 @@ const database = {
      * @param dateMillis
      */
     createBGLReading(id, value, dateMillis) {
+        log("Creating BGLReading " + id + " " + value + " " + dateMillis);
         realm.create('BGLReading', {objectName: dbObjects.reading, id: id, value: value, date: new Date(dateMillis)});
     },
 
@@ -113,6 +123,7 @@ const database = {
      * @param weight
      */
     createConsumedFoodItem(id, name, date, calories, carbohydrates, protein, fats, weight) {
+        log("Creating ConsumedFoodItem: " + name + " " + date + " " + weight + " " + calories + " " + carbohydrates + " " + protein + " " + fats);
         realm.create('ConsumedFoodItem', {
             objectName: dbObjects.foodItem,
             id: id,
