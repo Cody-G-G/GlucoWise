@@ -150,7 +150,13 @@ export default class AddLogEntryModal extends Component {
     clearState = () => {
         this.setState({
             inputValue: '',
-            inputDate: new Date()
+            inputDate: new Date(),
+            inputName: '',
+            inputCalories: '',
+            inputCarbohydrates: '',
+            inputProtein: '',
+            inputFats: '',
+            inputWeight: ''
         })
     };
 
