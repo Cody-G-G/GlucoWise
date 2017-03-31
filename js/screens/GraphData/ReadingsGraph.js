@@ -12,6 +12,12 @@ export default class ReadingsGraph extends Component {
     }
 
     render() {
+        const readings = this.props.readings;
+        const minReading = readings.reduce((acc, cur) => Math.min(acc, cur.y), readings.length > 0 && readings[0].y);
+        const maxReading = readings.reduce((acc, cur) => Math.max(acc, cur.y), readings.length > 0 && readings[0].y);
+        const minLimit = 30 > minReading ? minReading : 30;
+        const maxLimit = 250 < maxReading ? maxReading : 250;
+
         const regions = [{
             label: '',
             from: this.props.safeRangeMin,
@@ -61,7 +67,7 @@ export default class ReadingsGraph extends Component {
                 showTicks: true,
                 zeroAxis: false,
                 orient: 'left',
-                tickValues: this.getYTickValues(),
+                tickValues: this.getYTickValues(minLimit, maxLimit),
                 label: {
                     fontFamily: 'Arial',
                     fontSize: 14,
@@ -69,15 +75,15 @@ export default class ReadingsGraph extends Component {
                     fill: '#34495E'
                 }
             },
-            min: processBGLValue(40, this.props.standard),
-            max: processBGLValue(220, this.props.standard),
+            min: processBGLValue(minLimit, this.props.standard),
+            max: processBGLValue(maxLimit, this.props.standard),
             showAreas: false,
             strokeWidth: 3
         };
 
         return (
             <View style={styles.graphPanel}>
-                <StockLine data={[this.props.readings]}
+                <StockLine data={[readings]}
                            options={options}
                            regions={regions}
                            regionStyling={regionStyling}
@@ -87,20 +93,14 @@ export default class ReadingsGraph extends Component {
         );
     }
 
-    getYTickValues() {
-        return [
-            {value: 40},
-            {value: 55},
-            {value: 70},
-            {value: 90},
-            {value: 110},
-            {value: 130},
-            {value: 150},
-            {value: 170},
-            {value: 190},
-            {value: 205},
-            {value: 220}
-        ].map(entry => {
+    getYTickValues(min, max) {
+        const tickValues = [];
+        const numberOfTicks = 14;
+        const tickDifference = Math.round(((max - min) / numberOfTicks) / 10) * 10;
+        for (let tick = min; tick <= max; tick += tickDifference) {
+            tickValues.push({value: tick});
+        }
+        return tickValues.map(entry => {
             return {value: processBGLValue(entry.value, this.props.standard)}
         });
     }
