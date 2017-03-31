@@ -7,11 +7,13 @@ export default StyleSheet.create({
         alignSelf: 'stretch',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 7
+        padding: 7,
+        borderLeftWidth: 1
     },
     deviceButtonText: {
         color: 'white',
-        fontSize: 20
+        fontSize: 22,
+        fontWeight: 'bold'
     },
     deviceDescription: {
         backgroundColor: 'cornflowerblue',
