@@ -110,6 +110,18 @@ export default class BolusHelpModal extends Component {
                         time you open this screen, however you can modify (and save) it again at any time.
                     </Text>
                 </View>
+                <View style={styles.helpSection}>
+                    <Text style={styles.helpSectionTitle}>
+                        Formula
+                    </Text>
+                    <Text style={styles.normalHelpText}>
+                        The&nbsp;
+                        <Text style={styles.emphasizedHelpText}>Basal Dose</Text>&nbsp;
+                        is calculated using the variables described above, in the formula:{'\n'}
+                        <Text style={styles.emphasizedHelpText}>(MCA / CIR) + ((CBG - TBG) / ISF)</Text>
+                    </Text>
+                </View>
+
             </View>);
 
         return (
