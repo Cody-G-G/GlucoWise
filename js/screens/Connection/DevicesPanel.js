@@ -1,7 +1,7 @@
 'use strict';
 import React, {Component} from 'react';
 import {ListItem} from 'native-base';
-import {View, Text, ListView} from 'react-native';
+import {View, Text, ListView, StyleSheet} from 'react-native';
 import styles from "./styles";
 import DeviceListRow from "./DeviceListRow";
 
@@ -13,9 +13,10 @@ export default class DevicesPanel extends Component {
 
     render() {
         const dataSource = this.ds.cloneWithRows(this.props.scannedDevices);
-
+        const devicesPanelFlex = this.props.scanning ? 4.6 : 6;
+        const devicesPanelStyle = StyleSheet.flatten([styles.devicesPanel, {flex: devicesPanelFlex}]);
         return (
-            <View style={styles.devicesPanel}>
+            <View style={devicesPanelStyle}>
                 <ListItem itemDivider>
                     <Text style={styles.deviceListHeader}>Found Devices</Text>
                 </ListItem>

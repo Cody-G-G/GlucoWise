@@ -34,22 +34,16 @@ export default StyleSheet.create({
     },
     searchButtonPanel: {
         flex: 1,
-        paddingTop: 10,
-        paddingBottom: 20
     },
     devicesPanel: {
-        flex: 6,
         alignSelf: 'stretch'
     },
     spinnerPanel: {
-        flex: 2,
-        alignItems: 'center',
-        justifyContent: 'center'
+        flex: 1.4,
+        alignItems: 'center'
     },
     screenContainer: {
         flex: 1,
-        justifyContent: 'space-around',
-        alignItems: 'center',
         backgroundColor: 'aliceblue'
     }
 });

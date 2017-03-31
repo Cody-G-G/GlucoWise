@@ -1,7 +1,7 @@
 'use strict';
-import React, { Component } from 'react';
-import { Button, Icon } from 'native-base';
-import { View } from 'react-native';
+import React, {Component} from 'react';
+import {Icon} from 'native-base';
+import {View, TouchableOpacity, Text} from 'react-native';
 import styles from "./styles";
 
 export default class SearchButtonPanel extends Component {
@@ -12,9 +12,10 @@ export default class SearchButtonPanel extends Component {
     render() {
         return (
             <View style={styles.searchButtonPanel}>
-                <Button onPress={this.props.onPress} large style={{backgroundColor: 'royalblue'}}>
-                    <Icon theme={{iconFamily: "MaterialIcons"}} name="bluetooth"/>Search Devices
-                </Button>
+                <TouchableOpacity onPress={this.props.onPress} style={{marginRight:25, marginLeft: 25, marginTop:2.5, marginBottom:2.5, flex: 1, borderWidth:2, flexDirection:'row', alignItems:'center', justifyContent:'center', backgroundColor: 'royalblue'}}>
+                    <Icon style={{fontWeight:'bold', fontSize:45, color:'white'}} theme={{iconFamily: "MaterialIcons"}} name="bluetooth"/>
+                    <Text style={{fontWeight:'bold', fontSize:32, color:'white'}}>Search Devices</Text>
+                </TouchableOpacity>
             </View>
         );
     }

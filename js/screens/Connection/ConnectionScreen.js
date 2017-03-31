@@ -25,18 +25,20 @@ export default class ConnectionScreen extends Component {
 
     render() {
         log("Rendering ConnectionScreen");
+        const scanning = this.state.scanning;
         return (
             <View style={styles.screenContainer}>
                 <SearchButtonPanel onPress={this.triggerStateCheckForScan}/>
 
                 <DevicesPanel onPress={this.toggleDeviceConnection}
+                              scanning={scanning}
                               scannedDevices={this.state.scannedDevices}
                               devicesTogglingConnection={this.state.devicesTogglingConnection}
                               connectedDeviceIDs={this.state.connectedDeviceIDs}/>
 
-                {this.state.scanning &&
+                {scanning &&
                 <View style={styles.spinnerPanel}>
-                    <Spinner isVisible={this.state.scanning} size={100} type={'Wave'} color={'#4169e1'}/>
+                    <Spinner isVisible={scanning} size={100} type={'Wave'} color={'#4169e1'}/>
                 </View>}
             </View>
         );
