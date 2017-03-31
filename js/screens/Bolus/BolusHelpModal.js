@@ -24,7 +24,7 @@ export default class BolusHelpModal extends Component {
                         <Text style={styles.alertHelpText}>own judgement</Text>&nbsp;
                         before accepting any recommendation made by this (or any other, for that matter)
                         calculator. Your physician would assist you in choosing initial values for your&nbsp;
-                        <Text style={styles.emphasizedHelpText}>Target Blood Glucose</Text>,
+                        <Text style={styles.emphasizedHelpText}>Target Blood Glucose</Text>,&nbsp;
                         <Text style={styles.emphasizedHelpText}>Carbohydrate-to-Insulin Ratio</Text>
                         , and&nbsp;
                         <Text style={styles.emphasizedHelpText}>Insulin Sensitivity Factor</Text>
