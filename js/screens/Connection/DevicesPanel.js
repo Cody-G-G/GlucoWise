@@ -21,15 +21,9 @@ export default class DevicesPanel extends Component {
                     <Text style={styles.deviceListHeader}>Found Devices</Text>
                 </ListItem>
 
-                <ListView dataSource={dataSource}
-                          enableEmptySections={true}
-                          renderRow={(rowData) =>
-                                <DeviceListRow device={rowData}
-                                               connectedDeviceIDs={this.props.connectedDeviceIDs}
-                                               onPress={this.props.onPress}
-                                               devicesTogglingConnection={this.props.devicesTogglingConnection}/>
-                          }
-                />
+                <ListView dataSource={dataSource} enableEmptySections={true} renderRow={(rowData) =>
+                    <DeviceListRow device={rowData} connectedDeviceIDs={this.props.connectedDeviceIDs} onPress={this.props.onPress}/>
+                }/>
             </View>
         );
     }

@@ -12,7 +12,6 @@ export default class DeviceListRow extends Component {
     render() {
         const device = JSON.parse(this.props.device);
         const deviceButtonStyle = StyleSheet.flatten([styles.deviceButton, {backgroundColor: this.buttonColor(device)}]);
-        const deviceButtonDisabled = this.props.devicesTogglingConnection.includes(device.id);
 
         return (
             <View style={styles.device}>
@@ -21,13 +20,8 @@ export default class DeviceListRow extends Component {
                     <TextBold>Id:</TextBold> {device.id}
                 </Text>
 
-                <TouchableOpacity
-                    style={deviceButtonStyle}
-                    onPress={() => this.props.onPress(device)}
-                    disabled={deviceButtonDisabled}>
-
+                <TouchableOpacity style={deviceButtonStyle} onPress={() => this.props.onPress(device)}>
                     <Text style={styles.deviceButtonText}>{this.buttonText(device)}</Text>
-
                 </TouchableOpacity>
             </View>
         );

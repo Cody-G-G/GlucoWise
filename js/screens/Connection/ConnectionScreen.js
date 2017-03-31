@@ -70,21 +70,24 @@ export default class ConnectionScreen extends Component {
     }
 
     toggleDeviceConnection = (peripheral) => {
-        const extendedDeviceId = peripheral.name + " - " + peripheral.id;
-        log("Toggling connection with peripheral: <" + extendedDeviceId + ">");
-        this.addDeviceTogglingConnection(peripheral.id);
+        if (!this.isDeviceTogglingConnection(peripheral)) {
 
-        BleManager.isPeripheralConnected(peripheral.id, [])
-            .then((isConnected) => {
-                if (isConnected)
-                    this.disconnectPeripheral(peripheral, extendedDeviceId);
-                else
-                    this.connectPeripheral(peripheral, extendedDeviceId);
-            })
-            .catch((error) => {
-                this.removeDeviceTogglingConnection(peripheral.id);
-                log("Checking connection to " + extendedDeviceId + " failed: " + error);
-            });
+            const extendedDeviceId = peripheral.name + " - " + peripheral.id;
+            log("Toggling connection with peripheral: <" + extendedDeviceId + ">");
+            this.addDeviceTogglingConnection(peripheral.id);
+
+            BleManager.isPeripheralConnected(peripheral.id, [])
+                .then((isConnected) => {
+                    if (isConnected)
+                        this.disconnectPeripheral(peripheral, extendedDeviceId);
+                    else
+                        this.connectPeripheral(peripheral, extendedDeviceId);
+                })
+                .catch((error) => {
+                    this.removeDeviceTogglingConnection(peripheral.id);
+                    log("Checking connection to " + extendedDeviceId + " failed: " + error);
+                });
+        }
     };
 
     connectPeripheral(peripheral, extendedDeviceId) {
@@ -241,5 +244,9 @@ export default class ConnectionScreen extends Component {
 
     updatePressedScan(pressedScan) {
         this.pressedScan = pressedScan;
+    }
+
+    isDeviceTogglingConnection(device) {
+        return this.state.devicesTogglingConnection.includes(device.id);
     }
 }
