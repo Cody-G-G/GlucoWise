@@ -1,13 +1,14 @@
 'use strict';
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, Alert} from 'react-native';
-import CalculatorInputRow from "./CalculatorInputRow";
+import CalculatorInputPanel from "./CalculatorInputPanel";
+import CalculatorButtonsPanel from "./CalculatorButtonsPanel";
 import isNumberValid from "../../helpers/util/inputValidator";
-import {Icon} from 'native-base';
 import db from "../../data/database";
+import emitter from "../../helpers/util/eventEmitter";
 import styles from "./styles";
-import AddLogEntryModal from "../Readings/AddLogEntryModal";
-import AddButton from "../Readings/AddButton";
+import AddLogEntryModal from "../../helpers/components/AddLogEntryModal";
+import BolusHelpModal from "./BolusHelpModal";
 
 export default class BolusScreen extends Component {
     constructor(props) {
@@ -21,121 +22,89 @@ export default class BolusScreen extends Component {
             targetBgl: bolusVars.targetBGL,
             standard: db.standard,
             bolus: '',
-            addModalOpen: false
+            addModalOpen: false,
+            helpModalOpen: false
         }
     }
 
     render() {
-        const fontSize = 17;
-        const standard = this.state.standard;
         const bolusCalculated = this.state.bolus !== '';
-        const unitLabelFlex = 0.7;
-        const textColor = 'white';
-        const underlineColor = 'white';
         return (
             <View style={{backgroundColor: 'aliceblue', flex: 1}}>
-                <CalculatorInputRow inputLabel='Meal carbs'
-                                    inputValue={this.state.carbs}
-                                    onChangeText={this.onChangeCarbs}
-                                    fontSize={fontSize}
-                                    unitLabel='g'
-                                    unitLabelFlex={unitLabelFlex}
-                                    buttonText='Latest Food'
-                                    onPress={this.setCarbsFromLatestFood}
-                                    buttonTextSize={20}
-                                    textColor={textColor}
-                                    underlineColor={underlineColor}/>
-                <CalculatorInputRow inputLabel='Current glucose'
-                                    inputValue={this.state.bgl}
-                                    onChangeText={this.onChangeBGL}
-                                    fontSize={fontSize}
-                                    unitLabel={standard}
-                                    unitLabelFlex={unitLabelFlex}
-                                    buttonText='Latest Reading'
-                                    onPress={this.setBGLFromLatestReading}
-                                    textColor={textColor}
-                                    underlineColor={underlineColor}/>
-                <CalculatorInputRow inputLabel='Target glucose'
-                                    inputValue={this.state.targetBgl}
-                                    onChangeText={this.onChangeTargetBGL}
-                                    fontSize={fontSize}
-                                    unitLabel={standard}
-                                    unitLabelFlex={unitLabelFlex}
-                                    buttonText='Save'
-                                    onPress={this.saveTargetBGL}
-                                    buttonTextSize={30}
-                                    textColor={textColor}
-                                    underlineColor={underlineColor}/>
-                <CalculatorInputRow inputLabel='Carb-Insulin ratio'
-                                    inputValue={this.state.cir}
-                                    onChangeText={this.onChangeICR}
-                                    fontSize={fontSize}
-                                    unitLabel='g/U'
-                                    unitLabelFlex={unitLabelFlex}
-                                    buttonText='Save'
-                                    onPress={this.saveCarbRatio}
-                                    buttonTextSize={30}
-                                    textColor={textColor}
-                                    underlineColor={underlineColor}/>
-                <CalculatorInputRow inputLabel='Insulin sensitivity'
-                                    inputValue={this.state.isf}
-                                    onChangeText={this.onChangeISF}
-                                    fontSize={fontSize}
-                                    unitLabel={standard}
-                                    unitLabelFlex={unitLabelFlex}
-                                    buttonText='Save'
-                                    onPress={this.saveInsulinSensitivity}
-                                    buttonTextSize={30}
-                                    textColor={textColor}
-                                    underlineColor={underlineColor}/>
+                <CalculatorInputPanel standard={this.state.standard}
+                                      carbs={this.state.carbs}
+                                      bgl={this.state.bgl}
+                                      targetBgl={this.state.targetBgl}
+                                      cir={this.state.cir}
+                                      isf={this.state.isf}
+                                      onChangeCarbs={this.onChangeCarbs}
+                                      onChangeBGL={this.onChangeBGL}
+                                      onChangeTargetBGL={this.onChangeTargetBGL}
+                                      onChangeICR={this.onChangeICR}
+                                      onChangeISF={this.onChangeISF}
+                                      setCarbsFromLatestFood={this.setCarbsFromLatestFood}
+                                      setBGLFromLatestReading={this.setBGLFromLatestReading}
+                                      saveTargetBGL={this.saveTargetBGL}
+                                      saveCarbRatio={this.saveCarbRatio}
+                                      saveInsulinSensitivity={this.saveInsulinSensitivity}/>
 
                 <View style={styles.resultPanel}>
                     {bolusCalculated &&
                     <Text style={styles.resultText}>Bolus dose:&nbsp;<Text style={{color: 'royalblue'}}>{this.state.bolus}</Text>&nbsp;units</Text>}
                 </View>
 
-                <View style={{flex:1, flexDirection:'row', borderTopWidth: 2.25}}>
-                    <TouchableOpacity style={styles.calculateButton} onPress={this.calculateBolus}>
-                        <Text style={styles.calculateButtonText}>
-                            <Icon theme={{iconFamily: "Ionicons"}} name="md-calculator"/>&nbsp;Calculate Bolus
-                        </Text>
-                    </TouchableOpacity>
-                    <AddButton onPress={this.openAddModal}/>
-                </View>
+                <CalculatorButtonsPanel onPressCalculate={this.calculateBolus} onPressAdd={this.openAddModal}/>
 
                 <AddLogEntryModal opened={this.state.addModalOpen} finished={this.finishedAdding}/>
+                <BolusHelpModal helpOpen={this.state.helpModalOpen} onClose={this.closeHelpModal}/>
             </View>
         );
     }
 
     componentDidMount() {
         db.initBGLStandardListener(this.updateStandard);
+        emitter.addBolusHelpListener(this.openHelpModal)
     }
 
+    /**
+     * @param inputCarbs
+     */
     onChangeCarbs = (inputCarbs) => {
         this.setState({
             carbs: inputCarbs
         });
     };
 
+    /**
+     * @param inputBGL
+     */
     onChangeBGL = (inputBGL) => {
         this.setState({
             bgl: inputBGL
         });
     };
 
+    /**
+     * @param inputICR
+     */
     onChangeICR = (inputICR) => {
         this.setState({
             cir: inputICR
         });
     };
 
+    /**
+     * @param inputISF
+     */
     onChangeISF = (inputISF) => {
         this.setState({
             isf: inputISF
         });
     };
 
+    /**
+     * @param inputTargetBGL
+     */
     onChangeTargetBGL = (inputTargetBGL) => {
         this.setState({
             targetBgl: inputTargetBGL
@@ -194,6 +163,18 @@ export default class BolusScreen extends Component {
     finishedAdding = () => {
         this.setState({
             addModalOpen: false
+        });
+    };
+
+    closeHelpModal = () => {
+        this.setState({
+            helpModalOpen: false
+        });
+    };
+
+    openHelpModal = () => {
+        this.setState({
+            helpModalOpen: true
         });
     };
 }

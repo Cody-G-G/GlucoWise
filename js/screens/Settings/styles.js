@@ -8,7 +8,7 @@ export default StyleSheet.create({
         backgroundColor: 'aliceblue'
     },
     safeRangesPanel: {
-        backgroundColor: 'cornflowerblue'
+        backgroundColor: 'dimgray'
     },
     divider: {
         fontSize: 25,

@@ -11,6 +11,14 @@ class Emitter {
     addGraphsHelpListener(callback) {
         eventEmitter.addListener('GraphsHelp', callback);
     }
+
+    emitBolusHelpEvent() {
+        eventEmitter.emit('BolusHelp');
+    }
+
+    addBolusHelpListener(callback) {
+        eventEmitter.addListener('BolusHelp', callback);
+    }
 }
 
 export default new Emitter();

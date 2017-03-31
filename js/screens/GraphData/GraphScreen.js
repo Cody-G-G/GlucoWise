@@ -88,7 +88,7 @@ export default class GraphScreen extends Component {
                                         selectedTypes={[this.state.timeRange]}
                                         onPress={this.updateState}/>
                 </View>
-                <GraphsHelpModal helpOpen={this.state.helpOpen} onClose={this.closeHelpModal}/>
+                <GraphsHelpModal helpOpen={this.state.helpModalOpen} onClose={this.closeHelpModal}/>
             </View>
         );
     }
@@ -114,7 +114,7 @@ export default class GraphScreen extends Component {
 
     closeHelpModal = () => {
         this.setState({
-            helpOpen: false
+            helpModalOpen: false
         });
     };
 

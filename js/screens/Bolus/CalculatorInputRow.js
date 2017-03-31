@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import CustomInput from "../Readings/CustomInput";
+import CustomInput from "../../helpers/components/CustomInput";
 import styles from "./styles";
 
 export default class CalculatorInputRow extends Component {

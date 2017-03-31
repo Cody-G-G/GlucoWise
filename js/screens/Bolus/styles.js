@@ -45,5 +45,10 @@ export default StyleSheet.create({
         borderWidth: 1,
         justifyContent: 'center',
         backgroundColor: 'royalblue'
+    },
+    bottomPanel: {
+        flex: 1,
+        flexDirection: 'row',
+        borderTopWidth: 2.25
     }
 });

@@ -4,11 +4,11 @@ import {View, Text, StyleSheet} from 'react-native';
 import LogList from "./LogList";
 import db from "../../data/database";
 import date from "../../helpers/util/date";
-import CustomDatePicker from "./CustomDatePicker";
+import CustomDatePicker from "../../helpers/components/CustomDatePicker";
 import styles from "./styles";
 import log from "../../helpers/util/logger";
-import AddButton from "./AddButton";
-import AddLogEntryModal from "./AddLogEntryModal";
+import AddButton from "../../helpers/components/AddButton";
+import AddLogEntryModal from "../../helpers/components/AddLogEntryModal";
 import ToggleButtonsGroup from "../../helpers/components/ToggleButtonsGroup";
 
 export default class LogbookScreen extends Component {

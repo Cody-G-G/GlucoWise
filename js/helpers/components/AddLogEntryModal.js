@@ -1,16 +1,16 @@
 import Modal from 'react-native-modalbox';
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Alert} from 'react-native';
-import isNumberValid from "../../helpers/util/inputValidator";
-import log from '../../helpers/util/logger';
-import dateUtil from '../../helpers/util/date';
+import isNumberValid from "../util/inputValidator";
+import log from '../util/logger';
+import dateUtil from '../util/date';
 import styles from './styles';
 import db from '../../data/database';
 import {ListItem} from 'native-base';
-import processBGLValue from "../../helpers/util/readingProcessor";
+import processBGLValue from "../util/readingProcessor";
 import AddReadingModalPanel from "./AddReadingModalPanel";
 import AddFoodModalPanel from "./AddFoodModalPanel";
-import ToggleButtonsGroup from "../../helpers/components/ToggleButtonsGroup";
+import ToggleButtonsGroup from "./ToggleButtonsGroup";
 
 export default class AddLogEntryModal extends Component {
     constructor(props) {
@@ -36,16 +36,16 @@ export default class AddLogEntryModal extends Component {
     render() {
         log("Rendering AddLogEntryModal");
         return (
-            <Modal style={styles.modal}
+            <Modal style={styles.logModal}
                    position='center'
                    ref='modal'
                    isOpen={this.props.opened}
                    backButtonClose={true}
                    animationDuration={300}
                    onClosed={this.props.finished}>
-                <View style={styles.modalMainPanel}>
+                <View style={styles.logModalMainPanel}>
                     <ListItem itemDivider>
-                        <Text style={styles.modalHeaderText}>New Log Entry</Text>
+                        <Text style={styles.logModalHeaderText}>New Log Entry</Text>
                     </ListItem>
 
                     <ToggleButtonsGroup fontSize={25}
@@ -77,9 +77,9 @@ export default class AddLogEntryModal extends Component {
                     }
                 </View>
 
-                <View style={styles.modalBottomPanel}>
-                    <TouchableOpacity style={styles.addModalButton} onPress={this.saveAndClose}>
-                        <Text style={styles.addModalButtonText}>Add</Text>
+                <View style={styles.logModalBottomPanel}>
+                    <TouchableOpacity style={styles.logModalAddButton} onPress={this.saveAndClose}>
+                        <Text style={styles.logModalAddButtonText}>Add</Text>
                     </TouchableOpacity>
                 </View>
 

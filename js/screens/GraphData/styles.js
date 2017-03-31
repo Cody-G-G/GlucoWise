@@ -29,42 +29,5 @@ export default StyleSheet.create({
     noDataText: {
         fontSize: 45,
         fontWeight: 'bold'
-    },
-    modalMainPanel: {
-        flex: 1,
-    },
-    modalHeaderText: {
-        alignSelf: 'center',
-        fontSize: 30,
-        fontWeight: 'bold'
-    },
-    helpModal: {
-        height: 450,
-        width: 350,
-        borderWidth: 2,
-        backgroundColor: 'aliceblue'
-    },
-    helpSection: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingLeft: 10,
-        paddingRight: 10,
-        paddingBottom: 10
-    },
-    helpSectionTitle: {
-        color: 'black',
-        fontSize: 30,
-        fontWeight: 'bold'
-    },
-    emphasizedHelpText: {
-        color: 'royalblue',
-        fontSize: 18,
-        fontWeight: 'bold'
-    },
-    normalHelpText: {
-        color: 'dimgray',
-        fontSize: 16,
-        fontWeight: 'normal'
     }
 });

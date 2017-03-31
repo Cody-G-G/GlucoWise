@@ -29,14 +29,16 @@ export default class App extends Component {
                 <Scene key="drawer" component={NavigationDrawer}>
                     <Scene key="main" tabs>
                         <Scene key="screenConnection" title="Connection" hideTabBar component={ConnectionScreen} type={ActionConst.REFRESH} titleStyle={styles.sceneTitle} initial/>
-                        <Scene key="screenGraph" title="Graphs" hideTabBar component={GraphScreen} type={ActionConst.REFRESH}
+                        <Scene key="screenGraph" title="Graphs" hideTabBar component={GraphScreen} type={ActionConst.REFRESH} titleStyle={styles.sceneTitle}
                                rightButtonStyle={{justifyContent:'center', alignItems:'center'}}
                                rightButtonImage={require('../../assets/help.png')}
-                               onRight={emitHelpEvent}
-                               titleStyle={styles.sceneTitle}/>
+                               onRight={emitGraphsHelpEvent}/>
                         <Scene key="screenLogbook" title="Logbook" hideTabBar component={LogbookScreen} type={ActionConst.REFRESH} titleStyle={styles.sceneTitle}/>
                         <Scene key="screenSettings" title="Settings" hideTabBar component={SettingsScreen} type={ActionConst.REFRESH} titleStyle={styles.sceneTitle}/>
-                        <Scene key="screenBolus" title="Bolus Calculator" hideTabBar component={BolusScreen} type={ActionConst.REFRESH} titleStyle={styles.sceneTitle}/>
+                        <Scene key="screenBolus" title="Bolus Calculator" hideTabBar component={BolusScreen} type={ActionConst.REFRESH} titleStyle={styles.sceneTitle}
+                               rightButtonStyle={{justifyContent:'center', alignItems:'center'}}
+                               rightButtonImage={require('../../assets/help.png')}
+                               onRight={emitBolusHelpEvent}/>
                     </Scene>
                 </Scene>
             </Router>
@@ -44,8 +46,12 @@ export default class App extends Component {
     }
 }
 
-const emitHelpEvent = () => {
+const emitGraphsHelpEvent = () => {
     emitter.emitGraphsHelpEvent();
+};
+
+const emitBolusHelpEvent = () => {
+    emitter.emitBolusHelpEvent();
 };
 
 const openDrawer = () => {

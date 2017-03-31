@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import styles from "./styles";
-import ToggleButtonsGroup from "../../helpers/components/ToggleButtonsGroup";
-import {readingUnitStandards} from "../../helpers/util/constants";
+import ToggleButtonsGroup from "./ToggleButtonsGroup";
+import {readingUnitStandards} from "../util/constants";
 import CustomDateInput from "./CustomDateInput";
 import CustomInput from "./CustomInput";
 

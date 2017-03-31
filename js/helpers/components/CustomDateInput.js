@@ -20,7 +20,7 @@ export default class CustomDateInput extends Component {
         return (
             <View style={inputRowStyle}>
                 <Text style={labelStyle}>{requiredAsterisk}Date: </Text>
-                <CustomDatePicker style={styles.modalDatePicker}
+                <CustomDatePicker style={styles.logModalDatePicker}
                                   backgroundColor='royalblue'
                                   minDate={"31-08-1994"}
                                   type={'datetime'}
