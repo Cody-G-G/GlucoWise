@@ -55,51 +55,24 @@ const database = {
                 insulinSensitivity: ''
             });
             initDataSyncSettings && realm.create('DataSyncSettings', {syncEnabledGFit: false});
-            global.DEBUG && this.addMockData();
+
+            if (global.DEBUG) {
+                testFunctions.clearReadingsAndFoodData();
+                testFunctions.addMockData();
+                // testFunctions.addStressTestMockData();
+                // testFunctions.benchmarkJoinObjectsInDateRange();
+            }
         });
+        this.initCache();
+    },
 
+    initCache(){
         this.standard = this.getBGLStandard();
+        this.latestReadingValue = this.getLatestReadingValue();
+        this.lastConsumedItem = this.getLastConsumedItem();
+        this.initBGLReadingListener(() => this.latestReadingValue = this.getLatestReadingValue());
+        this.initConsumedFoodItemListener(() => this.lastConsumedItem = this.getLastConsumedItem());
         this.initBGLStandardListener(() => this.standard = this.getBGLStandard());
-    },
-
-    addMockData() {
-        realm.delete(realm.objects('BGLReading'));
-        realm.delete(realm.objects('ConsumedFoodItem'));
-
-        const now = Date.now();
-
-        this.createBGLReading(uuid(), '50', dateUtil.hoursBeforeMillis(20, now));
-        this.createBGLReading(uuid(), '210', dateUtil.hoursBeforeMillis(10, now));
-        this.createBGLReading(uuid(), '90', dateUtil.hoursBeforeMillis(5, now));
-        this.createBGLReading(uuid(), '140', dateUtil.minutesBeforeMillis(70, now));
-        this.createBGLReading(uuid(), '155', dateUtil.minutesBeforeMillis(65, now));
-        this.createBGLReading(uuid(), '70', dateUtil.minutesBeforeMillis(62, now));
-        this.createBGLReading(uuid(), '90', dateUtil.minutesBeforeMillis(55, now));
-        this.createBGLReading(uuid(), '150', dateUtil.minutesBeforeMillis(20, now));
-        this.createBGLReading(uuid(), '170', dateUtil.minutesBeforeMillis(15, now));
-        this.createBGLReading(uuid(), '180', dateUtil.minutesBeforeMillis(13, now));
-        this.createBGLReading(uuid(), '180', dateUtil.minutesBeforeMillis(9.68, now));
-        this.createBGLReading(uuid(), '200', dateUtil.minutesBeforeMillis(8, now));
-
-        this.createConsumedFoodItem(uuid(), 'Roasted Peanuts', dateUtil.minutesBeforeMillis(10, now), '550', '55', '10', '23', '125');
-        this.createConsumedFoodItem(uuid(), 'Cashews', dateUtil.minutesBeforeMillis(25, now), '400', '35', '10', '23', '80');
-        this.createConsumedFoodItem(uuid(), 'Olives', dateUtil.minutesBeforeMillis(15, now), '150', '20', '', '', '');
-        this.createConsumedFoodItem(uuid(), 'Cheese & Ham Sandwich', dateUtil.minutesBeforeMillis(14, now), '375', '20', '', '', '');
-        this.createConsumedFoodItem(uuid(), 'Sweet & Sour Chicken', dateUtil.hoursBeforeMillis(5, now), '450', '20', '', '', '');
-        this.createConsumedFoodItem(uuid(), 'Chicken Wrap', dateUtil.hoursBeforeMillis(9, now), '500', '20', '', '', '');
-        this.createConsumedFoodItem(uuid(), 'Oreo Biscuits', dateUtil.hoursBeforeMillis(19, now), '200', '20', '', '', '');
-        this.createConsumedFoodItem(uuid(), 'Cheese & Ham Sandwich', dateUtil.daysBeforeMillis(3, now), '375', '20', '', '', '');
-        this.createConsumedFoodItem(uuid(), 'Cashews', dateUtil.daysBeforeMillis(3, now), '400', '35', '10', '23', '80');
-        this.createConsumedFoodItem(uuid(), 'Sweet & Sour Chicken', dateUtil.daysBeforeMillis(5, now), '450', '20', '', '', '');
-
-        this.addStressTestMockData()
-    },
-
-    addStressTestMockData() {
-        for (let i = 0; i < 10000; i++) {
-            this.createBGLReading(uuid(), '200', dateUtil.hoursBeforeMillis(23, Date.now()));
-            this.createConsumedFoodItem(uuid(), 'STRESS TEST ' + i, dateUtil.hoursBeforeMillis(23, Date.now()), '500', '50', '', '', '');
-        }
     },
 
     /**
@@ -169,25 +142,33 @@ const database = {
         return this.getDbObjectsInDateRange(dbObjects.foodItem, startDate, endDate);
     },
 
+
     /**
      * @param dbObjectName
      * @param startDate
      * @param endDate
-     * @returns {Array}
      */
     getDbObjectsInDateRange(dbObjectName, startDate, endDate) {
         log("Getting " + dbObjectName + " between " + startDate + " and " + endDate);
-        let filteredObjects = [];
-        realm.objects(dbObjectName)
+        return realm.objects(dbObjectName)
             .filtered('date < $0 AND date > $1',
                 dateUtil.toDateFromDateString(endDate, 23, 59, 59, 999),
                 dateUtil.toDateFromDateString(startDate, 0, 0, 0, 0))
-            .sorted('date', true)
-            .forEach((object) => {
-                filteredObjects.push(this.constructObjectFromResult(object, dbObjectName));
-            });
+            .sorted('date', true);
+    },
 
-        return filteredObjects;
+    /**
+     * @param dbObjectName1
+     * @param dbObjectName2
+     * @param startDate
+     * @param endDate
+     * @returns {Array.<T>}
+     */
+    getJoinDbObjectsInDateRange(dbObjectName1, dbObjectName2, startDate, endDate) {
+        return [
+            ...this.getDbObjectsInDateRange(dbObjectName1, startDate, endDate).map(obj => this.constructObjectFromResult(obj, dbObjectName1)),
+            ...this.getDbObjectsInDateRange(dbObjectName2, startDate, endDate).map(obj => this.constructObjectFromResult(obj, dbObjectName2))]
+            .sort((a, b) => a.date - b.date);
     },
 
     getConsumedFoodItemsLast24h() {
@@ -363,15 +344,13 @@ const database = {
     /**
      * @param dbObjectName
      * @param dateConditionFunc
-     * @returns {Array}
+     * @returns {Array.<T>|boolean|*}
      */
     getDbObjectsForCondition(dbObjectName, dateConditionFunc) {
         log("Getting " + dbObjectName + " for " + dateConditionFunc.name);
-        let filteredObjects = [];
-        realm.objects(dbObjectName).sorted('date', true).forEach((object) => {
-            dateConditionFunc(object.date, Date.now()) && filteredObjects.push(this.constructObjectFromResult(object, dbObjectName));
-        });
-        return filteredObjects;
+        return realm.objects(dbObjectName).sorted('date', true)
+            .map(obj => this.constructObjectFromResult(obj, dbObjectName))
+            .filter(obj => dateConditionFunc(obj.date, Date.now()));
     },
 
     getBGLSafeRange() {
@@ -487,5 +466,124 @@ function existChanges(changes) {
 
     return (isModification || isDeletion || isInsertion);
 }
+
+const testFunctions = {
+    clearReadingsAndFoodData() {
+        realm.delete(realm.objects('BGLReading'));
+        realm.delete(realm.objects('ConsumedFoodItem'));
+    },
+
+    addMockData() {
+        const now = Date.now();
+
+        database.createBGLReading(uuid(), '50', dateUtil.hoursBeforeMillis(20, now));
+        database.createBGLReading(uuid(), '210', dateUtil.hoursBeforeMillis(10, now));
+        database.createBGLReading(uuid(), '90', dateUtil.hoursBeforeMillis(5, now));
+        database.createBGLReading(uuid(), '140', dateUtil.minutesBeforeMillis(70, now));
+        database.createBGLReading(uuid(), '155', dateUtil.minutesBeforeMillis(65, now));
+        database.createBGLReading(uuid(), '70', dateUtil.minutesBeforeMillis(62, now));
+        database.createBGLReading(uuid(), '90', dateUtil.minutesBeforeMillis(55, now));
+        database.createBGLReading(uuid(), '150', dateUtil.minutesBeforeMillis(20, now));
+        database.createBGLReading(uuid(), '170', dateUtil.minutesBeforeMillis(15, now));
+        database.createBGLReading(uuid(), '180', dateUtil.minutesBeforeMillis(13, now));
+        database.createBGLReading(uuid(), '180', dateUtil.minutesBeforeMillis(9.68, now));
+        database.createBGLReading(uuid(), '200', dateUtil.minutesBeforeMillis(8, now));
+
+        database.createConsumedFoodItem(uuid(), 'Roasted Peanuts', dateUtil.minutesBeforeMillis(10, now), '550', '55', '10', '23', '125');
+        database.createConsumedFoodItem(uuid(), 'Cashews', dateUtil.minutesBeforeMillis(25, now), '400', '35', '10', '23', '80');
+        database.createConsumedFoodItem(uuid(), 'Olives', dateUtil.minutesBeforeMillis(15, now), '150', '20', '', '', '');
+        database.createConsumedFoodItem(uuid(), 'Cheese & Ham Sandwich', dateUtil.minutesBeforeMillis(14, now), '375', '20', '', '', '');
+        database.createConsumedFoodItem(uuid(), 'Sweet & Sour Chicken', dateUtil.hoursBeforeMillis(5, now), '450', '20', '', '', '');
+        database.createConsumedFoodItem(uuid(), 'Chicken Wrap', dateUtil.hoursBeforeMillis(9, now), '500', '20', '', '', '');
+        database.createConsumedFoodItem(uuid(), 'Oreo Biscuits', dateUtil.hoursBeforeMillis(19, now), '200', '20', '', '', '');
+        database.createConsumedFoodItem(uuid(), 'Cheese & Ham Sandwich', dateUtil.daysBeforeMillis(3, now), '375', '20', '', '', '');
+        database.createConsumedFoodItem(uuid(), 'Cashews', dateUtil.daysBeforeMillis(3, now), '400', '35', '10', '23', '80');
+        database.createConsumedFoodItem(uuid(), 'Sweet & Sour Chicken', dateUtil.daysBeforeMillis(5, now), '450', '20', '', '', '');
+    },
+
+    addStressTestMockData() {
+        for (let i = 0; i < 7300; i++) {
+            database.createBGLReading(uuid(), '200', dateUtil.hoursBeforeMillis(22, Date.now()));
+            database.createConsumedFoodItem(uuid(), 'STRESS TEST ' + i, dateUtil.hoursBeforeMillis(22, Date.now()), '500', '50', '', '', '');
+        }
+        for (let i = 0; i < 18250; i++) {
+            database.createBGLReading(uuid(), '200', dateUtil.hoursBeforeMillis(23, Date.now()));
+        }
+    },
+
+    benchmarkJoinObjectsInDateRange() {
+        const dbObjectName1 = dbObjects.reading;
+        const dbObjectName2 = dbObjects.foodItem;
+        const startDate = new Date(0);
+        const endDate = new Date();
+
+        const start = Date.now();
+        [].concat.apply([], [
+            Object.values(database.getDbObjectsInDateRange(dbObjectName1, startDate, endDate)),
+            Object.values(database.getDbObjectsInDateRange(dbObjectName2, startDate, endDate))])
+            .sort((a, b) => a.date - b.date);
+        log("Got data with - concat / Object.values - method in: " + ((Date.now() - start) / 1000) + " seconds");
+
+        const start2 = Date.now();
+        [].concat.apply([], [
+            database.getDbObjectsInDateRange(dbObjectName1, startDate, endDate).map(obj => database.constructObjectFromResult(obj, dbObjectName1)),
+            database.getDbObjectsInDateRange(dbObjectName2, startDate, endDate).map(obj => database.constructObjectFromResult(obj, dbObjectName2))])
+            .sort((a, b) => a.date - b.date);
+        log("Got data with - concat / map - method in: " + ((Date.now() - start2) / 1000) + " seconds");
+
+        const start3 = Date.now();
+        const aux31 = [];
+        const aux32 = [];
+        database.getDbObjectsInDateRange(dbObjectName1, startDate, endDate).forEach(obj => aux31.push(database.constructObjectFromResult(obj, dbObjectName1)));
+        database.getDbObjectsInDateRange(dbObjectName2, startDate, endDate).forEach(obj => aux32.push(database.constructObjectFromResult(obj, dbObjectName2)));
+        [].concat.apply([], [aux31, aux32]).sort((a, b) => a.date - b.date);
+        log("Got data with - concat / push - method in: " + ((Date.now() - start3) / 1000) + " seconds");
+
+        const start4 = Date.now();
+        const objects41 = database.getDbObjectsInDateRange(dbObjectName1, startDate, endDate);
+        const objects42 = database.getDbObjectsInDateRange(dbObjectName2, startDate, endDate);
+        const aux41 = [objects41.length];
+        const aux42 = [objects42.length];
+        objects41.forEach(obj => aux41.push(database.constructObjectFromResult(obj, dbObjectName1)));
+        objects42.forEach(obj => aux42.push(database.constructObjectFromResult(obj, dbObjectName2)));
+        [].concat.apply([], [aux41, aux42]).sort((a, b) => a.date - b.date);
+        log("Got data with - concat / push (pre-allocated) - method in: " + ((Date.now() - start4) / 1000) + " seconds");
+
+        log("--------------------------------------------------");
+
+        const start5 = Date.now();
+        [
+            ...Object.values(database.getDbObjectsInDateRange(dbObjectName1, startDate, endDate)),
+            ...Object.values(database.getDbObjectsInDateRange(dbObjectName2, startDate, endDate))]
+            .sort((a, b) => a.date - b.date);
+        log("Got data with - spread / Object.values - method in: " + ((Date.now() - start5) / 1000) + " seconds");
+
+        const start6 = Date.now();
+        [
+            ...database.getDbObjectsInDateRange(dbObjectName1, startDate, endDate).map(obj => database.constructObjectFromResult(obj, dbObjectName1)),
+            ...database.getDbObjectsInDateRange(dbObjectName2, startDate, endDate).map(obj => database.constructObjectFromResult(obj, dbObjectName2))
+        ].sort((a, b) => a.date - b.date);
+        log("Got data with - spread / map - method in: " + ((Date.now() - start6) / 1000) + " seconds");
+
+        const start7 = Date.now();
+        const aux71 = [];
+        const aux72 = [];
+        database.getDbObjectsInDateRange(dbObjectName1, startDate, endDate).forEach(obj => aux71.push(database.constructObjectFromResult(obj, dbObjectName1)));
+        database.getDbObjectsInDateRange(dbObjectName2, startDate, endDate).forEach(obj => aux72.push(database.constructObjectFromResult(obj, dbObjectName2)));
+        [...aux71, ...aux72].sort((a, b) => a.date - b.date);
+        log("Got data with - spread / push - method in: " + ((Date.now() - start7) / 1000) + " seconds");
+
+        const start8 = Date.now();
+        const objects81 = database.getDbObjectsInDateRange(dbObjectName1, startDate, endDate);
+        const objects82 = database.getDbObjectsInDateRange(dbObjectName2, startDate, endDate);
+        const aux81 = [objects81.length];
+        const aux82 = [objects82.length];
+        objects81.forEach(obj => aux81.push(database.constructObjectFromResult(obj, dbObjectName1)));
+        objects82.forEach(obj => aux82.push(database.constructObjectFromResult(obj, dbObjectName2)));
+        [...aux81, ...aux82].sort((a, b) => a.date - b.date);
+        log("Got data with - spread / push (pre-allocated) - method in: " + ((Date.now() - start8) / 1000) + " seconds");
+
+    }
+};
 
 export default database;

@@ -113,13 +113,13 @@ export default class BolusScreen extends Component {
 
     setCarbsFromLatestFood = () => {
         this.setState({
-            carbs: db.getLastConsumedItem().carbohydrates
+            carbs: db.lastConsumedItem.carbohydrates
         });
     };
 
     setBGLFromLatestReading = () => {
         this.setState({
-            bgl: db.getLatestReadingValue()
+            bgl: db.latestReadingValue
         });
     };
 

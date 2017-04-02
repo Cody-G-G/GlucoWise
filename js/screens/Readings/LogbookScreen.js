@@ -10,6 +10,7 @@ import log from "../../helpers/util/logger";
 import AddButton from "../../helpers/components/AddButton";
 import AddLogEntryModal from "../../helpers/components/AddLogEntryModal";
 import ToggleButtonsGroup from "../../helpers/components/ToggleButtonsGroup";
+import {dbObjects} from "../../helpers/util/constants";
 
 export default class LogbookScreen extends Component {
     constructor(props) {
@@ -101,15 +102,12 @@ export default class LogbookScreen extends Component {
         let data = [];
 
         if (logModes.Readings && logModes.Food) {
-            const glucoseData = db.getBGLReadingsInDateRange(startDate, endDate);
-            const foodData = db.getConsumedFoodItemsInDateRange(startDate, endDate);
-            data = [...glucoseData, ...foodData].sort((a, b) => b.date - a.date);
+            data = db.getJoinDbObjectsInDateRange(dbObjects.reading, dbObjects.foodItem, startDate, endDate)
         } else if (logModes.Readings) {
             data = db.getBGLReadingsInDateRange(startDate, endDate);
         } else if (logModes.Food) {
             data = db.getConsumedFoodItemsInDateRange(startDate, endDate);
         }
-
         return data;
     };
 
