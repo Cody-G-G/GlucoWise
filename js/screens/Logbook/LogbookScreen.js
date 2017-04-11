@@ -4,13 +4,13 @@ import {View, Text, StyleSheet} from 'react-native';
 import LogList from "./LogList";
 import db from "../../data/database";
 import date from "../../helpers/util/date";
-import CustomDatePicker from "../../helpers/components/CustomDatePicker";
 import styles from "./styles";
 import log from "../../helpers/util/logger";
 import AddButton from "../../helpers/components/AddButton";
 import AddLogEntryModal from "../../helpers/components/AddLogEntryModal";
 import ToggleButtonsGroup from "../../helpers/components/ToggleButtonsGroup";
 import {dbObjects} from "../../helpers/util/constants";
+import DateRangePanel from "./DateRangePanel";
 
 export default class LogbookScreen extends Component {
     constructor(props) {
@@ -37,29 +37,15 @@ export default class LogbookScreen extends Component {
         log("Rendering LogbookScreen");
         const modeTypes = Object.keys(this.state.logModes);
         const selectedModeTypes = modeTypes.filter(mode => this.state.logModes[mode]);
-        const leftDatePickerStyle = StyleSheet.flatten([styles.customDatePicker, {borderRightWidth: 2}]);
-        const rightDatePickerStyle = StyleSheet.flatten([styles.customDatePicker, {borderLeftWidth: 2}]);
+
         return (
             <View style={styles.screenContainer}>
                 <View style={styles.screenTopPanel}>
-                    <View style={styles.dateRangePickers}>
-                        <CustomDatePicker style={leftDatePickerStyle}
-                                          backgroundColor='dimgray'
-                                          minDate={"31-08-1994"}
-                                          type={'date'}
-                                          maxDate={this.state.endDate}
-                                          date={this.state.startDate}
-                                          handleDateChange={this.updateStartDate}/>
-                        <Text style={styles.dateRangeSeparatorText}> to </Text>
-                        <CustomDatePicker style={rightDatePickerStyle}
-                                          backgroundColor='dimgray'
-                                          minDate={this.state.startDate}
-                                          type={'date'}
-                                          maxDate={this.today}
-                                          date={this.state.endDate}
-                                          handleDateChange={this.updateEndDate}/>
-                    </View>
-
+                    <DateRangePanel startDate={this.state.startDate}
+                                    endDate={this.state.endDate}
+                                    updateStartDate={this.updateStartDate}
+                                    updateEndDate={this.updateEndDate}
+                                    today={this.today}/>
                     <AddButton onPress={this.openAddModal}/>
                 </View>
 
