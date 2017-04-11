@@ -1,4 +1,5 @@
 'use strict';
+//function used from: https://stackoverflow.com/questions/3745666/how-to-convert-from-hex-to-ascii-in-javascript
 export default (hexArg) => {
     const hexArgStr = hexArg.toString();
     let resultStr = '';
