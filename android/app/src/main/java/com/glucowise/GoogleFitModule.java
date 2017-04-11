@@ -25,25 +25,27 @@ import com.google.android.gms.fitness.result.DataReadResult;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class GoogleFitModule extends ReactContextBaseJavaModule {
 
     private GoogleApiClient mClient;
     private ReactApplicationContext reactContext;
+    private GoogleFitConnectionEventsHandler connectionEventsHandler;
+    private GoogleFitActivityEventListener activityEventListener;
     public static final String NAME = "GoogleFit";
     public static final int REQUEST_OAUTH = 656;
     private final String LOG_TAG = NAME;
-    GoogleFitConnectionEventsHandler connectionEventsHandler;
-    GoogleFitActivityEventListener activityEventListener;
-    HashMap<String, TimeUnit> timeUnits;
+    private final Map<String, Object> constants = new HashMap<>();
+    private final Map<String, TimeUnit> timeUnits = new HashMap<>();
 
     public GoogleFitModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
-        this.timeUnits = new HashMap<>();
         for (TimeUnit unit : TimeUnit.values()) {
             timeUnits.put(unit.name(), unit);
+            constants.put(unit.name(), unit.name());
         }
     }
 
@@ -52,19 +54,24 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
         return NAME;
     }
 
+    @Override
+    public Map<String, Object> getConstants() {
+        return constants;
+    }
+
     @ReactMethod
     public void steps(Double from, Double to, int bucketDuration, String bucketUnit, Promise promise) {
-        getStepsData(from.longValue(), to.longValue(), bucketDuration, timeUnits.get(bucketUnit.toUpperCase()), promise);
+        getStepsData(from, to, bucketDuration, bucketUnit, promise);
     }
 
     @ReactMethod
     public void caloriesExpended(Double from, Double to, int bucketDuration, String bucketUnit, Promise promise) {
-        getCaloriesExpendedData(from.longValue(), to.longValue(), bucketDuration, timeUnits.get(bucketUnit.toUpperCase()), promise);
+        getCaloriesExpendedData(from, to, bucketDuration, bucketUnit, promise);
     }
 
     @ReactMethod
     public void weight(Double from, Double to, int bucketDuration, String bucketUnit, Promise promise) {
-        getWeightData(from.longValue(), to.longValue(), bucketDuration, timeUnits.get(bucketUnit.toUpperCase()), promise);
+        getWeightData(from, to, bucketDuration, bucketUnit, promise);
     }
 
     @ReactMethod
@@ -120,26 +127,26 @@ public class GoogleFitModule extends ReactContextBaseJavaModule {
         activityEventListener.setGoogleApiClient(mClient);
     }
 
-    private void getCaloriesExpendedData(long from, long to, int bucketDuration, final TimeUnit bucketUnit, final Promise promise) {
+    private void getCaloriesExpendedData(Double from, Double to, int bucketDuration, final String bucketUnit, final Promise promise) {
         DataReadRequest readRequest = constructDataReadRequest(from, to, bucketDuration, bucketUnit, DataType.TYPE_CALORIES_EXPENDED, DataType.AGGREGATE_CALORIES_EXPENDED);
         resolvePromiseWithReadData(readRequest, promise, DataType.AGGREGATE_CALORIES_EXPENDED, Field.FIELD_CALORIES);
     }
 
-    private void getStepsData(long from, long to, int bucketDuration, final TimeUnit bucketUnit, final Promise promise) {
+    private void getStepsData(Double from, Double to, int bucketDuration, final String bucketUnit, final Promise promise) {
         DataReadRequest readRequest = constructDataReadRequest(from, to, bucketDuration, bucketUnit, DataType.TYPE_STEP_COUNT_DELTA, DataType.AGGREGATE_STEP_COUNT_DELTA);
         resolvePromiseWithReadData(readRequest, promise, DataType.AGGREGATE_STEP_COUNT_DELTA, Field.FIELD_STEPS);
     }
 
-    private void getWeightData(long from, long to, int bucketDuration, final TimeUnit bucketUnit, final Promise promise) {
+    private void getWeightData(Double from, Double to, int bucketDuration, final String bucketUnit, final Promise promise) {
         DataReadRequest readRequest = constructDataReadRequest(from, to, bucketDuration, bucketUnit, DataType.TYPE_WEIGHT, DataType.AGGREGATE_WEIGHT_SUMMARY);
         resolvePromiseWithReadData(readRequest, promise, DataType.AGGREGATE_WEIGHT_SUMMARY, Field.FIELD_AVERAGE);
     }
 
-    private DataReadRequest constructDataReadRequest(long from, long to, int bucketDuration, TimeUnit bucketUnit, DataType dataSource, DataType outputDataType) {
+    private DataReadRequest constructDataReadRequest(Double from, Double to, int bucketDuration, String bucketUnit, DataType dataSource, DataType outputDataType) {
         return new DataReadRequest.Builder()
                 .aggregate(dataSource, outputDataType)
-                .setTimeRange(from, to, TimeUnit.MILLISECONDS)
-                .bucketByTime(bucketDuration, bucketUnit)
+                .setTimeRange(from.longValue(), to.longValue(), TimeUnit.MILLISECONDS)
+                .bucketByTime(bucketDuration, timeUnits.get(bucketUnit))
                 .enableServerQueries()
                 .build();
     }
