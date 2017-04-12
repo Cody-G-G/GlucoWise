@@ -16,8 +16,16 @@ class Emitter {
         eventEmitter.emit('BolusHelp');
     }
 
+    emitSettingsInfoEvent() {
+        eventEmitter.emit('SettingsInfo');
+    }
+
     addBolusHelpListener(callback) {
         eventEmitter.addListener('BolusHelp', callback);
+    }
+
+    addSettingsInfoListener(callback) {
+        eventEmitter.addListener('SettingsInfo', callback);
     }
 }
 

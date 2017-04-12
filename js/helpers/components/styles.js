@@ -122,7 +122,7 @@ export default StyleSheet.create({
         borderWidth: 2,
         backgroundColor: 'aliceblue'
     },
-    helpSection: {
+    modalSection: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
@@ -130,24 +130,24 @@ export default StyleSheet.create({
         paddingRight: 10,
         paddingBottom: 10
     },
-    helpSectionTitle: {
+    modalSectionTitle: {
         color: 'black',
         fontSize: 30,
         fontWeight: 'bold',
         textAlign: 'center',
         paddingBottom: 5
     },
-    emphasizedHelpText: {
+    emphasizedModalText: {
         color: 'royalblue',
         fontSize: 18,
         fontWeight: 'bold'
     },
-    alertHelpText: {
+    alertModalText: {
         color: 'crimson',
         fontSize: 18,
         fontWeight: 'bold'
     },
-    normalHelpText: {
+    normalModalText: {
         color: 'dimgray',
         fontSize: 16,
         fontWeight: 'normal'

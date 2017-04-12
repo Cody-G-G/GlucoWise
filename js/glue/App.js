@@ -34,7 +34,10 @@ export default class App extends Component {
                                rightButtonImage={require('../../assets/help.png')}
                                onRight={emitGraphsHelpEvent}/>
                         <Scene key="screenLogbook" title="Logbook" hideTabBar component={LogbookScreen} type={ActionConst.REFRESH} titleStyle={styles.sceneTitle}/>
-                        <Scene key="screenSettings" title="Settings" hideTabBar component={SettingsScreen} type={ActionConst.REFRESH} titleStyle={styles.sceneTitle}/>
+                        <Scene key="screenSettings" title="Settings" hideTabBar component={SettingsScreen} type={ActionConst.REFRESH} titleStyle={styles.sceneTitle}
+                               rightButtonStyle={{justifyContent:'center', alignItems:'center'}}
+                               rightButtonImage={require('../../assets/info.png')}
+                               onRight={emitSettingsInfoEvent}/>
                         <Scene key="screenBolus" title="Bolus Calculator" hideTabBar component={BolusScreen} type={ActionConst.REFRESH} titleStyle={styles.sceneTitle}
                                rightButtonStyle={{justifyContent:'center', alignItems:'center'}}
                                rightButtonImage={require('../../assets/help.png')}
@@ -52,6 +55,10 @@ const emitGraphsHelpEvent = () => {
 
 const emitBolusHelpEvent = () => {
     emitter.emitBolusHelpEvent();
+};
+
+const emitSettingsInfoEvent = () => {
+    emitter.emitSettingsInfoEvent();
 };
 
 const openDrawer = () => {

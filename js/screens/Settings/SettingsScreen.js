@@ -1,9 +1,9 @@
 'use strict';
-import React, {Component} from 'react';
-import {View, Text, TextInput, TouchableOpacity, StyleSheet, Image} from 'react-native';
-import {ListItem} from 'native-base';
+import React, {Component} from 'react'; // this is from a 3rd party dependency NPM module, "react"
+import {View, Text, TextInput, TouchableOpacity, StyleSheet, Image} from 'react-native'; // this is from a 3rd party dependency NPM module, "react-native"
+import {ListItem} from 'native-base'; // this is from a 3rd party dependency NPM module, "native-base"
 import styles from "./styles";
-import SafeRangesRowPanel from "./SafeRangesRowPanel";
+import SafeRangeRowPanel from "./SafeRangeRowPanel";
 import ToggleButton from "../../helpers/components/ToggleButton";
 import ToggleButtonsGroup from "../../helpers/components/ToggleButtonsGroup";
 import {readingUnitStandards} from "../../helpers/util/constants";
@@ -11,6 +11,8 @@ import toast from "../../helpers/util/toast";
 import db from "../../data/database";
 import log from "../../helpers/util/logger";
 import gFit from "../../data/googleFit";
+import AboutModal from "./AboutModal";
+import emitter from "../../helpers/util/eventEmitter";
 
 export default class SettingsScreen extends Component {
     constructor(props) {
@@ -22,6 +24,7 @@ export default class SettingsScreen extends Component {
             safeRangeMin: safeRange.minValue,
             safeRangeMax: safeRange.maxValue,
             gFitConnected: db.isGoogleFitSyncEnabled(),
+            isInfoOpen: false
         };
         this.buttonTypes = {
             on: "On",
@@ -38,19 +41,20 @@ export default class SettingsScreen extends Component {
             <View style={styles.settingsScreen}>
                 <View style={styles.safeRangesPanel}>
                     <ListItem itemDivider><Text style={styles.divider}>Safe Ranges</Text></ListItem>
-                    <SafeRangesRowPanel inputLabel={'Min:'}
-                                        inputValue={this.state.safeRangeMin}
-                                        defaultSafeRange={this.setDefaultMin}
-                                        updateSafeRange={this.setSafeRangeMin}
-                                        saveSafeRange={this.saveSafeRangeMin}
-                                        standard={this.state.standard}/>
-                    <SafeRangesRowPanel inputLabel={'Max:'}
-                                        inputValue={this.state.safeRangeMax}
-                                        defaultSafeRange={this.setDefaultMax}
-                                        saveSafeRange={this.saveSafeRangeMax}
-                                        updateSafeRange={this.setSafeRangeMax}
-                                        standard={this.state.standard}/>
+                    <SafeRangeRowPanel inputLabel={'Min:'}
+                                       inputValue={this.state.safeRangeMin}
+                                       defaultSafeRange={this.setDefaultMin}
+                                       updateSafeRange={this.setSafeRangeMin}
+                                       saveSafeRange={this.saveSafeRangeMin}
+                                       standard={this.state.standard}/>
+                    <SafeRangeRowPanel inputLabel={'Max:'}
+                                       inputValue={this.state.safeRangeMax}
+                                       defaultSafeRange={this.setDefaultMax}
+                                       saveSafeRange={this.saveSafeRangeMax}
+                                       updateSafeRange={this.setSafeRangeMax}
+                                       standard={this.state.standard}/>
                 </View>
+
                 <View>
                     <ListItem itemDivider><Text style={styles.divider}>Measurement Units</Text></ListItem>
                     <View style={{flexDirection:'row'}}>
@@ -60,6 +64,7 @@ export default class SettingsScreen extends Component {
                             onPress={this.switchStandard}/>
                     </View>
                 </View>
+
                 <View>
                     <ListItem itemDivider><Text style={styles.divider}>Data Sync</Text></ListItem>
                     <View style={{flexDirection:'row'}}>
@@ -75,23 +80,37 @@ export default class SettingsScreen extends Component {
                                       onPress={this.toggleGFitConnection}/>
                     </View>
                 </View>
+                <AboutModal isOpen={this.state.isInfoOpen} onClose={this.closeInfoModal}/>
             </View>
         )
     }
+
+    closeInfoModal = () => {
+        this.setState({
+           isInfoOpen: false
+        });
+    };
 
     componentDidMount() {
         db.initBGLStandardListener(this.updateBGLSafeRange);
         this.initGFitConnectedHandler();
         this.initGFitDisconnectedHandler();
+        this.initSettingsInfoListener();
     }
 
+    initSettingsInfoListener() {
+        emitter.addSettingsInfoListener(() => {
+            this.setState({
+                isInfoOpen: true
+            });
+        });
+    }
     componentWillUnmount() {
         log("Unmounting SettingsScreen");
     }
 
     toggleGFitConnection = () => {
         if (!this.gFitToggling) {
-            gFit.isConnected().then((connected) => log("Toggling GFit connection, GFit currently connected?: " + connected));
             this.gFitToggling = true;
             this.state.gFitConnected ? gFit.disconnect() : gFit.authorizeAndConnect();
         } else {
@@ -131,7 +150,7 @@ export default class SettingsScreen extends Component {
                     }, 10000)
                 });
                 //^  After disconnection, there's a delay for google services also disconnecting the account, and
-                //before that's finished gets the client in a bad state
+                //connecting before that's finished gets the client in a bad state
             }
             else
                 this.gFitToggling = false
