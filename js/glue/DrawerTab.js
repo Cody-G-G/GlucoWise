@@ -11,12 +11,14 @@ export default class DrawerTab extends Component {
 
     render() {
         const iconFamily = typeof this.props.iconFamily !== 'undefined' ? this.props.iconFamily : 'MaterialIcons';
+        const toRender = typeof this.props.toRender !== 'undefined' ?
+            this.props.toRender :
+            <Text style={styles.tabText}>{this.props.text}</Text>;
+
         return (
             <TouchableOpacity onPress={this.props.onPress} style={styles.tabButton}>
                 <Icon theme={{iconFamily: iconFamily}} style={styles.icon} name={this.props.icon}/>
-
-                {(typeof this.props.children) === 'undefined' ?
-                    <Text style={styles.tabText}>{this.props.text}</Text> : this.props.children}
+                {toRender}
             </TouchableOpacity>
         );
     }

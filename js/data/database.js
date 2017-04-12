@@ -66,13 +66,11 @@ const database = {
         this.initCache();
     },
 
-    initCache(){
+    initCache() {
         this.standard = this.getBGLStandard();
         this.latestReadingValue = this.getLatestReadingValue();
         this.lastConsumedItem = this.getLastConsumedItem();
-        this.initBGLReadingListener(() => this.latestReadingValue = this.getLatestReadingValue());
-        this.initConsumedFoodItemListener(() => this.lastConsumedItem = this.getLastConsumedItem());
-        this.initBGLStandardListener(() => this.standard = this.getBGLStandard());
+        this.safeRange = this.getBGLSafeRange();
     },
 
     /**
@@ -117,6 +115,7 @@ const database = {
     saveBGLReading(value, date) {
         log("Saving BGLReading: " + value + " " + date);
         realm.write(() => this.createBGLReading(uuid(), value, date));
+        this.latestReadingValue = this.getLatestReadingValue();
     },
 
     /**
@@ -131,6 +130,7 @@ const database = {
     saveConsumedFoodItem(name, date, calories, carbohydrates, protein, fats, weight) {
         log("Saving ConsumedFoodItem: " + name + " " + date + " " + weight + " " + calories + " " + carbohydrates + " " + protein + " " + fats);
         realm.write(() => this.createConsumedFoodItem(uuid(), name, date, calories, carbohydrates, protein, fats, weight));
+        this.lastConsumedItem = this.getLastConsumedItem();
     },
 
     /**
@@ -216,7 +216,9 @@ const database = {
         log("Updating BGLSafeRange min: " + minValue);
         let savedBGLSafeRanges = realm.objects('BGLSafeRange');
         realm.write(() => {
-            savedBGLSafeRanges[0].minValue = String(processBGLValue(minValue, this.standard, true));
+            const newMinValue = String(processBGLValue(minValue, this.standard, true));
+            savedBGLSafeRanges[0].minValue = newMinValue;
+            this.safeRange = newMinValue;
         });
     },
 
@@ -225,6 +227,7 @@ const database = {
         let savedBGLSafeRanges = realm.objects('BGLSafeRange');
         realm.write(() => {
             savedBGLSafeRanges[0].minValue = defaultSafeRange.min;
+            this.safeRange = defaultSafeRange.min;
         });
     },
 
@@ -268,7 +271,9 @@ const database = {
         log("Updating BGLSafeRange max: " + maxValue);
         let savedBGLSafeRanges = realm.objects('BGLSafeRange');
         realm.write(() => {
-            savedBGLSafeRanges[0].maxValue = String(processBGLValue(maxValue, this.standard, true));
+            const newMax = String(processBGLValue(maxValue, this.standard, true));
+            savedBGLSafeRanges[0].maxValue = newMax;
+            this.safeRange.maxValue = newMax;
         });
     },
 
@@ -277,6 +282,7 @@ const database = {
         let savedBGLSafeRanges = realm.objects('BGLSafeRange');
         realm.write(() => {
             savedBGLSafeRanges[0].maxValue = defaultSafeRange.max;
+            this.safeRange.maxValue = defaultSafeRange.max;
         });
     },
 
@@ -288,6 +294,7 @@ const database = {
         let savedBGLStandards = realm.objects('BGLStandard');
         realm.write(() => {
             savedBGLStandards[0].standard = standard;
+            this.standard = standard;
         });
     },
 
