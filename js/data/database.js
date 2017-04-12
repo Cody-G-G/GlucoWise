@@ -43,7 +43,7 @@ const database = {
         const initDataSyncSettings = realm.objects('DataSyncSettings').length === 0;
         const initBolusVars = realm.objects(dbObjects.bolusVars).length === 0;
         realm.write(() => {
-            initBGLStandard && realm.create('BGLStandard', {standard: readingUnitStandards.US});
+            initBGLStandard && realm.create('BGLStandard', {standard: readingUnitStandards.UK});
             initBGLSafeRange && realm.create('BGLSafeRange', {
                 minValue: defaultSafeRange.min,
                 maxValue: defaultSafeRange.max
