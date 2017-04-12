@@ -9,7 +9,7 @@ const Realm = require('realm');
 const key = new Int8Array(64);
 let realm = new Realm({
     schema: [
-        {name: dbObjects.reading, properties: {objectName: 'string', id: 'string', value: 'string', date: 'date'}},
+        {name: dbObjects.reading, properties: {id: 'string', value: 'string', date: 'date'}},
         {name: dbObjects.safeRange, properties: {minValue: 'string', maxValue: 'string'}},
         {name: dbObjects.standard, properties: {standard: 'string'}},
         {name: dbObjects.dataSync, properties: {syncEnabledGFit: 'bool'}},
@@ -20,7 +20,6 @@ let realm = new Realm({
         {
             name: dbObjects.foodItem,
             properties: {
-                objectName: 'string',
                 id: 'string',
                 name: 'string',
                 date: 'date',
@@ -80,7 +79,7 @@ const database = {
      */
     createBGLReading(id, value, dateMillis) {
         log("Creating BGLReading " + id + " " + value + " " + dateMillis);
-        realm.create('BGLReading', {objectName: dbObjects.reading, id: id, value: value, date: new Date(dateMillis)});
+        realm.create('BGLReading', {id: id, value: value, date: new Date(dateMillis)});
     },
 
     /**
@@ -96,7 +95,6 @@ const database = {
     createConsumedFoodItem(id, name, date, calories, carbohydrates, protein, fats, weight) {
         log("Creating ConsumedFoodItem: " + name + " " + date + " " + weight + " " + calories + " " + carbohydrates + " " + protein + " " + fats);
         realm.create('ConsumedFoodItem', {
-            objectName: dbObjects.foodItem,
             id: id,
             name: name,
             date: typeof date === 'number' ? new Date(date) : date,
@@ -139,7 +137,7 @@ const database = {
      * @returns {Array}
      */
     getConsumedFoodItemsInDateRange(startDate, endDate) {
-        return this.getDbObjectsInDateRange(dbObjects.foodItem, startDate, endDate);
+        return this.getDbObjectsInDateRange(dbObjects.foodItem, startDate, endDate).map(obj => this.constructObjectFromResult(obj, dbObjects.foodItem));
     },
 
 
@@ -186,7 +184,7 @@ const database = {
             case(dbObjects.reading):
                 const standard = this.standard;
                 auxObj = {
-                    objectName: resultObj.objectName,
+                    objectName: dbObjectName,
                     id: resultObj.id,
                     value: processBGLValue(resultObj.value, standard),
                     date: resultObj.date
@@ -194,7 +192,7 @@ const database = {
                 break;
             case(dbObjects.foodItem):
                 auxObj = {
-                    objectName: resultObj.objectName,
+                    objectName: dbObjectName,
                     id: resultObj.id,
                     name: resultObj.name,
                     date: resultObj.date,
@@ -317,7 +315,7 @@ const database = {
      * @returns {Array}
      */
     getBGLReadingsInDateRange(startDate, endDate) {
-        return this.getDbObjectsInDateRange(dbObjects.reading, startDate, endDate);
+        return this.getDbObjectsInDateRange(dbObjects.reading, startDate, endDate).map(obj => this.constructObjectFromResult(obj, dbObjects.reading));
     },
 
     get24hBGLReadings() {
