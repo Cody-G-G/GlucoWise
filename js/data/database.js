@@ -295,6 +295,7 @@ const database = {
             this.standard = standard;
         });
         this.latestReadingValue = this.getLatestReadingValue();
+        this.safeRange = this.getBGLSafeRange();
     },
 
     getLatestReadingValue() {
