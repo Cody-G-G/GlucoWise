@@ -113,7 +113,7 @@ class GoogleFit {
      * @returns {*}
      */
     stepsLast60mInMinuteBuckets(date) {
-        return googleFit.steps(dateUtil.minutesBeforeMillis(59, date) - dateUtil.millisFromMinuteStart(date), date, 1, googleFit.MINUTES);
+        return googleFit.steps(dateUtil.minutesBeforeMillis(59, date) - dateUtil.millisFromMinuteStart(date), date, 2, googleFit.MINUTES);
     }
 
     /**
