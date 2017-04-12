@@ -22,8 +22,9 @@ export default class GraphScreen extends Component {
             safeRangeMin: '',
             safeRangeMax: '',
             standard: '',
-            graphMode: dataModes.steps,
-            calorieMode: calorieModes.expended
+            graphMode: dataModes.glucose,
+            calorieMode: calorieModes.expended,
+            helpModalOpen: false
         };
         this.graphDataFunctions = {
             [dataModes.steps]: {
@@ -71,7 +72,9 @@ export default class GraphScreen extends Component {
         const summaryInfoToRender = this.getSummaryInfoToRender();
         const graphMode = this.state.graphMode;
         const isModeCalories = graphMode === dataModes.calories;
-        const timeRangeTypes = Object.keys(isModeCalories ? this.graphDataFunctions[graphMode][this.state.calorieMode] : this.graphDataFunctions[graphMode]);
+        const timeRangeTypes = Object.keys(isModeCalories ?
+            this.graphDataFunctions[graphMode][this.state.calorieMode] :
+            this.graphDataFunctions[graphMode]);
         const graphModeTypes = Object.values(dataModes);
 
         return (
@@ -88,7 +91,7 @@ export default class GraphScreen extends Component {
                                         selectedTypes={[this.state.timeRange]}
                                         onPress={this.updateState}/>
                 </View>
-                <GraphsHelpModal helpOpen={this.state.helpModalOpen} onClose={this.closeHelpModal}/>
+                <GraphsHelpModal isOpen={this.state.helpModalOpen} onClose={this.closeHelpModal}/>
             </View>
         );
     }
@@ -107,7 +110,7 @@ export default class GraphScreen extends Component {
     initGraphsHelpListener() {
         emitter.addGraphsHelpListener(() => {
             this.setState({
-                helpOpen: true
+                helpModalOpen: true
             });
         });
     }
@@ -252,7 +255,7 @@ export default class GraphScreen extends Component {
      * @param now
      * @returns {[*]}
      */
-    getDataForGraph(data, timeRange, graphMode, now) {
+    processDataForGraph(data, timeRange, graphMode, now) {
         log("Processing data for graph: " + JSON.stringify(data));
         const graphData = [];
         const xAxis = this.getXAxisString(graphMode);
@@ -353,7 +356,7 @@ export default class GraphScreen extends Component {
                 this.setState({
                     standard: db.standard,
                     data: data,
-                    graphData: this.getDataForGraph(data, timeRange, graphMode, now),
+                    graphData: this.processDataForGraph(data, timeRange, graphMode, now),
                     safeRangeMin: safeRange.minValue,
                     safeRangeMax: safeRange.maxValue,
                     timeRange: timeRange
@@ -374,7 +377,7 @@ export default class GraphScreen extends Component {
 
         this.getData(timeRange, graphMode, now, calorieMode)
             .then((data) => {
-                const graphData = this.getDataForGraph(data, timeRange, graphMode, now);
+                const graphData = this.processDataForGraph(data, timeRange, graphMode, now);
                 this.setState({
                     graphMode: graphMode,
                     graphData: graphData,
@@ -403,12 +406,17 @@ export default class GraphScreen extends Component {
         const isGraphModeGlucose = graphMode === dataModes.glucose;
         const isGraphModeCalories = graphMode === dataModes.calories;
         const isCalorieModeIngested = calorieMode === calorieModes.ingested;
-        const graphDataFunction = isGraphModeCalories ? this.graphDataFunctions[graphMode][calorieMode][timeRange] : this.graphDataFunctions[graphMode][timeRange];
+        const graphDataFunction = isGraphModeCalories ?
+            this.graphDataFunctions[graphMode][calorieMode][timeRange] :
+            this.graphDataFunctions[graphMode][timeRange];
+
         return new Promise(async(resolve) => {
             let data;
             try {
                 data = await graphDataFunction(now);
-                resolve(isGraphModeGlucose || (isGraphModeCalories && isCalorieModeIngested) ? data : this.mapValuesToDates(data));
+                resolve((isGraphModeGlucose || (isGraphModeCalories && isCalorieModeIngested)) ?
+                    data :
+                    this.mapValuesToDates(data));
             } catch (error) {
                 log("Error on getting data: " + error);
                 resolve([]);

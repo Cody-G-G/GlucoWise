@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {View, Text} from 'react-native';
 import styles from '../../helpers/components/styles';
 import log from "../../helpers/util/logger";
-import HelpModal from "../../helpers/components/HelpModal";
+import ScrollModal from "../../helpers/components/ScrollModal";
 
 export default class GraphsHelpModal extends Component {
     constructor(props) {
@@ -123,7 +123,7 @@ export default class GraphsHelpModal extends Component {
             </View>);
 
         return (
-            <HelpModal content={content} helpOpen={this.props.helpModalOpen} onClose={this.closeHelpModal}/>
+            <ScrollModal content={content} isOpen={this.props.isOpen} onClose={this.closeHelpModal} headerText='Help / Instructions'/>
         );
     }
 }
