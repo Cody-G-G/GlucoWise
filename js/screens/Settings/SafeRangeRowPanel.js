@@ -5,7 +5,7 @@ import SafeRangeButton from "./SafeRangeButton";
 import styles from "./styles";
 import isNumberValid from '../../helpers/util/inputValidator';
 
-export default class SafeRangesRowPanel extends Component {
+export default class SafeRangeRowPanel extends Component {
     constructor(props) {
         super(props);
     }

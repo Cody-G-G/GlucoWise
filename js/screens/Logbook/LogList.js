@@ -20,7 +20,7 @@ export default class LogList extends Component {
                 <ListView dataSource={dataSource} enableEmptySections={true} renderRow={(rowData) =>
                     <View style={styles.logRow}>
                         {rowData.objectName === dbObjects.reading ?
-                        <LogReadingRow data={rowData} standard = {this.props.standard}/>:
+                        <LogReadingRow data={rowData} standard={this.props.standard}/>:
                         <LogFoodRow data={rowData}/>}
 
                         <TouchableOpacity

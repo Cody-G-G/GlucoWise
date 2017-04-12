@@ -3,7 +3,7 @@ import React from 'react';
 import 'react-native';
 import renderer from 'react-test-renderer';
 import CustomDatePicker from "../CustomDatePicker";
-import styles from "../../../screens/Readings/styles";
+import styles from "../../../screens/Logbook/styles";
 
 test('CustomDatePicker - renders correctly', () => {
     const maxDate = "08-03-2017";

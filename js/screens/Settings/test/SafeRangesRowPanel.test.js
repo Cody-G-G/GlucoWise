@@ -2,15 +2,15 @@
 import React from 'react';
 import 'react-native';
 import renderer from 'react-test-renderer';
-import SafeRangesRowPanel from "../SafeRangesRowPanel";
+import SafeRangeRowPanel from "../SafeRangeRowPanel";
 
-test('SafeRangesRowPanel - renders correctly', () => {
+test('SafeRangeRowPanel - renders correctly', () => {
     const inputLabel = 'Min:';
     const inputValue = '80';
 
     const tree = renderer.create(
-        <SafeRangesRowPanel inputLabel={inputLabel}
-                            inputValue={inputValue}/>
+        <SafeRangeRowPanel inputLabel={inputLabel}
+                           inputValue={inputValue}/>
     ).toJSON();
 
     expect(tree).toMatchSnapshot();

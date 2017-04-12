@@ -41,6 +41,6 @@ const dbObjects = {
 };
 
 const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const monthsOfYear = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "Octomber", "November", "December"];
+const monthsOfYear = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 export {readingUnitStandards, dataModes, timeRanges, defaultSafeRange, daysOfWeek, monthsOfYear, dbObjects, calorieModes};

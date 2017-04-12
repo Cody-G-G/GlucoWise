@@ -108,15 +108,15 @@ export default StyleSheet.create({
     dateInput: {
         borderWidth: 0
     },
-    helpModalMainPanel: {
+    scrollModalMainPanel: {
         flex: 1,
     },
-    helpModalHeaderText: {
+    scrollModalHeaderText: {
         alignSelf: 'center',
         fontSize: 30,
         fontWeight: 'bold'
     },
-    helpModal: {
+    scrollModal: {
         height: 450,
         width: 350,
         borderWidth: 2,

@@ -5,26 +5,26 @@ import {ListItem} from 'native-base';
 import styles from './styles';
 import log from "../util/logger";
 
-export default class HelpModal extends Component {
+export default class ScrollModal extends Component {
     constructor(props) {
         super(props);
     }
 
     render() {
-        log("Rendering HelpModal");
+        log("Rendering ScrollModal");
         return (
-            <Modal style={styles.helpModal}
+            <Modal style={styles.scrollModal}
                    position='center'
                    ref='modal'
-                   isOpen={this.props.helpOpen}
+                   isOpen={this.props.isOpen}
                    backButtonClose={true}
                    animationDuration={300}
                    swipeToClose={false}
                    swipeArea={0}
                    onClosed={this.props.onClose}>
-                <View style={styles.helpModalMainPanel}>
+                <View style={styles.scrollModalMainPanel}>
                     <ListItem itemDivider>
-                        <Text style={styles.helpModalHeaderText}>Help / Instructions</Text>
+                        <Text style={styles.scrollModalHeaderText}>{this.props.headerText}</Text>
                     </ListItem>
                     <ScrollView>
                         {this.props.content}

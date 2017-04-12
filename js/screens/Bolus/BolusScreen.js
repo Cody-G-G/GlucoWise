@@ -50,13 +50,15 @@ export default class BolusScreen extends Component {
 
                 <View style={styles.resultPanel}>
                     {bolusCalculated &&
-                    <Text style={styles.resultText}>Bolus dose:&nbsp;<Text style={{color: 'royalblue'}}>{this.state.bolus}</Text>&nbsp;units</Text>}
+                    <Text style={styles.resultText}>
+                        Bolus dose:&nbsp;<Text style={{color: 'royalblue'}}>{this.state.bolus}</Text>&nbsp;units
+                    </Text>}
                 </View>
 
                 <CalculatorButtonsPanel onPressCalculate={this.calculateBolus} onPressAdd={this.openAddModal}/>
 
                 <AddLogEntryModal opened={this.state.addModalOpen} finished={this.finishedAdding}/>
-                <BolusHelpModal helpOpen={this.state.helpModalOpen} onClose={this.closeHelpModal}/>
+                <BolusHelpModal isOpen={this.state.helpModalOpen} onClose={this.closeHelpModal}/>
             </View>
         );
     }
@@ -136,7 +138,12 @@ export default class BolusScreen extends Component {
     };
 
     calculateBolus = () => {
-        if (isNumberValid(this.state.carbs) && isNumberValid(this.state.cir) && isNumberValid(this.state.isf) && isNumberValid(this.state.bgl) && isNumberValid(this.state.targetBgl))
+        if (isNumberValid(this.state.carbs) &&
+            isNumberValid(this.state.cir) &&
+            isNumberValid(this.state.isf) &&
+            isNumberValid(this.state.bgl) &&
+            isNumberValid(this.state.targetBgl))
+
             this.setState({
                 bolus: ((this.state.carbs / this.state.cir) + ((this.state.bgl - this.state.targetBgl) / this.state.isf)).toFixed(1)
             });
