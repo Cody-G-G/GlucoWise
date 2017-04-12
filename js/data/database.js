@@ -296,6 +296,7 @@ const database = {
             savedBGLStandards[0].standard = standard;
             this.standard = standard;
         });
+        this.latestReadingValue = this.getLatestReadingValue();
     },
 
     getLatestReadingValue() {
