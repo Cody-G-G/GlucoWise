@@ -12,8 +12,7 @@ export default StyleSheet.create({
     },
     divider: {
         fontSize: 25,
-        fontWeight: 'bold',
-        color: 'black'
+        fontWeight: 'bold'
     },
     safeRangeInputLabel: {
         flex: 1,
