@@ -216,7 +216,7 @@ const database = {
         realm.write(() => {
             const newMinValue = String(processBGLValue(minValue, this.standard, true));
             savedBGLSafeRanges[0].minValue = newMinValue;
-            this.safeRange = newMinValue;
+            this.safeRange.minValue = newMinValue;
         });
     },
 
@@ -225,7 +225,7 @@ const database = {
         let savedBGLSafeRanges = realm.objects('BGLSafeRange');
         realm.write(() => {
             savedBGLSafeRanges[0].minValue = defaultSafeRange.min;
-            this.safeRange = defaultSafeRange.min;
+            this.safeRange.minValue = defaultSafeRange.min;
         });
     },
 
@@ -484,16 +484,16 @@ const testFunctions = {
         const now = Date.now();
 
         database.createBGLReading(uuid(), '50', dateUtil.hoursBeforeMillis(20, now));
-        database.createBGLReading(uuid(), '210', dateUtil.hoursBeforeMillis(10, now));
-        database.createBGLReading(uuid(), '90', dateUtil.hoursBeforeMillis(5, now));
-        database.createBGLReading(uuid(), '140', dateUtil.minutesBeforeMillis(70, now));
-        database.createBGLReading(uuid(), '155', dateUtil.minutesBeforeMillis(65, now));
-        database.createBGLReading(uuid(), '70', dateUtil.minutesBeforeMillis(62, now));
-        database.createBGLReading(uuid(), '90', dateUtil.minutesBeforeMillis(55, now));
-        database.createBGLReading(uuid(), '150', dateUtil.minutesBeforeMillis(20, now));
-        database.createBGLReading(uuid(), '170', dateUtil.minutesBeforeMillis(15, now));
+        database.createBGLReading(uuid(), '250', dateUtil.hoursBeforeMillis(10, now));
+        database.createBGLReading(uuid(), '65', dateUtil.hoursBeforeMillis(5, now));
+        database.createBGLReading(uuid(), '100', dateUtil.minutesBeforeMillis(70, now));
+        database.createBGLReading(uuid(), '103', dateUtil.minutesBeforeMillis(65, now));
+        database.createBGLReading(uuid(), '105', dateUtil.minutesBeforeMillis(62, now));
+        database.createBGLReading(uuid(), '110', dateUtil.minutesBeforeMillis(55, now));
+        database.createBGLReading(uuid(), '160', dateUtil.minutesBeforeMillis(20, now));
+        database.createBGLReading(uuid(), '178', dateUtil.minutesBeforeMillis(15, now));
         database.createBGLReading(uuid(), '180', dateUtil.minutesBeforeMillis(13, now));
-        database.createBGLReading(uuid(), '180', dateUtil.minutesBeforeMillis(9.68, now));
+        database.createBGLReading(uuid(), '195', dateUtil.minutesBeforeMillis(9.68, now));
         database.createBGLReading(uuid(), '200', dateUtil.minutesBeforeMillis(8, now));
 
         database.createConsumedFoodItem(uuid(), 'Roasted Peanuts', dateUtil.minutesBeforeMillis(10, now), '550', '55', '10', '23', '125');
