@@ -166,7 +166,7 @@ const database = {
         return [
             ...this.getDbObjectsInDateRange(dbObjectName1, startDate, endDate).map(obj => this.constructObjectFromResult(obj, dbObjectName1)),
             ...this.getDbObjectsInDateRange(dbObjectName2, startDate, endDate).map(obj => this.constructObjectFromResult(obj, dbObjectName2))]
-            .sort((a, b) => a.date - b.date);
+            .sort((a, b) => b.date - a.date);
     },
 
     getConsumedFoodItemsLast24h() {
