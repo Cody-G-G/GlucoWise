@@ -123,7 +123,7 @@ export default class GraphsHelpModal extends Component {
             </View>);
 
         return (
-            <ScrollModal content={content} isOpen={this.props.isOpen} onClose={this.closeHelpModal} headerText='Help / Instructions'/>
+            <ScrollModal content={content} isOpen={this.props.isOpen} onClose={this.props.onClose} headerText='Help / Instructions'/>
         );
     }
 }
