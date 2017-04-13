@@ -52,6 +52,7 @@ export default class ConnectionScreen extends Component {
         this.initDeviceConnectedListener();
         this.initDeviceDisconnectedListener();
         this.initReadingCharacteristicUpdate();
+        db.initBGLReadingListener(() => this.forceUpdate());
     }
 
     componentWillUnmount() {
