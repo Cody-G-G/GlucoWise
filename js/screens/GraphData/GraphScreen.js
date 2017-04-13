@@ -217,6 +217,8 @@ export default class GraphScreen extends Component {
         let toRender;
         const graphData = this.state.graphData;
         const timeRange = this.state.timeRange;
+        const isTimeRangeLastDay = timeRange === timeRanges.lastDay;
+        const isCalorieModeExpended = this.state.calorieMode === calorieModes.expended;
         let gutter;
         let xSize;
 
@@ -230,7 +232,7 @@ export default class GraphScreen extends Component {
                                               standard={this.state.standard}/>;
                     break;
                 case(dataModes.steps):
-                    if (timeRange === timeRanges.lastDay) {
+                    if (isTimeRangeLastDay) {
                         gutter = 5;
                         xSize = 14;
                     } else {
@@ -240,7 +242,7 @@ export default class GraphScreen extends Component {
                     toRender = <BarGraph data={graphData} gutter={gutter} xSize={xSize}/>;
                     break;
                 case(dataModes.calories):
-                    gutter = timeRange === timeRanges.lastDay ? 2 : 5;
+                    gutter = (isTimeRangeLastDay && isCalorieModeExpended) ? 2 : 5;
                     toRender = <BarGraph data={graphData} gutter={gutter} xSize={10} height={290} marginTop={16}/>;
                     break;
                 case(dataModes.weight):
