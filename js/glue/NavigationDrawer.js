@@ -29,7 +29,7 @@ export default class NavigationDrawer extends Component {
                     main: {opacity: 1 - ratio + 0.25}
                 })}
                 negotiatePan
-                tweenDuration={10}
+                tweenDuration={115}
             >
                 <DefaultRenderer navigationState={state.children[0]} onNavigate={this.props.onNavigate}/>
             </Drawer>
