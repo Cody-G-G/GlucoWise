@@ -8,7 +8,7 @@ export default {
         log("Requesting Location Services");
         return new Promise((resolve, reject) => {
             LocationServicesDialogBox.checkLocationServicesIsEnabled({
-                message: "<h2>Use Location ?</h2>This app wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/><a href='#'>Learn more</a>",
+                message: "<h2>Enable location settings ?</h2>In order to perform a bluetooth scan, you must enable <b>Location Services</b>. To proceed, press '<b>YES</b>'. A new screen will appear, where you can enable Location Services using the toggle button in the <b>top right corner</b>. Return by using the back button.<br/><br/>",
                 ok: "YES",
                 cancel: "NO"
             })

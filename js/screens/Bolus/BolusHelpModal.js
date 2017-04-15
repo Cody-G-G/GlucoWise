@@ -137,7 +137,7 @@ export default class BolusHelpModal extends Component {
                         The&nbsp;
                         <Text style={styles.emphasizedModalText}>Bolus Dose</Text>&nbsp;
                         is calculated using the variables described above, in the formula:{'\n'}
-                        <Text style={styles.emphasizedModalText}>(MCA / CIR) + ((CBG - TBG) / ISF)</Text>
+                        <Text style={styles.emphasizedModalText}>Bolus = (MCA/CIR) + ((CBG-TBG)/ISF)</Text>
                     </Text>
                 </View>
             </View>);
