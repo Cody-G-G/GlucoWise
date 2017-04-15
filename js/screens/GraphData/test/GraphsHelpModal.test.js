@@ -1,5 +1,4 @@
 'use strict';
-'use strict';
 import React from 'react';
 import 'react-native';
 import renderer from 'react-test-renderer';
@@ -17,7 +16,7 @@ test('GraphsHelpModal_isNotOpen - renders correctly', () => {
 test('GraphsHelpModal_isOpen - renders correctly', () => {
 
     const tree = renderer.create(
-        <GraphsHelpModal helpOpen={true}/>
+        <GraphsHelpModal isOpen={true}/>
     ).toJSON();
 
     expect(tree).toMatchSnapshot();

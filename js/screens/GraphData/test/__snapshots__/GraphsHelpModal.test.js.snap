@@ -189,6 +189,8 @@ exports[`GraphsHelpModal_isOpen - renders correctly 1`] = `
                     "color": "black",
                     "fontSize": 30,
                     "fontWeight": "bold",
+                    "paddingBottom": 5,
+                    "textAlign": "center",
                   }
                 }
               >
@@ -302,6 +304,8 @@ exports[`GraphsHelpModal_isOpen - renders correctly 1`] = `
                     "color": "black",
                     "fontSize": 30,
                     "fontWeight": "bold",
+                    "paddingBottom": 5,
+                    "textAlign": "center",
                   }
                 }
               >
@@ -388,6 +392,8 @@ exports[`GraphsHelpModal_isOpen - renders correctly 1`] = `
                     "color": "black",
                     "fontSize": 30,
                     "fontWeight": "bold",
+                    "paddingBottom": 5,
+                    "textAlign": "center",
                   }
                 }
               >
@@ -465,7 +471,7 @@ exports[`GraphsHelpModal_isOpen - renders correctly 1`] = `
                 >
                   60m
                 </Text>
-                  time range is chosen. Y is the value on the Y axis corresponding to the top of the bar. To make use of this graph, make sure to set sync "On" in 
+                  time range is chosen. Y is the value on the Y axis corresponding to the top of the bar, and X is the value on the X axis found under each bar. To make use of this graph, make sure to set sync "On" in 
                 <Text
                   accessible={true}
                   allowFontScaling={true}
@@ -518,6 +524,8 @@ exports[`GraphsHelpModal_isOpen - renders correctly 1`] = `
                     "color": "black",
                     "fontSize": 30,
                     "fontWeight": "bold",
+                    "paddingBottom": 5,
+                    "textAlign": "center",
                   }
                 }
               >
@@ -535,7 +543,7 @@ exports[`GraphsHelpModal_isOpen - renders correctly 1`] = `
                   }
                 }
               >
-                Shows a bar chart of the calories expended / consumed data (based on chosen mode) received from 
+                Shows a bar chart of the calories ingested / expended data (based on chosen mode). The expended calories data is received from 
                 <Text
                   accessible={true}
                   allowFontScaling={true}
@@ -565,7 +573,7 @@ exports[`GraphsHelpModal_isOpen - renders correctly 1`] = `
                 >
                   Settings
                 </Text>
-                . Each bar represents Y number of calories, at hour X in a 24 hour system when 
+                . Each bar represents Y number of calories ingested / expended, at hour X in a 24 hour system when 
                 <Text
                   accessible={true}
                   allowFontScaling={true}
@@ -580,7 +588,7 @@ exports[`GraphsHelpModal_isOpen - renders correctly 1`] = `
                 >
                   24h
                 </Text>
-                  time range is chosen, or Y number of calories expended / consumed X minutes ago when 
+                  time range is chosen, or Y number of calories ingested / expended on X day of the week when 
                 <Text
                   accessible={true}
                   allowFontScaling={true}
@@ -593,9 +601,9 @@ exports[`GraphsHelpModal_isOpen - renders correctly 1`] = `
                     }
                   }
                 >
-                  60m
+                  7d
                 </Text>
-                  time range is chosen. Y is the value on the Y axis corresponding to the top of the bar, X represents the value of the X axis under the bar. The expended calories are an estimation based on your activity throughout the day, so for the highest accuracy, ensure you carry your phone around when working out / exercising / moving around. To make use of this, make sure to set sync "On" in 
+                  time range is chosen. Y is the value on the Y axis corresponding to the top of the bar, X represents the value of the X axis under the bar. The expended calories are an estimation based on your activity throughout the day, so, for the highest accuracy, ensure you carry your phone around when working out / exercising / moving around. To make use of this, make sure to set sync "On" in 
                 <Text
                   accessible={true}
                   allowFontScaling={true}
@@ -624,6 +632,154 @@ exports[`GraphsHelpModal_isOpen - renders correctly 1`] = `
                   }
                 >
                   GoogleFit
+                </Text>
+                . The data for Calories Ingested is based on the 
+                <Text
+                  accessible={true}
+                  allowFontScaling={true}
+                  ellipsizeMode="tail"
+                  style={
+                    Object {
+                      "color": "royalblue",
+                      "fontSize": 18,
+                      "fontWeight": "bold",
+                    }
+                  }
+                >
+                  Consumed Food Items
+                </Text>
+                  that you've logged through the 
+                <Text
+                  accessible={true}
+                  allowFontScaling={true}
+                  ellipsizeMode="tail"
+                  style={
+                    Object {
+                      "color": "royalblue",
+                      "fontSize": 18,
+                      "fontWeight": "bold",
+                    }
+                  }
+                >
+                  Logbook
+                </Text>
+                , so, to make use of this, please make sure you input this data before or after a meal, as accurately as possible.
+              </Text>
+            </View>
+            <View
+              style={
+                Object {
+                  "alignItems": "center",
+                  "flex": 1,
+                  "justifyContent": "center",
+                  "paddingBottom": 10,
+                  "paddingLeft": 10,
+                  "paddingRight": 10,
+                }
+              }
+            >
+              <Text
+                accessible={true}
+                allowFontScaling={true}
+                ellipsizeMode="tail"
+                style={
+                  Object {
+                    "color": "black",
+                    "fontSize": 30,
+                    "fontWeight": "bold",
+                    "paddingBottom": 5,
+                    "textAlign": "center",
+                  }
+                }
+              >
+                Weight graph
+              </Text>
+              <Text
+                accessible={true}
+                allowFontScaling={true}
+                ellipsizeMode="tail"
+                style={
+                  Object {
+                    "color": "dimgray",
+                    "fontSize": 16,
+                    "fontWeight": "normal",
+                  }
+                }
+              >
+                Shows a bar chart of body weight measurements (in kilograms) over time, received from 
+                <Text
+                  accessible={true}
+                  allowFontScaling={true}
+                  ellipsizeMode="tail"
+                  style={
+                    Object {
+                      "color": "royalblue",
+                      "fontSize": 18,
+                      "fontWeight": "bold",
+                    }
+                  }
+                >
+                  GoogleFit
+                </Text>
+                , if data sync with GoogleFit is enabled in 
+                <Text
+                  accessible={true}
+                  allowFontScaling={true}
+                  ellipsizeMode="tail"
+                  style={
+                    Object {
+                      "color": "royalblue",
+                      "fontSize": 18,
+                      "fontWeight": "bold",
+                    }
+                  }
+                >
+                  Settings
+                </Text>
+                . Each bar represents Y kilograms, at either X days ago when 
+                <Text
+                  accessible={true}
+                  allowFontScaling={true}
+                  ellipsizeMode="tail"
+                  style={
+                    Object {
+                      "color": "royalblue",
+                      "fontSize": 18,
+                      "fontWeight": "bold",
+                    }
+                  }
+                >
+                  30d
+                </Text>
+                  time range is chosen, or Y kilograms on X month of the year when 
+                <Text
+                  accessible={true}
+                  allowFontScaling={true}
+                  ellipsizeMode="tail"
+                  style={
+                    Object {
+                      "color": "royalblue",
+                      "fontSize": 18,
+                      "fontWeight": "bold",
+                    }
+                  }
+                >
+                  6M / 1Y
+                </Text>
+                  time range is chosen. Y is the value on the Y axis corresponding to the top of the bar, X represents the value of the X axis under the bar. These values are received from GoogleFit, so, in order to make use of this, make sure you update your weight in GoogleFit whenever you weigh yourself, and ensure that data sync is set to "On" for GoogleFit in 
+                <Text
+                  accessible={true}
+                  allowFontScaling={true}
+                  ellipsizeMode="tail"
+                  style={
+                    Object {
+                      "color": "royalblue",
+                      "fontSize": 18,
+                      "fontWeight": "bold",
+                    }
+                  }
+                >
+                  Settings
                 </Text>
               </Text>
             </View>

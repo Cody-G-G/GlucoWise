@@ -25,10 +25,7 @@ exports[`CustomDatePicker - renders correctly 1`] = `
         Object {
           "width": 142,
         },
-        Object {
-          "borderWidth": 1,
-          "flex": 1,
-        },
+        undefined,
       ],
     ]
   }

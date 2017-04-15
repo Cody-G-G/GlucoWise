@@ -77,6 +77,7 @@ exports[`DeviceListRow_withDeviceConnected - renders correctly 1`] = `
         "alignItems": "center",
         "alignSelf": "stretch",
         "backgroundColor": "firebrick",
+        "borderLeftWidth": 1,
         "flex": 2,
         "justifyContent": "center",
         "opacity": 1,
@@ -93,7 +94,8 @@ exports[`DeviceListRow_withDeviceConnected - renders correctly 1`] = `
       style={
         Object {
           "color": "white",
-          "fontSize": 20,
+          "fontSize": 22,
+          "fontWeight": "bold",
         }
       }
     >
@@ -180,6 +182,7 @@ exports[`DeviceListRow_withDeviceDisconnected - renders correctly 1`] = `
         "alignItems": "center",
         "alignSelf": "stretch",
         "backgroundColor": "green",
+        "borderLeftWidth": 1,
         "flex": 2,
         "justifyContent": "center",
         "opacity": 1,
@@ -196,7 +199,8 @@ exports[`DeviceListRow_withDeviceDisconnected - renders correctly 1`] = `
       style={
         Object {
           "color": "white",
-          "fontSize": 20,
+          "fontSize": 22,
+          "fontWeight": "bold",
         }
       }
     >

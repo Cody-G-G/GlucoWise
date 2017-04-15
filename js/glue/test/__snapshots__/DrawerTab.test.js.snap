@@ -60,20 +60,22 @@ exports[`DrawerTab_withChildren - renders correctly 1`] = `
   >
     
   </Text>
-  <Text
-    accessible={true}
-    allowFontScaling={true}
-    ellipsizeMode="tail"
-  >
-    CHILD_TEXT
-  </Text>
-  <Text
-    accessible={true}
-    allowFontScaling={true}
-    ellipsizeMode="tail"
-  >
-    CHILD_TEXT2
-  </Text>
+  <View>
+    <Text
+      accessible={true}
+      allowFontScaling={true}
+      ellipsizeMode="tail"
+    >
+      CHILD_TEXT
+    </Text>
+    <Text
+      accessible={true}
+      allowFontScaling={true}
+      ellipsizeMode="tail"
+    >
+      CHILD_TEXT2
+    </Text>
+  </View>
 </View>
 `;
 

@@ -362,17 +362,18 @@ const database = {
 
     getBGLSafeRange() {
         log("Getting BGLSafeRange");
-        const safeRange = realm.objects('BGLSafeRange')[0];
+        const safeRangeObjs = realm.objects('BGLSafeRange');
         const standard = this.standard;
-        return {
-            minValue: String(processBGLValue(safeRange.minValue, standard)),
-            maxValue: String(processBGLValue(safeRange.maxValue, standard))
-        };
+        return safeRangeObjs.length > 0 ?{
+            minValue: String(processBGLValue(safeRangeObjs[0].minValue, standard)),
+            maxValue: String(processBGLValue(safeRangeObjs[0].maxValue, standard))
+        } : [];
     },
 
     getBGLStandard() {
         log("Getting BGLStandard");
-        return realm.objects('BGLStandard')[0].standard;
+        const standardObjs = realm.objects('BGLStandard');
+        return standardObjs.length > 0 ? standardObjs[0].standard : [];
     },
 
     getBolusVariables() {

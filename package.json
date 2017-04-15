@@ -37,6 +37,9 @@
     "unmockedModulePathPatterns": [
       "<rootDir>/node_modules/react-native/",
       "<rootDir>/node_modules/react-addons-test-utils"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/?!native-base"
     ]
   },
   "devDependencies": {
