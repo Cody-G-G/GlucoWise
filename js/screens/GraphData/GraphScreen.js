@@ -363,7 +363,7 @@ export default class GraphScreen extends Component {
 
         this.getData(timeRange, graphMode, now, calorieMode)
             .then((data) => {
-                const safeRange = db.getBGLSafeRange();
+                const safeRange = db.safeRange;
                 this.setState({
                     standard: db.standard,
                     data: data,

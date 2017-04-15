@@ -3,7 +3,7 @@ import {View} from 'react-native';
 import {StockLine} from 'react-native-pathjs-charts';
 import styles from './styles';
 import processBGLValue from "../../helpers/util/readingProcessor";
-import {timeRanges} from "../../helpers/util/constants";
+import {timeRanges, readingUnitStandards} from "../../helpers/util/constants";
 import dateUtil from "../../helpers/util/date";
 
 export default class ReadingsGraph extends Component {
@@ -15,13 +15,17 @@ export default class ReadingsGraph extends Component {
         const readings = this.props.readings;
         const minReading = readings.reduce((acc, cur) => Math.min(acc, cur.y), readings.length > 0 && readings[0].y);
         const maxReading = readings.reduce((acc, cur) => Math.max(acc, cur.y), readings.length > 0 && readings[0].y);
-        const minLimit = 30 > minReading ? minReading : 30;
-        const maxLimit = 250 < maxReading ? maxReading : 250;
+        let minLimit = processBGLValue(30, this.props.standard);
+        let maxLimit = processBGLValue(250, this.props.standard);
+        minLimit = minLimit < minReading ? minLimit : minReading;
+        maxLimit = maxLimit > maxReading ? maxLimit : maxReading;
+        const safeRangeMin = this.props.safeRangeMin >= minLimit ? this.props.safeRangeMin : minLimit;
+        const safeRangeMax = this.props.safeRangeMax <= maxLimit ? this.props.safeRangeMax : maxLimit;
 
         const regions = [{
             label: '',
-            from: this.props.safeRangeMin,
-            to: this.props.safeRangeMax,
+            from: safeRangeMin,
+            to: safeRangeMax,
             fill: '#18c947'
         }];
 
@@ -75,8 +79,8 @@ export default class ReadingsGraph extends Component {
                     fill: '#34495E'
                 }
             },
-            min: processBGLValue(minLimit, this.props.standard),
-            max: processBGLValue(maxLimit, this.props.standard),
+            min: minLimit,
+            max: maxLimit,
             showAreas: false,
             strokeWidth: 3
         };
@@ -96,12 +100,12 @@ export default class ReadingsGraph extends Component {
     getYTickValues(min, max) {
         const tickValues = [];
         const numberOfTicks = 14;
-        const tickDifference = Math.round(((max - min) / numberOfTicks) / 10) * 10;
+        const tickDifference = this.props.standard === readingUnitStandards.US ?
+            Math.round(((max - min) / numberOfTicks) / 10) * 10 :
+            (max - min) / numberOfTicks;
         for (let tick = min; tick <= max; tick += tickDifference) {
-            tickValues.push({value: tick});
+            tickValues.push({value: Math.round(tick)});
         }
-        return tickValues.map(entry => {
-            return {value: processBGLValue(entry.value, this.props.standard)}
-        });
+        return tickValues
     }
 }
