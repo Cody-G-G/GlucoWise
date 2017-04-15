@@ -236,7 +236,7 @@ const database = {
         log("Saving insulin sensitivity factor");
         let savedBolusVars = realm.objects(dbObjects.bolusVars);
         realm.write(() => {
-            savedBolusVars[0].insulinSensitivity = processBGLValue(isf, this.standard, true);
+            savedBolusVars[0].insulinSensitivity = String(processBGLValue(isf, this.standard, true));
         })
     },
 
@@ -247,7 +247,7 @@ const database = {
         log("Saving targetBGL");
         let savedBolusVars = realm.objects(dbObjects.bolusVars);
         realm.write(() => {
-            savedBolusVars[0].targetBGL = processBGLValue(targetBGL, this.standard, true);
+            savedBolusVars[0].targetBGL = String(processBGLValue(targetBGL, this.standard, true));
         })
     },
 
