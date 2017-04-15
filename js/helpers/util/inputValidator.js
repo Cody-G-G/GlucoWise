@@ -8,6 +8,7 @@ const isNumberValid = (input) => {
 
     let isInputEmpty = digits.length === 0;
     let isLastCharDecimalPoint = digits[digits.length - 1] === '.';
+    let isZero = digits.length === 1 && digits[0] === '0';
 
     digits.forEach((digit) => {
         let isValidDigit = (numbers.indexOf(digit) !== -1);
@@ -18,7 +19,7 @@ const isNumberValid = (input) => {
         }
     });
 
-    (isInputEmpty || isLastCharDecimalPoint) && (valid = false);
+    (isInputEmpty || isLastCharDecimalPoint || isZero) && (valid = false);
 
     return valid;
 };

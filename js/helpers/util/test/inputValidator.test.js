@@ -17,4 +17,5 @@ test('isNumberValid(input) - returns boolean representing whether input paramete
     expect(isNumberValid('1abc')).toEqual(false);
     expect(isNumberValid('')).toEqual(false);
     expect(isNumberValid(' ')).toEqual(false);
+    expect(isNumberValid('0')).toEqual(false);
 });

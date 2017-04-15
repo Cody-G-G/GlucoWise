@@ -142,11 +142,14 @@ export default class BolusScreen extends Component {
             isNumberValid(this.state.cir) &&
             isNumberValid(this.state.isf) &&
             isNumberValid(this.state.bgl) &&
-            isNumberValid(this.state.targetBgl))
+            isNumberValid(this.state.targetBgl)) {
 
-            this.setState({
-                bolus: ((this.state.carbs / this.state.cir) + ((this.state.bgl - this.state.targetBgl) / this.state.isf)).toFixed(1)
-            });
+            const result = ((this.state.carbs / this.state.cir) + ((this.state.bgl - this.state.targetBgl) / this.state.isf)).toFixed(1);
+            result < 0 ? Alert.alert("Invalid input", "Please input valid numbers for the Meal Carbohydrates / Current Glucose / Target Glucose / Carbohydrate Ratio / Insulin Sensitivity fields. For more information tap on the help button on the top right.") :
+                this.setState({
+                    bolus: result
+                });
+        }
         else
             Alert.alert("Invalid input", "Please input valid numbers for the Meal Carbohydrates / Current Glucose / Target Glucose / Carbohydrate Ratio / Insulin Sensitivity fields. For more information tap on the help button on the top right.");
     };
