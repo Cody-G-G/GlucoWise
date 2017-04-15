@@ -59,7 +59,7 @@ export default class ConnectionScreen extends Component {
         log("Unmounting ConnectionScreen");
     }
 
-    initBleManager() {
+    initBleManager = () => {
         BleManager
             .start()
             .then(() => {
@@ -68,30 +68,43 @@ export default class ConnectionScreen extends Component {
             .catch((error) => {
                 log("BLE Manager intialization failed: " + error);
             });
-    }
+    };
 
     toggleDeviceConnection = (peripheral) => {
         if (!this.isDeviceTogglingConnection(peripheral)) {
-
             const extendedDeviceId = peripheral.name + " - " + peripheral.id;
             log("Toggling connection with peripheral: <" + extendedDeviceId + ">");
-            this.addDeviceTogglingConnection(peripheral.id);
 
-            BleManager.isPeripheralConnected(peripheral.id, [])
-                .then((isConnected) => {
-                    if (isConnected)
-                        this.disconnectPeripheral(peripheral, extendedDeviceId);
-                    else
-                        this.connectPeripheral(peripheral, extendedDeviceId);
-                })
-                .catch((error) => {
-                    this.removeDeviceTogglingConnection(peripheral.id);
-                    log("Checking connection to " + extendedDeviceId + " failed: " + error);
-                });
+            this.addDeviceTogglingConnection(peripheral.id);
+            this.enableBluetooth(() => {
+                BleManager.isPeripheralConnected(peripheral.id, [])
+                    .then((isConnected) => {
+                        if (isConnected)
+                            this.disconnectPeripheral(peripheral, extendedDeviceId);
+                        else
+                            this.connectPeripheral(peripheral, extendedDeviceId);
+                    })
+                    .catch((error) => {
+                        this.removeDeviceTogglingConnection(peripheral.id);
+                        log("Checking connection to " + extendedDeviceId + " failed: " + error);
+                    });
+            }, () => this.removeDeviceTogglingConnection(peripheral.id));
         }
     };
 
-    connectPeripheral(peripheral, extendedDeviceId) {
+    enableBluetooth = (successCallback, failureCallback) => {
+        BleManager.enableBluetooth()
+            .then(() => {
+                log("Bluetooth enabled");
+                successCallback();
+            })
+            .catch((error) => {
+                log("Enabling bluetooth failed: " + error);
+                failureCallback();
+            });
+    };
+
+    connectPeripheral = (peripheral, extendedDeviceId) => {
         log("Connecting to " + extendedDeviceId);
         BleManager.connect(peripheral.id)
             .then((peripheralInfo) => {
@@ -101,15 +114,15 @@ export default class ConnectionScreen extends Component {
             .catch((error) => {
                 log("Connection to " + extendedDeviceId + " failed: " + error);
             });
-    }
+    };
 
-    enableCharacteristicNotifications(deviceId, extendedDeviceId, serviceUUID, characteristicUUID) {
+    enableCharacteristicNotifications = (deviceId, extendedDeviceId, serviceUUID, characteristicUUID) => {
         BleManager.startNotification(deviceId, serviceUUID, characteristicUUID)
             .then(() => log("Notification started for peripheral " + extendedDeviceId + ", service: " + serviceUUID + ", characteristic " + characteristicUUID))
             .catch((error) => log("Error starting notification for peripheral " + extendedDeviceId + ", service: " + serviceUUID + ", characteristic " + characteristicUUID))
-    }
+    };
 
-    disconnectPeripheral(peripheral, extendedDeviceId) {
+    disconnectPeripheral = (peripheral, extendedDeviceId) => {
         log("Disconnecting from " + extendedDeviceId);
         BleManager.disconnect(peripheral.id)
             .then(() => {
@@ -118,7 +131,7 @@ export default class ConnectionScreen extends Component {
             .catch((error) => {
                 log("Disconnecting from " + extendedDeviceId + " failed: " + error);
             });
-    }
+    };
 
     triggerStateCheckForScan = () => {
         if (!this.state.scanning) {
@@ -127,7 +140,7 @@ export default class ConnectionScreen extends Component {
         }
     };
 
-    startScan() {
+    startScan = () => {
         BleManager.scan([], 10)
             .then(() => {
                 log("Scan started");
@@ -136,18 +149,18 @@ export default class ConnectionScreen extends Component {
             .catch((error) => {
                 log("Error thrown on scan: " + error);
             })
-    }
+    };
 
-    initReadingCharacteristicUpdate() {
+    initReadingCharacteristicUpdate = () => {
         NativeAppEventEmitter.addListener("BleManagerDidUpdateValueForCharacteristic", (args) => {
             log(hexToAscii(args.value));
             const reading = hexToAscii(args.value).slice(0, 5);
             log("Peripheral " + args.peripheral + " characteristic " + args.characteristic + " was updated to " + reading);
             db.saveBGLReading(reading, new Date());
         });
-    }
+    };
 
-    initDeviceDiscoveredListener() {
+    initDeviceDiscoveredListener = () => {
         NativeAppEventEmitter.addListener('BleManagerDiscoverPeripheral',
             (simpleDeviceObj) => {
                 simpleDeviceObj.rssi = undefined;
@@ -158,32 +171,32 @@ export default class ConnectionScreen extends Component {
                 }
             }
         );
-    }
+    };
 
-    initScanStopListener() {
+    initScanStopListener = () => {
         NativeAppEventEmitter.addListener('BleManagerStopScan', () => {
             log("Scan stopped");
             this.updateScanning(false)
         });
-    }
+    };
 
-    initDeviceConnectedListener() {
+    initDeviceConnectedListener = () => {
         NativeAppEventEmitter.addListener('BleManagerConnectPeripheral', (args) => {
             this.removeDeviceTogglingConnection(args.peripheral);
             this.addConnectedDevice(args.peripheral);
             log("Connected to device: " + args.peripheral);
         });
-    }
+    };
 
-    initDeviceDisconnectedListener() {
+    initDeviceDisconnectedListener = () => {
         NativeAppEventEmitter.addListener('BleManagerDisconnectPeripheral', (args) => {
             this.removeDeviceTogglingConnection(args.peripheral);
             this.removeConnectedDevice(args.peripheral);
             log("Disconnected device: " + args.peripheral);
         });
-    }
+    };
 
-    initBluetoothStateChangeListener() {
+    initBluetoothStateChangeListener = () => {
         NativeAppEventEmitter.addListener('BleManagerDidUpdateState', (args) => {
             log("Bluetooth state is " + args.state);
             if (args.state !== "turning-off" && args.state !== "turning-on" && this.pressedScan) {
@@ -191,63 +204,56 @@ export default class ConnectionScreen extends Component {
 
                 permissions.requestLocationCoarsePermission().then((granted) => {
                     granted && permissions.requestLocationServices().then(() => {
-                        BleManager.enableBluetooth()
-                            .then(() => {
-                                log("Bluetooth enabled");
-                                this.startScan();
-                            })
-                            .catch((error) => {
-                                log("Enabling bluetooth failed: " + error);
-                            });
+                        this.enableBluetooth(this.startScan);
                     });
                 });
             }
         });
-    }
+    };
 
-    addScannedDevice(device) {
+    addScannedDevice = (device) => {
         this.setState({
             scannedDevices: [... this.state.scannedDevices, device]
         });
-    }
+    };
 
-    addConnectedDevice(connectedId) {
+    addConnectedDevice = (connectedId) => {
         this.setState({
             connectedDeviceIDs: [... this.state.connectedDeviceIDs, connectedId]
         });
-    }
+    };
 
-    removeConnectedDevice(connectedId) {
+    removeConnectedDevice = (connectedId) => {
         let connectedUUIDs = this.state.connectedDeviceIDs.slice();
         connectedUUIDs.splice(connectedUUIDs.indexOf(connectedId));
         this.setState({
             connectedDeviceIDs: connectedUUIDs
         });
-    }
+    };
 
-    addDeviceTogglingConnection(deviceId) {
+    addDeviceTogglingConnection = (deviceId) => {
         this.setState({
             devicesTogglingConnection: [... this.state.devicesTogglingConnection, deviceId]
         });
-    }
+    };
 
-    removeDeviceTogglingConnection(deviceId) {
+    removeDeviceTogglingConnection = (deviceId) => {
         let devicesTogglingConnection = this.state.devicesTogglingConnection.slice();
         devicesTogglingConnection.splice(devicesTogglingConnection.indexOf(deviceId));
         this.setState({
             devicesTogglingConnection: devicesTogglingConnection
         });
-    }
+    };
 
-    updateScanning(scanning) {
+    updateScanning = (scanning) => {
         this.setState({scanning: scanning});
-    }
+    };
 
-    updatePressedScan(pressedScan) {
+    updatePressedScan = (pressedScan) => {
         this.pressedScan = pressedScan;
-    }
+    };
 
-    isDeviceTogglingConnection(device) {
+    isDeviceTogglingConnection = (device) => {
         return this.state.devicesTogglingConnection.includes(device.id);
     }
 }
