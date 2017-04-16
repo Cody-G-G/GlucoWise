@@ -484,6 +484,8 @@ const testFunctions = {
     addMockData() {
         const now = Date.now();
 
+        database.createBGLReading(uuid(), '25', dateUtil.daysBeforeMillis(3, now));
+        database.createBGLReading(uuid(), '380', dateUtil.daysBeforeMillis(2, now));
         database.createBGLReading(uuid(), '50', dateUtil.hoursBeforeMillis(20, now));
         database.createBGLReading(uuid(), '250', dateUtil.hoursBeforeMillis(10, now));
         database.createBGLReading(uuid(), '65', dateUtil.hoursBeforeMillis(5, now));
@@ -506,7 +508,9 @@ const testFunctions = {
         database.createConsumedFoodItem(uuid(), 'Oreo Biscuits', dateUtil.hoursBeforeMillis(19, now), '200', '20', '', '', '');
         database.createConsumedFoodItem(uuid(), 'Cheese & Ham Sandwich', dateUtil.daysBeforeMillis(3, now), '375', '20', '', '', '');
         database.createConsumedFoodItem(uuid(), 'Cashews', dateUtil.daysBeforeMillis(3, now), '400', '35', '10', '23', '80');
+        database.createConsumedFoodItem(uuid(), 'Pesto Pasta', dateUtil.daysBeforeMillis(3, now), '550', '40', '15', '23', '80');
         database.createConsumedFoodItem(uuid(), 'Sweet & Sour Chicken', dateUtil.daysBeforeMillis(5, now), '450', '20', '', '', '');
+        database.createConsumedFoodItem(uuid(), 'Chicken Tikka Masala', dateUtil.daysBeforeMillis(6, now), '320', '20', '', '', '');
     },
 
     addStressTestMockData() {
