@@ -365,10 +365,10 @@ const database = {
         log("Getting BGLSafeRange");
         const safeRangeObjs = realm.objects('BGLSafeRange');
         const standard = this.standard;
-        return safeRangeObjs.length > 0 ?{
-            minValue: String(processBGLValue(safeRangeObjs[0].minValue, standard)),
-            maxValue: String(processBGLValue(safeRangeObjs[0].maxValue, standard))
-        } : [];
+        return safeRangeObjs.length > 0 ? {
+                minValue: String(processBGLValue(safeRangeObjs[0].minValue, standard)),
+                maxValue: String(processBGLValue(safeRangeObjs[0].maxValue, standard))
+            } : [];
     },
 
     getBGLStandard() {
@@ -433,6 +433,8 @@ const database = {
         realm.write(() => {
             realm.delete(realm.objects(objectName).filtered('id = $0', object.id));
         });
+        this.latestReadingValue = this.getLatestReadingValue();
+        this.lastConsumedItem = this.getLastConsumedItem();
     },
 
     /**

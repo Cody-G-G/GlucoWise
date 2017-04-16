@@ -51,7 +51,7 @@ export default class LogbookScreen extends Component {
 
                 <LogList data={this.state.data}
                          standard={this.state.standard}
-                         delete={db.delete}/>
+                         delete={db.delete.bind(db)}/>
 
                 <ToggleButtonsGroup types={modeTypes}
                                     selectedTypes={selectedModeTypes}
