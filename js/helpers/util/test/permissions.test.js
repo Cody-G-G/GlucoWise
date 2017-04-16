@@ -1,8 +1,9 @@
 'use strict';
+// jest object is from a 3rd party dependency NPM module, "jest"
 jest.mock('react-native-android-location-services-dialog-box', () => {
     return {}
 });
-import LocationServicesDialogBox from 'react-native-android-location-services-dialog-box';
+import LocationServicesDialogBox from 'react-native-android-location-services-dialog-box'; // this is from a 3rd party dependency NPM module, "react-native-android-location-services-dialog-box"
 import permissions from '../permissions';
 
 test('requestLocationServices() - prompts user to enable Location Services, returning a Promise that resolves when enabled successfully', () => {

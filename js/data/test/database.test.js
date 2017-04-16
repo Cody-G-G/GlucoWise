@@ -1,4 +1,5 @@
 'use strict';
+// jest object is from a 3rd party dependency NPM module, "jest"
 jest.mock('realm', () => {
     return require('./mocks/realm.mock').default;
 });
@@ -6,10 +7,10 @@ jest.mock('uuid/v1');
 jest.mock('../../helpers/util/readingProcessor');
 import * as processBGLValue from '../../helpers/util/readingProcessor';
 import ResultsMock from './mocks/realmResults.mock';
-const uuid = require('uuid/v1');
-const Realm = require('realm');
+const uuid = require('uuid/v1'); // this is from a 3rd party dependency NPM module, "uuid"
+const Realm = require('realm'); // this is from a 3rd party dependency NPM module, "realm"
 import db from "../database";
-import MockDate from 'mockdate';
+import MockDate from 'mockdate'; // this is from a 3rd party dependency NPM module, "mockdate"
 import {readingUnitStandards, defaultSafeRange, dbObjects} from "../../helpers/util/constants";
 
 beforeEach(() => {

@@ -1,5 +1,5 @@
 'use strict';
-import {StyleSheet} from "react-native";
+import {StyleSheet} from "react-native"; // this is from a 3rd party dependency NPM module, "react-native"
 
 export default StyleSheet.create({
     toggleButton: {

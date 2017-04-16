@@ -1,4 +1,4 @@
-import {NativeModules, DeviceEventEmitter} from 'react-native';
+import {NativeModules, DeviceEventEmitter} from 'react-native'; // these are imported from a 3rd party dependency NPM module, "react-native"
 import dateUtil from "../helpers/util/date";
 const googleFit = NativeModules.GoogleFit;
 

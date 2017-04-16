@@ -1,12 +1,12 @@
-import Modal from 'react-native-modalbox';
-import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, Alert} from 'react-native';
+import Modal from 'react-native-modalbox'; // this is from a 3rd party dependency NPM module, "react-native-modalbox"
+import React, {Component} from 'react'; // this is from a 3rd party dependency NPM module, "react"
+import {View, Text, TouchableOpacity, StyleSheet, Alert} from 'react-native'; // this is from a 3rd party dependency NPM module, "react-native"
 import isNumberValid from "../util/inputValidator";
 import log from '../util/logger';
 import dateUtil from '../util/date';
 import styles from './styles';
 import db from '../../data/database';
-import {ListItem} from 'native-base';
+import {ListItem} from 'native-base'; // this is from a 3rd party dependency NPM module, "native-base"
 import processBGLValue from "../util/readingProcessor";
 import AddReadingModalPanel from "./AddReadingModalPanel";
 import AddFoodModalPanel from "./AddFoodModalPanel";

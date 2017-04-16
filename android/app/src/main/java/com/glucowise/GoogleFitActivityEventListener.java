@@ -5,10 +5,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 
+// these are dependencies part of 3rd party NPM module, "react-native"
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
+
+// this is the GoogleFit Android Java API client, made available by Google
 import com.google.android.gms.common.api.GoogleApiClient;
 
 public class GoogleFitActivityEventListener implements ActivityEventListener {

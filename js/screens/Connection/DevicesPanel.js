@@ -1,7 +1,7 @@
 'use strict';
-import React, {Component} from 'react';
-import {ListItem} from 'native-base';
-import {View, Text, ListView, StyleSheet} from 'react-native';
+import React, {Component} from 'react'; // this is from a 3rd party dependency NPM module, "react"
+import {ListItem} from 'native-base'; // this is from a 3rd party dependency NPM module, "native-base"
+import {View, Text, ListView, StyleSheet} from 'react-native'; // this is from a 3rd party dependency NPM module, "react-native"
 import styles from "./styles";
 import DeviceListRow from "./DeviceListRow";
 

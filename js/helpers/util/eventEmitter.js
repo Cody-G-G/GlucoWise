@@ -1,5 +1,5 @@
 'use strict';
-const EventEmitter = require('events');
+const EventEmitter = require('events'); // this is a library part of Node.JS
 const eventEmitter = new EventEmitter();
 
 class Emitter {

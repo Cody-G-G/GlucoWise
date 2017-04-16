@@ -1,6 +1,6 @@
 'use strict';
-import React, {Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import React, {Component} from 'react'; // this is from a 3rd party dependency NPM module, "react"
+import {View, Text, StyleSheet} from 'react-native'; // this is from a 3rd party dependency NPM module, "react-native"
 import styles from "./styles";
 import CustomDatePicker from "../../helpers/components/CustomDatePicker";
 

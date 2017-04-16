@@ -1,6 +1,6 @@
 'use strict';
-import React, {Component} from 'react';
-import {Router, Scene, Actions, ActionConst} from 'react-native-router-flux';
+import React, {Component} from 'react'; // this is from a 3rd party dependency NPM module, "react"
+import {Router, Scene, Actions, ActionConst} from 'react-native-router-flux'; // this is from a 3rd party dependency NPM module, "react-native-router-flux"
 import NavigationDrawer from './NavigationDrawer';
 import ConnectionScreen from '../screens/Connection/ConnectionScreen';
 import LogbookScreen from '../screens/Logbook/LogbookScreen';

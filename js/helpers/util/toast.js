@@ -1,5 +1,5 @@
 'use strict';
-import Toast from 'react-native-root-toast';
+import Toast from 'react-native-root-toast'; // this is from a 3rd party dependency NPM module, "react-native-root-toast"
 let toastShowing = false;
 
 const toast = (string) => {

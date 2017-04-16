@@ -1,7 +1,7 @@
-import Modal from 'react-native-modalbox';
-import React, {Component} from 'react';
-import {View, Text, ScrollView} from 'react-native';
-import {ListItem} from 'native-base';
+import Modal from 'react-native-modalbox'; // this is from a 3rd party dependency NPM module, "react-native-modalbox"
+import React, {Component} from 'react'; // this is from a 3rd party dependency NPM module, "react"
+import {View, Text, ScrollView} from 'react-native'; // this is from a 3rd party dependency NPM module, "react-native"
+import {ListItem} from 'native-base'; // this is from a 3rd party dependency NPM module, "native-base"
 import styles from './styles';
 import log from "../util/logger";
 

@@ -1,6 +1,6 @@
 'use strict';
-import React, {Component} from 'react';
-import {View, Text, TextInput} from 'react-native';
+import React, {Component} from 'react'; // this is from a 3rd party dependency NPM module, "react"
+import {View, Text, TextInput} from 'react-native'; // this is from a 3rd party dependency NPM module, "react-native"
 import SafeRangeButton from "./SafeRangeButton";
 import styles from "./styles";
 import isNumberValid from '../../helpers/util/inputValidator';

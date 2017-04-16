@@ -1,5 +1,5 @@
 'use strict';
-import moment from "moment";
+import moment from "moment"; // this is from a 3rd party dependency NPM module, "moment"
 import {daysOfWeek, monthsOfYear} from "../../helpers/util/constants";
 
 export default {

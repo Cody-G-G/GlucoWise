@@ -1,5 +1,5 @@
 'use strict';
-const EventEmitter = require('events');
+const EventEmitter = require('events'); // this is part of Node.JS
 const resultsEmitter = new EventEmitter();
 
 

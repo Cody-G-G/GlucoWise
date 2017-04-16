@@ -1,5 +1,6 @@
 package com.glucowise;
 
+// this is from a 3rd party dependency NPM module, "react-native"
 import com.facebook.react.ReactActivity;
 
 

@@ -1,7 +1,7 @@
 'use strict';
-import DatePicker from 'react-native-datepicker'
-import React, {Component} from 'react'
-import {View, StyleSheet} from 'react-native'
+import DatePicker from 'react-native-datepicker' // this is from a 3rd party dependency NPM module, "react-native-datepicker"
+import React, {Component} from 'react' // this is from a 3rd party dependency NPM module, "react"
+import {View, StyleSheet} from 'react-native' // this is from a 3rd party dependency NPM module, "react-native"
 import styles from "./styles";
 
 export default class CustomDatePicker extends Component {

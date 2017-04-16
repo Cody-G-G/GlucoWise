@@ -1,8 +1,8 @@
 'use strict';
 import DevicesPanel from "../DevicesPanel";
-import React from 'react';
-import 'react-native';
-import renderer from 'react-test-renderer';
+import React from 'react'; // this is from a 3rd party dependency NPM module, "react"
+import 'react-native'; // this is from a 3rd party dependency NPM module, "react-native"
+import renderer from 'react-test-renderer'; // this is from a 3rd party dependency NPM module, "react-test-renderer"
 
 test('DevicesPanel - renders correctly', () => {
     const device1 = '{"name": "DEVICE_NAME", "id": "DEVICE_ID"}';

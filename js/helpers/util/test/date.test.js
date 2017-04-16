@@ -1,6 +1,6 @@
 'use strict';
 import dateUtil from "../date";
-import MockDate from "mockdate";
+import MockDate from "mockdate"; // this is from a 3rd party dependency NPM module, "mockdate"
 
 test('padDate(datePortion) - pads date portion with 0 if portion < 10', () => {
     expect(dateUtil.padDate("2")).toEqual("02");

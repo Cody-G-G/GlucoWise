@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import React, {Component} from 'react'; // this is from a 3rd party dependency NPM module, "react"
+import {View, Text, TouchableOpacity} from 'react-native'; // this is from a 3rd party dependency NPM module, "react-native"
 import AddButton from "../../helpers/components/AddButton";
-import {Icon} from 'native-base';
+import {Icon} from 'native-base'; // this is from a 3rd party dependency NPM module, "native-base"
 import styles from "./styles";
 
 

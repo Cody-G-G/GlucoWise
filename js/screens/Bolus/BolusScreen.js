@@ -1,6 +1,6 @@
 'use strict';
-import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, Alert} from 'react-native';
+import React, {Component} from 'react'; // this is from a 3rd party dependency NPM module, "react"
+import {View, Text, TouchableOpacity, Alert} from 'react-native'; // this is from a 3rd party dependency NPM module, "react-native"
 import CalculatorInputPanel from "./CalculatorInputPanel";
 import CalculatorButtonsPanel from "./CalculatorButtonsPanel";
 import isNumberValid from "../../helpers/util/inputValidator";

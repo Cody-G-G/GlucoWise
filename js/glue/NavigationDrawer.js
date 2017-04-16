@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import Drawer from 'react-native-drawer';
 import DrawerPanel from "./DrawerPanel";
-import {DefaultRenderer, Actions} from 'react-native-router-flux';
+import {DefaultRenderer, Actions} from 'react-native-router-flux'; // this is from a 3rd party dependency NPM module, "react-native-router-flux"
 
 export default class NavigationDrawer extends Component {
 

@@ -3,8 +3,9 @@ import log from "../helpers/util/logger";
 import dateUtil from "../helpers/util/date";
 import processBGLValue from "../helpers/util/readingProcessor";
 import {readingUnitStandards, defaultSafeRange, dbObjects} from "../helpers/util/constants";
-const uuid = require('uuid/v1');
-const Realm = require('realm');
+const uuid = require('uuid/v1'); // this is from a 3rd party dependency NPM module, "uuid"
+const Realm = require('realm'); // this is from a 3rd party dependency NPM module, "realm"
+
 
 const key = new Int8Array(64);
 let realm = new Realm({

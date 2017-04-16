@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {View} from 'react-native';
-import {Bar} from 'react-native-pathjs-charts';
+import React, {Component} from 'react'; // this is from a 3rd party dependency NPM module, "react"
+import {View} from 'react-native'; // this is from a 3rd party dependency NPM module, "react-native"
+import {Bar} from 'react-native-pathjs-charts'; // this is from a 3rd party dependency NPM module, "react-native-pathjs-charts"
 import styles from './styles';
 
 export default class BarGraph extends Component {

@@ -1,7 +1,7 @@
 'use strict';
 import log from "./logger";
-import {PermissionsAndroid} from 'react-native';
-import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
+import {PermissionsAndroid} from 'react-native'; // this is from a 3rd party dependency NPM module, "react-native"
+import LocationServicesDialogBox from "react-native-android-location-services-dialog-box"; // this is from a 3rd party dependency NPM module, "react-native-android-location-services-dialog-box"
 
 export default {
     requestLocationServices: () => {

@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {View} from 'react-native';
+import React, {Component} from 'react'; // this is from a 3rd party dependency NPM module, "react"
+import {View} from 'react-native'; // this is from a 3rd party dependency NPM module, "react-native"
 import CalculatorInputRow from "./CalculatorInputRow";
 
 export default class CalculatorInputPanel extends Component {

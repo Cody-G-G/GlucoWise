@@ -1,6 +1,6 @@
 'use strict';
-import React, {Component} from 'react';
-import {TextInput, Text, View, StyleSheet} from 'react-native';
+import React, {Component} from 'react'; // this is from a 3rd party dependency NPM module, "react"
+import {TextInput, Text, View, StyleSheet} from 'react-native'; // this is from a 3rd party dependency NPM module, "react-native"
 import styles from "./styles";
 
 export default class CustomInput extends Component {

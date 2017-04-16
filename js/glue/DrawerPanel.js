@@ -5,9 +5,9 @@ import {
     Text,
     TouchableOpacity,
     View,
-} from 'react-native';
-import React, {Component} from 'react';
-import {Actions} from 'react-native-router-flux';
+} from 'react-native'; // this is from a 3rd party dependency NPM module, "react-native"
+import React, {Component} from 'react'; // this is from a 3rd party dependency NPM module, "react"
+import {Actions} from 'react-native-router-flux'; // this is from a 3rd party dependency NPM module, "react-native-router-flux"
 import styles from "./styles";
 import db from "../data/database";
 import log from "../helpers/util/logger";

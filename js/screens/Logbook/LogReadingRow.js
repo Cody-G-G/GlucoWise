@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {View, Text} from 'react-native';
+import React, {Component} from 'react'; // this is from a 3rd party dependency NPM module, "react"
+import {View, Text} from 'react-native'; // this is from a 3rd party dependency NPM module, "react-native"
 import styles from "./styles";
 import TextBold from "../../helpers/components/TextBold";
 import dateUtil from "../../helpers/util/date";

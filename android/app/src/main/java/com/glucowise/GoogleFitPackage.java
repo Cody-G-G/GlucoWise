@@ -1,5 +1,6 @@
 package com.glucowise;
 
+// these are part of 3rd party dependency NPM module, "react-native"
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
 import com.facebook.react.bridge.NativeModule;

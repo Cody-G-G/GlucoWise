@@ -1,7 +1,7 @@
 'use strict';
-import React, {Component} from 'react';
+import React, {Component} from 'react'; // this is from a 3rd party dependency NPM module, "react"
 import styles from "./styles";
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Text, TouchableOpacity} from 'react-native'; // this is from a 3rd party dependency NPM module, "react-native"
 import TextBold from "../../helpers/components/TextBold";
 
 export default class DeviceListRow extends Component {

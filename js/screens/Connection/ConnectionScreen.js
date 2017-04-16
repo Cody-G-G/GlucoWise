@@ -1,6 +1,6 @@
 'use strict';
-import React, {Component} from 'react';
-import {View, StyleSheet, NativeAppEventEmitter} from 'react-native';
+import React, {Component} from 'react'; // this is from a 3rd party dependency NPM module, "react"
+import {View, StyleSheet, NativeAppEventEmitter} from 'react-native'; // this is from a 3rd party dependency NPM module, "react-native"
 import styles from "./styles";
 import hexToAscii from "../../helpers/util/hexToAscii";
 import permissions from "../../helpers/util/permissions";
@@ -9,7 +9,7 @@ import BleManager from 'react-native-ble-manager';
 import SearchButtonPanel from "./SearchButtonPanel";
 import DevicesPanel from "./DevicesPanel";
 import db from "../../data/database";
-const Spinner = require('react-native-spinkit');
+const Spinner = require('react-native-spinkit'); // this is from a 3rd party dependency NPM module, "react-native-spinkit"
 
 export default class ConnectionScreen extends Component {
     constructor(props) {

@@ -1,7 +1,7 @@
 'use strict';
-import React, {Component} from 'react';
-import {Icon} from 'native-base';
-import {TouchableOpacity, Text} from 'react-native';
+import React, {Component} from 'react'; // this is from a 3rd party dependency NPM module, "react"
+import {Icon} from 'native-base'; // this is from a 3rd party dependency NPM module, "native-base"
+import {TouchableOpacity, Text} from 'react-native'; // this is from a 3rd party dependency NPM module, "react-native"
 import styles from "./styles";
 
 export default class DrawerTab extends Component {
