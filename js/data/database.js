@@ -225,7 +225,7 @@ const database = {
         let savedBGLSafeRanges = realm.objects('BGLSafeRange');
         realm.write(() => {
             savedBGLSafeRanges[0].minValue = defaultSafeRange.min;
-            this.safeRange.minValue = defaultSafeRange.min;
+            this.safeRange.minValue = String(processBGLValue(defaultSafeRange.min, this.standard));
         });
     },
 
@@ -280,7 +280,7 @@ const database = {
         let savedBGLSafeRanges = realm.objects('BGLSafeRange');
         realm.write(() => {
             savedBGLSafeRanges[0].maxValue = defaultSafeRange.max;
-            this.safeRange.maxValue = defaultSafeRange.max;
+            this.safeRange.maxValue = String(processBGLValue(defaultSafeRange.max, this.standard));
         });
     },
 
