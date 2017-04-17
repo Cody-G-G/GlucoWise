@@ -239,7 +239,7 @@ export default class GraphScreen extends Component {
                         gutter = 2;
                         xSize = 10;
                     }
-                    toRender = <BarGraph data={graphData} gutter={gutter} xSize={xSize} marginTop={36}/>;
+                    toRender = <BarGraph data={graphData} gutter={gutter} xSize={xSize} marginTop={34}/>;
                     break;
                 case(dataModes.calories):
                     gutter = (isTimeRangeLastDay && isCalorieModeExpended) ? 2 : 5;

@@ -145,10 +145,9 @@ export default class BolusScreen extends Component {
             isNumberValid(this.state.targetBgl)) {
 
             const result = ((this.state.carbs / this.state.cir) + ((this.state.bgl - this.state.targetBgl) / this.state.isf)).toFixed(1);
-            result < 0 ? Alert.alert("Invalid input", "Please input valid numbers for the Meal Carbohydrates / Current Glucose / Target Glucose / Carbohydrate Ratio / Insulin Sensitivity fields. For more information tap on the help button on the top right.") :
-                this.setState({
-                    bolus: result
-                });
+            this.setState({
+                bolus: result < 0 ? 0 : result
+            });
         }
         else
             Alert.alert("Invalid input", "Please input valid numbers for the Meal Carbohydrates / Current Glucose / Target Glucose / Carbohydrate Ratio / Insulin Sensitivity fields. For more information tap on the help button on the top right.");
